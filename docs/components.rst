@@ -211,7 +211,7 @@ Unordered List
 Ordered List
 ~~~~~~~~~~~~
 
-1. Install the theme with ``pip install clarity``
+1. Install the theme with ``pip install sphinx-clarity``
 2. Set ``html_theme = "clarity"`` in ``conf.py``
 3. Build your docs with ``sphinx-build``
 4. Open the output and toggle dark/light

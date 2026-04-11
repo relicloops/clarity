@@ -17,7 +17,7 @@ A clean Sphinx theme with phosphor-green / UV-violet dual-accent color system.
 ## Install
 
 ```bash
-pip install clarity
+pip install sphinx-clarity
 ```
 
 ## Usage

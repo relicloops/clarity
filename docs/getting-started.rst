@@ -14,7 +14,7 @@ Install from PyPI:
 
 .. code-block:: bash
 
-   pip install clarity
+   pip install sphinx-clarity
 
 Minimal Configuration
 ---------------------

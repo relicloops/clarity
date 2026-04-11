@@ -18,7 +18,7 @@ Quick Install
 
 .. code-block:: bash
 
-   pip install clarity
+   pip install sphinx-clarity
 
 Then in your ``conf.py``:
 

@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "clarity"
+name = "sphinx-clarity"
 version = "1.0.0"
 description = "A clean Sphinx theme with phosphor-green / UV-violet dual-accent color system"
 readme = "README.md"
