@@ -1,0 +1,137 @@
+{% extends "basic/layout.html" %}
+
+{%- block doctype -%}
+<!DOCTYPE html>
+{%- endblock -%}
+
+{%- block body_tag %}
+<body data-font-stack="{{ theme_font_stack|default('default') }}">
+{%- endblock %}
+
+{%- block extrahead %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#12121a">
+{% if theme_font_stack != 'system' %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endif %}
+<link rel="stylesheet" href="{{ pathto('_static/css/clarity.css', 1) }}">
+<link rel="stylesheet" href="{{ pathto('_static/css/components.css', 1) }}">
+<link rel="stylesheet" href="{{ pathto('_static/css/code-blocks.css', 1) }}">
+<link rel="stylesheet" href="{{ pathto('_static/css/responsive.css', 1) }}">
+{% endblock %}
+
+{%- block header %}
+<header class="clarity-header">
+  <div class="header-inner">
+    <button class="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="false" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    {% set light_logo = theme_light_logo|default('') %}
+    {% set dark_logo = theme_dark_logo|default('') %}
+    <a class="header-logo{% if light_logo or dark_logo %} has-logo{% endif %}" href="{{ pathto(master_doc) }}">
+      {% if light_logo and dark_logo %}
+      <img class="logo-img logo-light" src="{{ pathto('_static/' ~ light_logo, 1) }}" alt="{{ project }}">
+      <img class="logo-img logo-dark" src="{{ pathto('_static/' ~ dark_logo, 1) }}" alt="{{ project }}">
+      {% elif light_logo %}
+      <img class="logo-img logo-single" src="{{ pathto('_static/' ~ light_logo, 1) }}" alt="{{ project }}">
+      {% elif dark_logo %}
+      <img class="logo-img logo-single" src="{{ pathto('_static/' ~ dark_logo, 1) }}" alt="{{ project }}">
+      {% endif %}
+      <span class="logo-text">{{ project }}</span>
+    </a>
+
+    <div class="header-spacer"></div>
+    <div class="header-controls">
+      {% include "theme-toggle.html" %}
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{%- block relbar1 %}{%- endblock %}
+{%- block relbar2 %}{%- endblock %}
+
+{%- block content %}
+<div class="clarity-container">
+  <aside class="clarity-sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-header">
+        <span class="project-name">{{ project }}</span>
+        {% if version %}
+        <span class="project-version">v{{ version }}</span>
+        {% endif %}
+      </div>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        {{ toctree(maxdepth=theme_show_toc_level|int, titles_only=True, includehidden=True) }}
+      </nav>
+    </div>
+  </aside>
+
+  <main class="clarity-main">
+    <article class="clarity-article">
+      {% if parents %}
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ul>
+          <li><a href="{{ pathto(master_doc) }}">{{ shorttitle }}</a></li>
+          {% for parent in parents %}
+          <li><a href="{{ parent.link }}">{{ parent.title }}</a></li>
+          {% endfor %}
+          <li aria-current="page">{{ title }}</li>
+        </ul>
+      </nav>
+      {% endif %}
+
+      <div class="page-content">
+        {% block body %}{% endblock %}
+      </div>
+
+      <nav class="page-nav" aria-label="Page navigation">
+        {% if prev %}
+        <a class="nav-prev" href="{{ prev.link }}">
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">{{ prev.title }}</span>
+        </a>
+        {% endif %}
+        {% if next %}
+        <a class="nav-next" href="{{ next.link }}">
+          <span class="nav-label">Next</span>
+          <span class="nav-title">{{ next.title }}</span>
+        </a>
+        {% endif %}
+      </nav>
+    </article>
+
+    <aside class="clarity-toc">
+      <div class="toc-inner">
+        <h4 class="toc-title">On this page</h4>
+        {{ toc }}
+      </div>
+    </aside>
+  </main>
+</div>
+{% endblock %}
+
+{%- block footer %}
+<footer class="clarity-footer">
+  <div class="footer-inner">
+    <div class="footer-copyright">
+      {% trans copyright=copyright|e %}&copy; {{ copyright }}{% endtrans %}
+    </div>
+    <div class="footer-meta">
+      Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      using the <a href="https://github.com/relicloops/clarity">Clarity</a> theme
+    </div>
+  </div>
+</footer>
+<button class="back-to-top" type="button" aria-label="Back to top" hidden>Top</button>
+<script src="{{ pathto('_static/js/clarity.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/theme-toggle.js', 1) }}"></script>
+{% endblock %}

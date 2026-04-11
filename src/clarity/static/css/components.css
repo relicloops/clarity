@@ -1,0 +1,409 @@
+/* ==========================================================================
+   Clarity — Components
+   Admonitions, tables, footnotes, rubrics, topic boxes
+   ========================================================================== */
+
+/* ==========================================================================
+   Admonitions
+   ========================================================================== */
+
+.page-content .admonition {
+  margin: 1.25rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  background: var(--bg-card);
+}
+
+.page-content .admonition-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.page-content .admonition-title::before {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.page-content .admonition > p,
+.page-content .admonition > ul,
+.page-content .admonition > ol {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.page-content .admonition > :last-child {
+  margin-bottom: 0;
+}
+
+/* --- Note --- */
+.page-content .admonition.note {
+  border-left-color: var(--accent);
+  background: rgba(57, 255, 20, 0.03);
+}
+[data-theme="light"] .page-content .admonition.note {
+  background: rgba(123, 47, 247, 0.04);
+}
+.page-content .admonition.note > .admonition-title {
+  color: var(--accent);
+}
+.page-content .admonition.note > .admonition-title::before {
+  content: '▸';
+}
+
+/* --- Tip / Hint --- */
+.page-content .admonition.tip,
+.page-content .admonition.hint {
+  border-left-color: #00ffff;
+  background: rgba(0, 255, 255, 0.03);
+}
+[data-theme="light"] .page-content .admonition.tip,
+[data-theme="light"] .page-content .admonition.hint {
+  border-left-color: #0969da;
+  background: rgba(9, 105, 218, 0.04);
+}
+.page-content .admonition.tip > .admonition-title,
+.page-content .admonition.hint > .admonition-title {
+  color: #00ffff;
+}
+[data-theme="light"] .page-content .admonition.tip > .admonition-title,
+[data-theme="light"] .page-content .admonition.hint > .admonition-title {
+  color: #0969da;
+}
+.page-content .admonition.tip > .admonition-title::before,
+.page-content .admonition.hint > .admonition-title::before {
+  content: '✦';
+}
+
+/* --- Important --- */
+.page-content .admonition.important {
+  border-left-color: #a855f7;
+  background: rgba(168, 85, 247, 0.04);
+}
+[data-theme="light"] .page-content .admonition.important {
+  border-left-color: #7c3aed;
+  background: rgba(124, 58, 237, 0.04);
+}
+.page-content .admonition.important > .admonition-title {
+  color: #a855f7;
+}
+[data-theme="light"] .page-content .admonition.important > .admonition-title {
+  color: #7c3aed;
+}
+.page-content .admonition.important > .admonition-title::before {
+  content: '◆';
+}
+
+/* --- Warning / Caution --- */
+.page-content .admonition.warning,
+.page-content .admonition.caution {
+  border-left-color: #ff6600;
+  background: rgba(255, 102, 0, 0.04);
+}
+[data-theme="light"] .page-content .admonition.warning,
+[data-theme="light"] .page-content .admonition.caution {
+  border-left-color: #cf4e00;
+  background: rgba(207, 78, 0, 0.04);
+}
+.page-content .admonition.warning > .admonition-title,
+.page-content .admonition.caution > .admonition-title {
+  color: #ff6600;
+}
+[data-theme="light"] .page-content .admonition.warning > .admonition-title,
+[data-theme="light"] .page-content .admonition.caution > .admonition-title {
+  color: #cf4e00;
+}
+.page-content .admonition.warning > .admonition-title::before,
+.page-content .admonition.caution > .admonition-title::before {
+  content: '▲';
+}
+
+/* --- Danger / Error --- */
+.page-content .admonition.danger,
+.page-content .admonition.error {
+  border-left-color: #ff3366;
+  background: rgba(255, 51, 102, 0.04);
+}
+[data-theme="light"] .page-content .admonition.danger,
+[data-theme="light"] .page-content .admonition.error {
+  border-left-color: #cf222e;
+  background: rgba(207, 34, 46, 0.04);
+}
+.page-content .admonition.danger > .admonition-title,
+.page-content .admonition.error > .admonition-title {
+  color: #ff3366;
+}
+[data-theme="light"] .page-content .admonition.danger > .admonition-title,
+[data-theme="light"] .page-content .admonition.error > .admonition-title {
+  color: #cf222e;
+}
+.page-content .admonition.danger > .admonition-title::before,
+.page-content .admonition.error > .admonition-title::before {
+  content: '✗';
+}
+
+/* --- See Also --- */
+.page-content .admonition.seealso {
+  border-left-color: var(--text-tertiary);
+  background: var(--bg-card);
+}
+.page-content .admonition.seealso > .admonition-title {
+  color: var(--text-tertiary);
+}
+.page-content .admonition.seealso > .admonition-title::before {
+  content: '→';
+}
+
+/* --- Deprecated --- */
+.page-content .admonition.deprecated {
+  border-left-color: var(--text-tertiary);
+  background: var(--bg-card);
+  opacity: 0.75;
+}
+.page-content .admonition.deprecated > .admonition-title {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+.page-content .admonition.deprecated > .admonition-title::before {
+  content: '■';
+  text-decoration: none;
+}
+
+/* --- Version Added / Changed / Removed --- */
+.page-content .versionadded,
+.page-content .versionchanged,
+.page-content .deprecated {
+  margin: 1rem 0;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  border-left: 3px solid var(--border-subtle);
+  padding-left: 1rem;
+}
+
+.page-content .versionadded .versionmodified,
+.page-content .versionchanged .versionmodified,
+.page-content .deprecated .versionmodified {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.page-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+}
+
+.page-content table th {
+  text-align: left;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  border-bottom: 2px solid var(--border-accent);
+  padding: 0.6rem 0.75rem;
+}
+
+.page-content table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.page-content table tbody tr:hover {
+  background: var(--bg-card);
+}
+
+.page-content table code {
+  font-size: 0.8em;
+}
+
+/* Sphinx-generated class tables */
+.page-content table.docutils {
+  border: none;
+}
+
+.page-content table.docutils td,
+.page-content table.docutils th {
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.page-content table.docutils th {
+  border-bottom-width: 2px;
+  border-bottom-color: var(--border-accent);
+}
+
+/* Field lists */
+.page-content table.field-list td,
+.page-content table.field-list th {
+  border: none;
+  padding: 0.4rem 0.75rem 0.4rem 0;
+}
+
+.page-content table.field-list th {
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Rubrics
+   ========================================================================== */
+
+.page-content .rubric {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 2rem 0 0.75rem 0;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Topic Boxes
+   ========================================================================== */
+
+.page-content .topic {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.page-content .topic .topic-title {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Contents directive */
+.page-content .contents.topic {
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+}
+
+.page-content .contents.topic ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.page-content .contents.topic a {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.page-content .contents.topic a:hover {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Footnotes & Citations
+   ========================================================================== */
+
+.page-content .footnote {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin: 0.5rem 0;
+}
+
+.page-content .footnote-reference {
+  font-size: 0.75em;
+  vertical-align: super;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.page-content .citation {
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border-subtle);
+}
+
+.page-content .citation-reference {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Sidebar Directive
+   ========================================================================== */
+
+.page-content .sidebar {
+  float: right;
+  width: 40%;
+  margin: 0 0 1rem 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.page-content .sidebar .sidebar-title {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.75rem 0;
+}
+
+/* ==========================================================================
+   Search
+   ========================================================================== */
+
+.page-content #searchbox {
+  margin: 1rem 0;
+}
+
+.page-content #searchbox h3 {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.page-content input[type="text"],
+.page-content input[type="search"] {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.page-content input[type="text"]:focus,
+.page-content input[type="search"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}

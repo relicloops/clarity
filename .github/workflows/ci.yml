@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install build tools
+        run: pip install hatchling build
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Verify wheel installs
+        run: pip install dist/*.whl
+
+      - name: Smoke test ── theme registers
+        run: python -c "import clarity; print(clarity.__version__)"
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.12'
+        with:
+          name: dist
+          path: dist/
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install theme and Sphinx
+        run: pip install -e '.[docs]' sphinx
+
+      - name: Build documentation
+        run: sphinx-build -W -b html docs/ docs/_build/html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-html
+          path: docs/_build/html/
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build, docs]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install git-cliff
+        run: pip3 install git-cliff
+
+      - name: Generate release notes
+        run: git-cliff --config cliff.toml --latest --strip header > RELEASE_NOTES.md
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PRERELEASE_FLAG=""
+          if echo "$TAG" | grep -q "^v0\."; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file RELEASE_NOTES.md \
+            $PRERELEASE_FLAG \
+            dist/*

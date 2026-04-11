@@ -1,0 +1,11 @@
+<div class="sidebar-inner">
+  <div class="sidebar-header">
+    <span class="project-name">{{ project }}</span>
+    {% if version %}
+    <span class="project-version">v{{ version }}</span>
+    {% endif %}
+  </div>
+  <nav class="sidebar-nav" aria-label="Main navigation">
+    {{ toctree(maxdepth=theme_show_toc_level|int, titles_only=True, includehidden=True) }}
+  </nav>
+</div>

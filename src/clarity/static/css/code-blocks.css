@@ -1,0 +1,373 @@
+/* ==========================================================================
+   Clarity — Code Blocks
+   Syntax highlighting with phosphor-tinted colors
+   ========================================================================== */
+
+/* --- Override Pygments-generated background/color --- */
+/* Pygments hardcodes .highlight { background; color } from the style class.
+   We override it so colors respond to data-theme. */
+.highlight {
+  background: var(--bg-code) !important;
+  color: var(--text-primary) !important;
+}
+
+/* --- Code Block Container --- */
+.page-content pre {
+  margin: 1.25rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--bg-code);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.page-content pre::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* --- Code Block with Language Badge --- */
+.page-content div.highlight {
+  position: relative;
+  margin: 1.25rem 0;
+}
+
+.page-content div.highlight pre {
+  margin: 0;
+}
+
+/* Language badge (added by JS) */
+.code-lang-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-family: var(--font-heading);
+  font-size: 0.55rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  padding: 0.3rem 0.6rem;
+  border-bottom-left-radius: 4px;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* --- Literal Block (no highlight) --- */
+.page-content .highlight-none pre,
+.page-content .highlight-default pre {
+  color: var(--text-secondary);
+}
+
+/* --- Line Numbers --- */
+.page-content .linenodiv pre {
+  background: none;
+  border: none;
+  padding-right: 0.75rem;
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  user-select: none;
+  text-align: right;
+}
+
+.page-content table.highlighttable {
+  margin: 1.25rem 0;
+  border: none;
+  width: 100%;
+}
+
+.page-content table.highlighttable td {
+  padding: 0;
+  border: none;
+}
+
+.page-content table.highlighttable td.linenos {
+  width: 1%;
+  vertical-align: top;
+  background: var(--bg-code);
+  border-right: 1px solid var(--border-subtle);
+  border-radius: 6px 0 0 6px;
+}
+
+.page-content table.highlighttable td.code {
+  width: 99%;
+}
+
+.page-content table.highlighttable td.code pre {
+  border-radius: 0 6px 6px 0;
+}
+
+/* --- Copy Button --- */
+.page-content .highlight .copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.page-content div.highlight:hover .copy-button {
+  opacity: 1;
+}
+
+.page-content .highlight .copy-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Pygments Token Colors — Dark Mode (default)
+   Phosphor-green tinted palette
+   ========================================================================== */
+
+/* Comments */
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cs,
+.highlight .ch { color: rgba(224, 224, 240, 0.4); font-style: italic; }
+
+/* Keywords */
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt { color: #39ff14; font-weight: 500; }
+
+/* Strings */
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sa,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sr,
+.highlight .ss,
+.highlight .sx { color: #00ffff; }
+
+/* String delimiters */
+.highlight .dl { color: #00cccc; }
+
+/* Numbers */
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il { color: #ff6600; }
+
+/* Functions / Methods */
+.highlight .nf,
+.highlight .fm,
+.highlight .nv { color: #a855f7; }
+
+/* Classes / Types */
+.highlight .nc,
+.highlight .nd,
+.highlight .ni,
+.highlight .ne,
+.highlight .nn { color: #e0e0f0; font-weight: 500; }
+
+/* Built-ins */
+.highlight .nb,
+.highlight .bp { color: rgba(224, 224, 240, 0.85); }
+
+/* Names / Variables */
+.highlight .n,
+.highlight .na,
+.highlight .no,
+.highlight .nl,
+.highlight .nt { color: #e0e0f0; }
+
+/* Operators */
+.highlight .o,
+.highlight .ow { color: rgba(224, 224, 240, 0.6); }
+
+/* Punctuation */
+.highlight .p { color: rgba(224, 224, 240, 0.5); }
+
+/* Generic tokens */
+.highlight .gd { color: #ff3366; background: rgba(255, 51, 102, 0.1); } /* Deleted */
+.highlight .gi { color: #39ff14; background: rgba(57, 255, 20, 0.1); }  /* Inserted */
+.highlight .gh { color: #e0e0f0; font-weight: 600; } /* Heading */
+.highlight .gu { color: rgba(224, 224, 240, 0.5); }  /* Subheading */
+.highlight .ge { font-style: italic; }                /* Emphasis */
+.highlight .gs { font-weight: 700; }                  /* Strong */
+.highlight .go { color: rgba(224, 224, 240, 0.5); }   /* Output */
+.highlight .gp { color: #39ff14; }                     /* Prompt */
+.highlight .gt { color: #ff3366; }                     /* Traceback */
+
+/* Errors */
+.highlight .err { color: #ff3366; }
+
+/* Whitespace */
+.highlight .w { color: transparent; }
+
+/* ==========================================================================
+   Pygments Token Colors — Light Mode
+   UV-violet tinted palette
+   ========================================================================== */
+
+[data-theme="light"] .highlight .c,
+[data-theme="light"] .highlight .c1,
+[data-theme="light"] .highlight .cm,
+[data-theme="light"] .highlight .cs,
+[data-theme="light"] .highlight .ch { color: rgba(26, 26, 46, 0.4); }
+
+[data-theme="light"] .highlight .k,
+[data-theme="light"] .highlight .kc,
+[data-theme="light"] .highlight .kd,
+[data-theme="light"] .highlight .kn,
+[data-theme="light"] .highlight .kp,
+[data-theme="light"] .highlight .kr,
+[data-theme="light"] .highlight .kt { color: #7b2ff7; }
+
+[data-theme="light"] .highlight .s,
+[data-theme="light"] .highlight .s1,
+[data-theme="light"] .highlight .s2,
+[data-theme="light"] .highlight .sa,
+[data-theme="light"] .highlight .sb,
+[data-theme="light"] .highlight .sc,
+[data-theme="light"] .highlight .sd,
+[data-theme="light"] .highlight .se,
+[data-theme="light"] .highlight .sh,
+[data-theme="light"] .highlight .si,
+[data-theme="light"] .highlight .sr,
+[data-theme="light"] .highlight .ss,
+[data-theme="light"] .highlight .sx { color: #0969da; }
+
+[data-theme="light"] .highlight .dl { color: #0550ae; }
+
+[data-theme="light"] .highlight .m,
+[data-theme="light"] .highlight .mb,
+[data-theme="light"] .highlight .mf,
+[data-theme="light"] .highlight .mh,
+[data-theme="light"] .highlight .mi,
+[data-theme="light"] .highlight .mo,
+[data-theme="light"] .highlight .il { color: #cf222e; }
+
+[data-theme="light"] .highlight .nf,
+[data-theme="light"] .highlight .fm,
+[data-theme="light"] .highlight .nv { color: #8250df; }
+
+[data-theme="light"] .highlight .nc,
+[data-theme="light"] .highlight .nd,
+[data-theme="light"] .highlight .ni,
+[data-theme="light"] .highlight .ne,
+[data-theme="light"] .highlight .nn { color: #1a1a2e; font-weight: 500; }
+
+[data-theme="light"] .highlight .nb,
+[data-theme="light"] .highlight .bp { color: rgba(26, 26, 46, 0.8); }
+
+[data-theme="light"] .highlight .n,
+[data-theme="light"] .highlight .na,
+[data-theme="light"] .highlight .no,
+[data-theme="light"] .highlight .nl,
+[data-theme="light"] .highlight .nt { color: #1a1a2e; }
+
+[data-theme="light"] .highlight .o,
+[data-theme="light"] .highlight .ow { color: rgba(26, 26, 46, 0.6); }
+
+[data-theme="light"] .highlight .p { color: rgba(26, 26, 46, 0.5); }
+
+[data-theme="light"] .highlight .gd { color: #cf222e; background: rgba(207, 34, 46, 0.08); }
+[data-theme="light"] .highlight .gi { color: #116329; background: rgba(17, 99, 41, 0.08); }
+[data-theme="light"] .highlight .gh { color: #1a1a2e; }
+[data-theme="light"] .highlight .gu { color: rgba(26, 26, 46, 0.5); }
+[data-theme="light"] .highlight .go { color: rgba(26, 26, 46, 0.5); }
+[data-theme="light"] .highlight .gp { color: #7b2ff7; }
+[data-theme="light"] .highlight .gt { color: #cf222e; }
+
+[data-theme="light"] .highlight .err { color: #cf222e; }
+
+/* System preference fallback for light */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .highlight .c,
+  :root:not([data-theme]) .highlight .c1,
+  :root:not([data-theme]) .highlight .cm,
+  :root:not([data-theme]) .highlight .cs,
+  :root:not([data-theme]) .highlight .ch { color: rgba(26, 26, 46, 0.4); }
+
+  :root:not([data-theme]) .highlight .k,
+  :root:not([data-theme]) .highlight .kc,
+  :root:not([data-theme]) .highlight .kd,
+  :root:not([data-theme]) .highlight .kn,
+  :root:not([data-theme]) .highlight .kp,
+  :root:not([data-theme]) .highlight .kr,
+  :root:not([data-theme]) .highlight .kt { color: #7b2ff7; }
+
+  :root:not([data-theme]) .highlight .s,
+  :root:not([data-theme]) .highlight .s1,
+  :root:not([data-theme]) .highlight .s2,
+  :root:not([data-theme]) .highlight .sa,
+  :root:not([data-theme]) .highlight .sb,
+  :root:not([data-theme]) .highlight .sc,
+  :root:not([data-theme]) .highlight .sd,
+  :root:not([data-theme]) .highlight .se,
+  :root:not([data-theme]) .highlight .sh,
+  :root:not([data-theme]) .highlight .si,
+  :root:not([data-theme]) .highlight .sr,
+  :root:not([data-theme]) .highlight .ss,
+  :root:not([data-theme]) .highlight .sx { color: #0969da; }
+
+  :root:not([data-theme]) .highlight .dl { color: #0550ae; }
+
+  :root:not([data-theme]) .highlight .m,
+  :root:not([data-theme]) .highlight .mb,
+  :root:not([data-theme]) .highlight .mf,
+  :root:not([data-theme]) .highlight .mh,
+  :root:not([data-theme]) .highlight .mi,
+  :root:not([data-theme]) .highlight .mo,
+  :root:not([data-theme]) .highlight .il { color: #cf222e; }
+
+  :root:not([data-theme]) .highlight .nf,
+  :root:not([data-theme]) .highlight .fm,
+  :root:not([data-theme]) .highlight .nv { color: #8250df; }
+
+  :root:not([data-theme]) .highlight .nc,
+  :root:not([data-theme]) .highlight .nd,
+  :root:not([data-theme]) .highlight .ni,
+  :root:not([data-theme]) .highlight .ne,
+  :root:not([data-theme]) .highlight .nn { color: #1a1a2e; }
+
+  :root:not([data-theme]) .highlight .nb,
+  :root:not([data-theme]) .highlight .bp { color: rgba(26, 26, 46, 0.8); }
+
+  :root:not([data-theme]) .highlight .n,
+  :root:not([data-theme]) .highlight .na,
+  :root:not([data-theme]) .highlight .no,
+  :root:not([data-theme]) .highlight .nl,
+  :root:not([data-theme]) .highlight .nt { color: #1a1a2e; }
+
+  :root:not([data-theme]) .highlight .o,
+  :root:not([data-theme]) .highlight .ow { color: rgba(26, 26, 46, 0.6); }
+
+  :root:not([data-theme]) .highlight .p { color: rgba(26, 26, 46, 0.5); }
+
+  :root:not([data-theme]) .highlight .gd { color: #cf222e; background: rgba(207, 34, 46, 0.08); }
+  :root:not([data-theme]) .highlight .gi { color: #116329; background: rgba(17, 99, 41, 0.08); }
+  :root:not([data-theme]) .highlight .gp { color: #7b2ff7; }
+  :root:not([data-theme]) .highlight .gt { color: #cf222e; }
+  :root:not([data-theme]) .highlight .err { color: #cf222e; }
+}

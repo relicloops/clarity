@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "clarity"
+version = "1.0.0"
+description = "A clean Sphinx theme with phosphor-green / UV-violet dual-accent color system"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "Simone Del Popolo", email = "inbox@simonedelpopolo.com" },
+]
+keywords = ["sphinx", "theme", "documentation", "dark-mode", "light-mode"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Sphinx",
+    "Framework :: Sphinx :: Theme",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Documentation",
+    "Topic :: Documentation :: Sphinx",
+    "Topic :: Software Development :: Documentation",
+]
+dependencies = ["sphinx>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/relicloops/clarity"
+Documentation = "https://github.com/relicloops/clarity"
+Repository = "https://github.com/relicloops/clarity"
+Issues = "https://github.com/relicloops/clarity/issues"
+
+[project.entry-points."sphinx.html_themes"]
+clarity = "clarity"
+
+[project.entry-points."pygments.styles"]
+clarity-dark = "clarity.pygments_styles:ClarityDarkStyle"
+clarity-light = "clarity.pygments_styles:ClarityLightStyle"
+
+[tool.hatch.build.targets.wheel]
+sources = ["src"]
