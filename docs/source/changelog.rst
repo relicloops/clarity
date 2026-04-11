@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v1.0.2
+------
+
+- Text size controls now scale all elements: headings, code blocks, and tables
+- Sidebar shows full release version (e.g. v1.0.2 instead of v1.0)
+- Makefile dev/prod switch: ``make serve-dev`` uses local theme source
+
 v1.0.1
 ------
 

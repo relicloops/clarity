@@ -208,9 +208,9 @@
   }
 
   function applyTextSize(size) {
-    var content = document.querySelector('.page-content');
-    if (!content) return;
-    content.style.setProperty('--content-font-size', (size / 100) + 'rem');
+    var article = document.querySelector('.clarity-article');
+    if (!article) return;
+    article.style.setProperty('--content-font-size', (size / 100) + 'rem');
     try { localStorage.setItem(TEXT_SIZE_KEY, String(size)); } catch (_) {}
   }
 

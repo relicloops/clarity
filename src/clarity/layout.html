@@ -68,7 +68,9 @@
     <div class="sidebar-inner">
       <div class="sidebar-header">
         <span class="project-name">{{ project }}</span>
-        {% if version %}
+        {% if release %}
+        <span class="project-version">v{{ release }}</span>
+        {% elif version %}
         <span class="project-version">v{{ version }}</span>
         {% endif %}
       </div>
