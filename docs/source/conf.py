@@ -4,12 +4,12 @@ project = "Clarity"
 copyright = "2026, Simone Del Popolo"
 author = "Simone Del Popolo"
 version = "1.0"
-release = "1.0.0"
+release = "1.0.1"
 
 extensions = []
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["Thumbs.db", ".DS_Store"]
 
 # -- Theme -----------------------------------------------------------------
 

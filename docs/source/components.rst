@@ -296,7 +296,7 @@ Field Lists
 -----------
 
 :Author: Simone Del Popolo
-:Version: 1.0.0
+:Version: 1.0.1
 :License: Apache-2.0
 :Python: 3.10+
 :Sphinx: 7.0+

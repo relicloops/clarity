@@ -407,3 +407,142 @@
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent-glow);
 }
+
+/* ==========================================================================
+   Search Results Page
+   ========================================================================== */
+
+#search-results {
+  margin-top: 1.5rem;
+}
+
+#search-results h2 {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin: 2rem 0 0.75rem 0;
+}
+
+#search-results .search {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#search-results .search li {
+  margin: 0 0 1.25rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  transition: border-color 0.15s;
+}
+
+#search-results .search li:hover {
+  border-color: var(--accent);
+}
+
+#search-results .search li a {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+#search-results .search li a:hover {
+  text-decoration: underline;
+}
+
+/* Section location badge */
+#search-results .search li .search-location {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  background: var(--bg-code);
+  padding: 0.15em 0.5em;
+  border-radius: 3px;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+/* Context snippet */
+#search-results .search li .context {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-family: var(--font-body);
+}
+
+/* Search term highlight in results */
+#search-results .highlighted,
+#search-results .search li .context .highlighted {
+  background: rgba(57, 255, 20, 0.15);
+  color: var(--accent);
+  padding: 0.1em 0.25em;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+[data-theme="light"] #search-results .highlighted,
+[data-theme="light"] #search-results .search li .context .highlighted {
+  background: rgba(123, 47, 247, 0.1);
+  color: var(--accent);
+}
+
+/* Search progress / stats */
+#search-results p.search-summary {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  margin: 0.5rem 0 1rem 0;
+}
+
+/* Empty results */
+#search-results p:only-child {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Search Term Highlighting on Target Pages
+   (sphinx_highlight.js adds .highlighted class)
+   ========================================================================== */
+
+.highlighted {
+  background: rgba(57, 255, 20, 0.2);
+  color: var(--text-primary);
+  padding: 0.1em 0.2em;
+  border-radius: 2px;
+  box-shadow: 0 0 4px var(--phosphor-glow);
+}
+
+[data-theme="light"] .highlighted {
+  background: rgba(123, 47, 247, 0.15);
+  box-shadow: 0 0 4px var(--violet-glow);
+}
+
+/* Pulse animation for first search highlight */
+@keyframes highlight-pulse {
+  0%, 100% { box-shadow: 0 0 4px var(--phosphor-glow); }
+  50% { box-shadow: 0 0 12px var(--phosphor-glow), 0 0 20px var(--phosphor-glow); }
+}
+
+.highlight-pulse {
+  animation: highlight-pulse 1.2s ease-in-out 3;
+}
+
+[data-theme="light"] .highlight-pulse {
+  animation-name: highlight-pulse-light;
+}
+
+@keyframes highlight-pulse-light {
+  0%, 100% { box-shadow: 0 0 4px var(--violet-glow); }
+  50% { box-shadow: 0 0 12px var(--violet-glow), 0 0 20px var(--violet-glow); }
+}

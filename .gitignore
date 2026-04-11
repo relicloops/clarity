@@ -9,7 +9,7 @@ build/
 *.whl
 
 # Sphinx docs build
-docs/_build/
+docs/build/
 
 # IDE
 .vscode/
@@ -21,6 +21,9 @@ docs/_build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Preview
+clarity-preview/
 
 # Environments
 .env

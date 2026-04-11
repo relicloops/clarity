@@ -50,6 +50,9 @@
 
     <div class="header-spacer"></div>
     <div class="header-controls">
+      <form class="header-search" action="{{ pathto('search') }}" method="get">
+        <input type="search" name="q" id="search-input" placeholder="Search..." aria-label="Search docs">
+      </form>
       {% include "theme-toggle.html" %}
     </div>
   </div>
@@ -77,6 +80,10 @@
 
   <main class="clarity-main">
     <article class="clarity-article">
+      <div class="text-size-controls" aria-label="Text size">
+        <button class="text-size-btn" id="text-size-decrease" type="button" aria-label="Decrease text size" title="Decrease text size">&#x2212;</button>
+        <button class="text-size-btn" id="text-size-increase" type="button" aria-label="Increase text size" title="Increase text size">&#x2b;</button>
+      </div>
       {% if parents %}
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <ul>

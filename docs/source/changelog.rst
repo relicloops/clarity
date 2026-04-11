@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v1.0.1
+------
+
+- Header search input with styled search results page
+- Text size controls (+/-) with localStorage persistence
+- Search result location badges showing matched section
+- Scroll-to and pulse animation for highlighted search terms on target pages
+- Reorganized docs into source/build directory structure with Makefile and venv
+
 v1.0.0
 ------
 

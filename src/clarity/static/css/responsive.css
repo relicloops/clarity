@@ -78,6 +78,12 @@
     text-align: left;
   }
 
+  /* Text size controls */
+  .text-size-controls {
+    right: 1.25rem;
+    top: 0.75rem;
+  }
+
   /* Back to top */
   .back-to-top {
     bottom: 1rem;
@@ -102,8 +108,21 @@
     padding: 0 1rem;
   }
 
+  /* Search collapses */
+  #search-input {
+    width: 100px;
+  }
+  #search-input:focus {
+    width: 140px;
+  }
+
   .logo-text {
     font-size: 0.95rem;
+  }
+
+  .text-size-controls {
+    right: 1rem;
+    top: 0.5rem;
   }
 
   .page-content h1 { font-size: 1.4rem; }
