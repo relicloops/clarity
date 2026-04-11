@@ -45,4 +45,4 @@ clarity-dark = "clarity.pygments_styles:ClarityDarkStyle"
 clarity-light = "clarity.pygments_styles:ClarityLightStyle"
 
 [tool.hatch.build.targets.wheel]
-sources = ["src"]
+packages = ["src/clarity"]
