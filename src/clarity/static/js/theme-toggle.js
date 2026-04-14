@@ -122,7 +122,7 @@
     var selector = theme === 'dark' ? '.icon-moon' :
                    theme === 'light' ? '.icon-sun' : '.icon-system';
     var active = toggle.querySelector(selector);
-    if (active) active.style.display = 'block';
+    if (active) active.style.display = 'inline-block';
 
     var labels = {
       dark: 'Dark theme. Click for Light.',
