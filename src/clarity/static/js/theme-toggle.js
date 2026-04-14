@@ -70,6 +70,7 @@
   /* --- Theme storage --- */
 
   function getStoredTheme() {
+    if (!window.__clarityConsent) return 'system';
     var stored;
 
     if (preferNameStore) {
@@ -89,6 +90,7 @@
   }
 
   function setStoredTheme(theme) {
+    if (!window.__clarityConsent) return;
     safeSet(localStorage, STORAGE_KEY, theme);
     setNameValue(STORAGE_KEY, theme, preferNameStore);
   }
