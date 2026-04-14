@@ -92,9 +92,19 @@
       var scrollY = window.scrollY + headerOffset + 20;
       var active = null;
 
-      for (var i = 0; i < headings.length; i++) {
-        if (headings[i].el.offsetTop <= scrollY) {
-          active = headings[i];
+      /* If we've reached the bottom of the page, force-select the last
+         heading (the viewport cannot scroll far enough for its offsetTop
+         to pass the threshold). */
+      var atBottom = (window.innerHeight + window.scrollY) >=
+        (document.documentElement.scrollHeight - 4);
+
+      if (atBottom) {
+        active = headings[headings.length - 1];
+      } else {
+        for (var i = 0; i < headings.length; i++) {
+          if (headings[i].el.offsetTop <= scrollY) {
+            active = headings[i];
+          }
         }
       }
 
