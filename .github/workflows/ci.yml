@@ -1,67 +1,23 @@
 name: CI
 
+# Tag / release workflow. PyPI's Trusted Publisher is bound to this
+# filename (.github/workflows/ci.yml) so the publish job MUST live here.
+# Main-branch and PR checks live in main.yml instead.
+#
+# Flow: tag push -> reusable build + docs -> publish to PyPI + GitHub
+# release. If build or docs fails, publish is skipped by needs: and
+# nothing is released.
+
 on:
   push:
-    branches: [main]
     tags: ['v*']
-  pull_request:
-    branches: [main]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.10', '3.12', '3.13']
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install build tools
-        run: pip install hatchling build
-
-      - name: Build sdist and wheel
-        run: python -m build
-
-      - name: Verify wheel installs
-        run: pip install dist/*.whl
-
-      - name: Smoke test ── theme registers
-        run: python -c "import clarity; print(clarity.__version__)"
-
-      - uses: actions/upload-artifact@v4
-        if: matrix.python-version == '3.12'
-        with:
-          name: dist
-          path: dist/
-
-  docs:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install theme and Sphinx
-        run: pip install -e '.[docs]' sphinx
-
-      - name: Build documentation
-        run: sphinx-build -W -b html docs/source docs/build/html
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: docs-html
-          path: docs/build/html/
+  check:
+    uses: ./.github/workflows/build-and-docs.yml
 
   publish:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build, docs]
+    needs: check
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

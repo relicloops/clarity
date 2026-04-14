@@ -1,0 +1,16 @@
+name: Main
+
+# Main-branch and pull-request gate: just build + docs, no publishing.
+# Runs the same reusable workflow ci.yml uses on tag push, so a green
+# main is the precondition for a green release. PyPI's Trusted
+# Publisher is bound to ci.yml, so the publish job cannot live here.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    uses: ./.github/workflows/build-and-docs.yml
