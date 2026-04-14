@@ -12,15 +12,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#12121a">
-{% if theme_font_stack != 'system' %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-{% endif %}
 <link rel="stylesheet" href="{{ pathto('_static/css/clarity.css', 1) }}">
 <link rel="stylesheet" href="{{ pathto('_static/css/components.css', 1) }}">
 <link rel="stylesheet" href="{{ pathto('_static/css/code-blocks.css', 1) }}">
 <link rel="stylesheet" href="{{ pathto('_static/css/responsive.css', 1) }}">
+<link rel="stylesheet" href="{{ pathto('_static/css/consent.css', 1) }}">
 {% endblock %}
 
 {%- block header %}
@@ -137,10 +133,13 @@
     <div class="footer-meta">
       Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
       using the <a href="https://github.com/relicloops/clarity">Clarity</a> theme
+      &#xb7; <a class="footer-consent-link" onclick="window.__clarityRevokeConsent &amp;&amp; window.__clarityRevokeConsent()" title="Change privacy settings">Privacy settings</a>
     </div>
   </div>
 </footer>
+{% include "consent.html" %}
 <button class="back-to-top" type="button" aria-label="Back to top" hidden>Top</button>
+<script src="{{ pathto('_static/js/consent.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/clarity.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/theme-toggle.js', 1) }}"></script>
 {% endblock %}
