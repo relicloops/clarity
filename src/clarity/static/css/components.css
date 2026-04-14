@@ -17,19 +17,19 @@
 
 .page-content .admonition-title {
   font-family: var(--font-heading);
-  font-size: 0.75rem;
+  font-size: 0.75em;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--accent);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5em 0;
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
 
 .page-content .admonition-title::before {
-  font-size: 0.9rem;
+  font-size: 0.9em;
   line-height: 1;
 }
 
@@ -37,7 +37,7 @@
 .page-content .admonition > ul,
 .page-content .admonition > ol {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.9em;
 }
 
 .page-content .admonition > :last-child {
@@ -181,9 +181,9 @@
 .page-content .versionadded,
 .page-content .versionchanged,
 .page-content .deprecated {
-  margin: 1rem 0;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
+  margin: 1em 0;
+  padding: 0.5em 0;
+  font-size: 0.9em;
   color: var(--text-tertiary);
   border-left: 3px solid var(--border-subtle);
   padding-left: 1rem;
@@ -271,7 +271,7 @@
 
 .page-content .rubric {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: 1.1em;
   font-weight: 600;
   color: var(--accent);
   margin: 2rem 0 0.75rem 0;
@@ -292,7 +292,7 @@
 
 .page-content .topic .topic-title {
   font-family: var(--font-heading);
-  font-size: 0.85rem;
+  font-size: 0.85em;
   font-weight: 600;
   color: var(--accent);
   margin: 0 0 0.75rem 0;
@@ -313,7 +313,7 @@
 
 .page-content .contents.topic a {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.9em;
 }
 
 .page-content .contents.topic a:hover {
@@ -325,7 +325,7 @@
    ========================================================================== */
 
 .page-content .footnote {
-  font-size: 0.85rem;
+  font-size: 0.85em;
   color: var(--text-tertiary);
   margin: 0.5rem 0;
 }
@@ -338,7 +338,7 @@
 }
 
 .page-content .citation {
-  font-size: 0.85rem;
+  font-size: 0.85em;
   margin: 0.5rem 0;
   padding-left: 1rem;
   border-left: 2px solid var(--border-subtle);
@@ -365,7 +365,7 @@
 
 .page-content .sidebar .sidebar-title {
   font-family: var(--font-heading);
-  font-size: 0.8rem;
+  font-size: 0.8em;
   font-weight: 600;
   color: var(--accent);
   text-transform: uppercase;
@@ -383,7 +383,7 @@
 
 .page-content #searchbox h3 {
   font-family: var(--font-heading);
-  font-size: 0.8rem;
+  font-size: 0.8em;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -391,7 +391,7 @@
 .page-content input[type="text"],
 .page-content input[type="search"] {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.9em;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
@@ -418,7 +418,7 @@
 
 #search-results h2 {
   font-family: var(--font-heading);
-  font-size: 0.75rem;
+  font-size: 0.75em;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -447,7 +447,7 @@
 
 #search-results .search li a {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 0.95em;
   font-weight: 600;
   color: var(--accent);
   text-decoration: none;
@@ -463,7 +463,7 @@
 #search-results .search li .search-location {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.7em;
   color: var(--text-tertiary);
   background: var(--bg-code);
   padding: 0.15em 0.5em;
@@ -474,7 +474,7 @@
 
 /* Context snippet */
 #search-results .search li .context {
-  font-size: 0.85rem;
+  font-size: 0.85em;
   color: var(--text-secondary);
   line-height: 1.6;
   font-family: var(--font-body);
@@ -498,7 +498,7 @@
 
 /* Search progress / stats */
 #search-results p.search-summary {
-  font-size: 0.8rem;
+  font-size: 0.8em;
   color: var(--text-tertiary);
   font-family: var(--font-mono);
   margin: 0.5rem 0 1rem 0;
@@ -507,7 +507,7 @@
 /* Empty results */
 #search-results p:only-child {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.9em;
 }
 
 /* ==========================================================================
