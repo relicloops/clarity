@@ -29,3 +29,6 @@ clarity-preview/
 .env
 .venv/
 venv/
+
+# Agent instructions (canonical file + root symlinks)
+.prompt/
