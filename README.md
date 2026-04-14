@@ -86,9 +86,10 @@ html_theme_options = {
 ## Documentation
 
 Full documentation -- configuration reference, privacy details, chatbot
-setup -- is published at the project docs site, and the sources live in
-[`docs/source/`](./docs/source/) on GitHub if you prefer to browse them
-there.
+setup -- is published at the project docs site, and the sources live
+under `docs/source/` on
+[GitHub](https://github.com/relicloops/clarity/tree/main/docs/source)
+if you prefer to browse them there.
 
 ## License
 
