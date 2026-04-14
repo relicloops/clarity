@@ -16,6 +16,9 @@
 <link rel="stylesheet" href="{{ pathto('_static/css/components.css', 1) }}">
 <link rel="stylesheet" href="{{ pathto('_static/css/code-blocks.css', 1) }}">
 <link rel="stylesheet" href="{{ pathto('_static/css/responsive.css', 1) }}">
+{% if theme_chatbot_enabled != False %}
+<link rel="stylesheet" href="{{ pathto('_static/css/chatbot.css', 1) }}">
+{% endif %}
 <link rel="stylesheet" href="{{ pathto('_static/css/consent.css', 1) }}">
 {% endblock %}
 
@@ -43,6 +46,10 @@
       {% endif %}
       <span class="logo-text">{{ project }}</span>
     </a>
+
+    {% if theme_chatbot_enabled != False %}
+    {% include "chatbot.html" %}
+    {% endif %}
 
     <div class="header-spacer"></div>
     <div class="header-controls">
@@ -142,4 +149,11 @@
 <script src="{{ pathto('_static/js/consent.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/clarity.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/theme-toggle.js', 1) }}"></script>
+{% if theme_chatbot_enabled != False %}
+<script src="{{ pathto('_static/js/chatbot-storage.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/chatbot-api.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/chatbot-render.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/chatbot-commands.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/chatbot.js', 1) }}"></script>
+{% endif %}
 {% endblock %}
