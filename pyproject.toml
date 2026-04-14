@@ -31,6 +31,11 @@ classifiers = [
 ]
 dependencies = ["sphinx>=7.0"]
 
+[project.optional-dependencies]
+docs = [
+    "myst-parser>=4.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/relicloops/clarity"
 Documentation = "https://github.com/relicloops/clarity"
