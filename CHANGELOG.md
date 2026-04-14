@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.2.1 (2026-04-14)
+
+
+### Bug Fixes
+
+- Declare docs extra with myst-parser so docs job installs it (e80a38a)
+
 ## v1.2.0 (2026-04-14)
 
 
@@ -33,6 +40,7 @@
 
 ### Miscellaneous
 
+- V1.2.0 (ab99939)
 - Add git-cliff config for changelog generation (0532377)
 - Ignore .prompt/ canonical instructions dir (23b7344)
 
