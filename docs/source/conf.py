@@ -6,7 +6,7 @@ author = "Simone Del Popolo"
 version = "1.0"
 release = "1.0.3"
 
-extensions = []
+extensions = ["myst_parser"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["Thumbs.db", ".DS_Store"]

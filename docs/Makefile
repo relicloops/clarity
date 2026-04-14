@@ -65,4 +65,4 @@ livehtml:
 
 livehtml-dev:
 	$(LOCAL_INSTALL)
-	$(VENV)/sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)/html" --port $(PORT) --open-browser
+	$(VENV)/sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)/html" --port $(PORT) --open-browser --watch ../src/clarity
