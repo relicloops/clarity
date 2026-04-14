@@ -1,12 +1,24 @@
 # Changelog
 
 
+## v1.2.3 (2026-04-14)
+
+
+### CI
+
+- Bump actions to Node 24 majors (f4ca1dc)
+- Split tag-publish from main gate, reuse build+docs (eeaf007)
+
 ## v1.2.2 (2026-04-14)
 
 
 ### Bug Fixes
 
 - Use absolute GitHub URL in README to avoid myst xref error (63467c2)
+
+### Miscellaneous
+
+- V1.2.2 (05ddb68)
 
 ## v1.2.1 (2026-04-14)
 
@@ -25,6 +37,10 @@
 ### Bug Fixes
 
 - Highlight last TOC heading when page is scrolled to bottom (3f93fbe)
+
+### Build
+
+- Add myst_parser, delegate changelog to generated CHANGELOG.md (3cb0ab3)
 
 ### Documentation
 
@@ -59,10 +75,6 @@
 
 - Switch to em units for text-size scaling (960e595)
 - Replace SVG icons with Unicode glyphs (fd1a28f)
-
-### Build
-
-- Add myst_parser, delegate changelog to generated CHANGELOG.md (3cb0ab3)
 
 ## v1.0.3 (2026-04-11)
 
