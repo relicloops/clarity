@@ -1,0 +1,90 @@
+<div id="clarity-chatbot"
+     data-project="{{ project }}"
+     data-model="{{ theme_chatbot_model|default('openai/gpt-oss-120b:free') }}"
+     data-max-tokens="{{ theme_chatbot_max_tokens|default(1024) }}"
+     data-temperature="{{ theme_chatbot_temperature|default(0.3) }}"
+     data-top-p="{{ theme_chatbot_top_p|default(1.0) }}"
+     data-frequency-penalty="{{ theme_chatbot_frequency_penalty|default(0.0) }}"
+     data-presence-penalty="{{ theme_chatbot_presence_penalty|default(0.0) }}"
+     data-page-text-limit="{{ theme_chatbot_page_text_limit|default(8000) }}"
+     data-max-history="{{ theme_chatbot_max_history|default(50) }}"
+     data-reasoning-effort="{{ theme_chatbot_reasoning_effort|default('') }}"
+     data-system-prompt="{{ theme_chatbot_system_prompt|default('')|e }}">
+  <button id="chatbot-toggle" type="button"
+          aria-label="Open documentation assistant"
+          title="Documentation assistant">&#x2202;</button>
+
+  <div id="chatbot-panel" hidden>
+    <div id="chatbot-resize" class="chatbot-resize" aria-label="Resize" title="Drag to resize"></div>
+    <div class="chatbot-header">
+      <span class="chatbot-title">&#x2202; Clarity</span>
+      <span class="chatbot-rate-group">
+        <span id="chatbot-rate-info" class="chatbot-rate-info"></span>
+        <button id="chatbot-info-btn" class="chatbot-info-btn" type="button"
+                aria-label="Usage info" title="Usage info">&#x2139;</button>
+        <span id="chatbot-info-tip" class="chatbot-info-tip" hidden>Today's requests are tracked locally. The 30-day count comes from OpenRouter and does not include the current UTC day. Check your OpenRouter dashboard for real-time today usage.</span>
+      </span>
+      <div class="chatbot-controls">
+        <button id="chatbot-purge" type="button"
+                aria-label="Purge all data"
+                title="Purge: erase API keys, history, and all chatbot data">&#x2327;</button>
+        <button id="chatbot-minimize" type="button"
+                aria-label="Minimize"
+                title="Minimize: collapse to header bar, keep chat active">&#x2500;</button>
+        <button id="chatbot-close" type="button"
+                aria-label="Close"
+                title="Close: hide panel, data is preserved">&#xD7;</button>
+      </div>
+    </div>
+
+    <div id="chatbot-purge-confirm" class="chatbot-purge-confirm" hidden>
+      <p>This will permanently delete:</p>
+      <ul>
+        <li>Model API key and any optional Management API key</li>
+        <li>Conversation history</li>
+        <li>Panel state, saved size and position, and request counter</li>
+      </ul>
+      <div class="chatbot-purge-actions">
+        <button id="chatbot-purge-yes" type="button">&#x2327; Purge</button>
+        <button id="chatbot-purge-no" type="button">&#xD7; Cancel</button>
+      </div>
+    </div>
+
+    <div id="chatbot-apikey-form" class="chatbot-apikey">
+      <label>Management Key <span class="chatbot-optional">(optional, usage tracking)</span></label>
+      <div class="chatbot-apikey-row">
+        <div id="chatbot-mgmt-input" class="chatbot-key-field"
+             contenteditable="true" spellcheck="false"
+             data-placeholder="sk-or-v1-..."></div>
+      </div>
+      <label>Model Key <span class="chatbot-optional">(required, chat requests)</span></label>
+      <div class="chatbot-apikey-row">
+        <div id="chatbot-apikey-input" class="chatbot-key-field"
+             contenteditable="true" spellcheck="false"
+             data-placeholder="sk-or-v1-..."></div>
+      </div>
+      <div class="chatbot-apikey-row chatbot-apikey-submit">
+        <button id="chatbot-apikey-save" type="button"
+                aria-label="Save keys"
+                title="Save: store the model key and any optional management key in localStorage">&#x2713;</button>
+      </div>
+    </div>
+
+    <div id="chatbot-messages" class="chatbot-messages"></div>
+
+    <div id="chatbot-limit-warning" class="chatbot-limit-warning" hidden></div>
+
+    <form id="chatbot-form" class="chatbot-input">
+      <input type="text" id="chatbot-input"
+             placeholder="Ask about this page..." autocomplete="off"
+             aria-label="Ask a question">
+      <button type="submit" aria-label="Send">&#x25B6;</button>
+    </form>
+
+    <div class="chatbot-notice">
+      <span class="chatbot-model-badge" title="Model configured in conf.py: {{ theme_chatbot_model|default('openai/gpt-oss-120b:free') }}">{{ theme_chatbot_model|default('openai/gpt-oss-120b:free') }}</span>
+      Responses are AI-generated and may be inaccurate, incomplete, or
+      outdated. Always verify against the official documentation.
+    </div>
+  </div>
+</div>
