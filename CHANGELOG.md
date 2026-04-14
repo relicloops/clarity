@@ -1,12 +1,23 @@
 # Changelog
 
 
+## v1.2.2 (2026-04-14)
+
+
+### Bug Fixes
+
+- Use absolute GitHub URL in README to avoid myst xref error (63467c2)
+
 ## v1.2.1 (2026-04-14)
 
 
 ### Bug Fixes
 
 - Declare docs extra with myst-parser so docs job installs it (e80a38a)
+
+### Miscellaneous
+
+- V1.2.1 (6f23c92)
 
 ## v1.2.0 (2026-04-14)
 
