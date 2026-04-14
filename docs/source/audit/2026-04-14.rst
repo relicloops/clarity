@@ -1,0 +1,159 @@
+.. _audit-2026-04-14-engineering:
+
+Engineering Backlog -- 2026-04-14
+=================================
+
+This snapshot re-checks the current working tree and keeps only engineering
+findings that are still true.
+
+Method
+------
+
+- Reviewed the current theme templates, JavaScript, CSS, and supporting docs
+  under ``src/clarity/`` and ``docs/source/``.
+- Kept file-level references only, to avoid stale line-number citations.
+- No build, browser run, or automated test execution was performed in this
+  pass.
+
+.. _audit-2026-04-14-security:
+
+Security
+--------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 20 32 18 10
+
+   * - Priority
+     - Audience
+     - Code target
+     - Verified risk
+     - Proposed mitigation
+     - Status
+   * - High
+     - deployer
+     - ``src/clarity/static/js/chatbot.js``, ``docs/source/privacy.rst``
+     - OpenRouter credentials are still persisted on the client and remain
+       recoverable by any same-origin JavaScript. The current XOR obfuscation
+       prevents casual inspection only; it does not materially protect against
+       XSS or other script compromise on the same origin.
+     - Keep this risk explicitly accepted only for low-value keys, document the
+       threat model wherever chatbot setup is explained, and avoid encouraging
+       management-key persistence as the default path.
+     - Accepted risk
+   * - Low
+     - deployer
+     - ``src/clarity/theme.conf``, ``src/clarity/static/js/consent.js``,
+       ``docs/source/privacy.rst``
+     - The default font stack still triggers Google Fonts requests after
+       consent, which may be incompatible with strict CSP or privacy-sensitive
+       deployments.
+     - Keep ``font_stack = "system"`` as the documented no-remote option and
+       surface the tradeoff earlier in install/config docs.
+     - Acknowledged
+
+.. _audit-2026-04-14-bugs:
+
+Bugs
+----
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 20 32 18 10
+
+   * - Priority
+     - Audience
+     - Code target
+     - Verified bug
+     - Expected fix
+     - Status
+   * - Medium
+     - user
+     - ``src/clarity/chatbot.html``
+     - The key form copy is inconsistent with current behavior. Management-key
+       storage is optional now, but the save button tooltip still says
+       ``store both keys in localStorage``.
+     - Align the tooltip and nearby UI copy with the current optional
+       management-key flow.
+     - Resolved
+
+.. _audit-2026-04-14-code-review:
+
+Code Review
+-----------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 20 32 18 10
+
+   * - Priority
+     - Audience
+     - Code target
+     - Finding
+     - Recommended action
+     - Status
+   * - Medium
+     - maintainer
+     - ``src/clarity/static/js/chatbot.js``
+     - The chatbot implementation is a single large IIFE that mixes storage,
+       transport, markdown rendering, slash commands, geometry, and DOM wiring.
+       That makes behavior drift harder to spot and raises the cost of adding
+       tests or making targeted changes safely.
+     - Split responsibilities into smaller units or smaller files before
+       extending the chatbot further.
+     - Open
+
+.. _audit-2026-04-14-refactoring:
+
+Refactoring Proposal
+--------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 20 32 18 10
+
+   * - Priority
+     - Audience
+     - Code target
+     - Current pain
+     - Proposed refactor
+     - Status
+   * - Medium
+     - maintainer
+     - ``src/clarity/layout.html``, ``src/clarity/static/js/chatbot.js``
+     - ``chatbot_enabled`` hides the markup, but chatbot CSS and JavaScript are
+       still shipped on every page. The runtime no-ops safely, but the payload
+       is still paid even when the feature is disabled.
+     - Gate chatbot asset includes on ``theme_chatbot_enabled`` or move the
+       feature into a conditional bundle.
+     - Resolved
+   * - Medium
+     - maintainer
+     - ``src/clarity/static/js/chatbot.js``,
+       ``src/clarity/static/js/chatbot-storage.js``,
+       ``src/clarity/static/js/chatbot-api.js``,
+       ``src/clarity/static/js/chatbot-render.js``,
+       ``src/clarity/static/js/chatbot-commands.js``
+     - The current file shares mutable state across persistence, network,
+       rendering, and command execution concerns, which makes future changes
+       more coupled than they need to be.
+     - Extract storage/API/render/commands layers into narrower internal units
+       and keep the boot code as the only DOM orchestration layer.
+     - Resolved
+
+Removed After Verification
+--------------------------
+
+- ``navigation_with_keys`` is wired through ``layout.html`` and consumed by
+  ``clarity.js``.
+- ``sidebar_hide_name`` is implemented in ``layout.html``.
+- Ordered-list rendering in the chatbot markdown path now tracks list type and
+  closes the correct tag.
+- The management key is no longer required in the chatbot save flow.
+- Chatbot CSS and JS are now gated on ``theme_chatbot_enabled`` in
+  ``layout.html``, so the payload is no longer shipped when the feature is
+  disabled.
+- ``chatbot.js`` is now split into ``chatbot-storage.js``, ``chatbot-api.js``,
+  ``chatbot-render.js``, ``chatbot-commands.js``, and a slim boot file that
+  only does DOM orchestration. Modules attach to
+  ``window.Clarity.Chatbot.{storage, api, render, commands}``.

@@ -1,0 +1,153 @@
+.. _audit-2026-04-14-documentation:
+
+Documentation Backlog -- 2026-04-14
+===================================
+
+This snapshot re-checks the current documentation against the current working
+tree and keeps only gaps that are still true.
+
+Method
+------
+
+- Compared ``docs/source/`` pages with the live templates, JavaScript, CSS,
+  and theme options under ``src/clarity/``.
+- Cross-checked ``README.md``, ``docs/Makefile``, and
+  ``.github/workflows/ci.yml`` for maintainer-facing gaps.
+- Kept file-level references only, to avoid stale line-number citations in a
+  moving tree.
+- No Sphinx build or browser run was performed in this pass.
+
+User Backlog
+------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 18 34 18 10
+
+   * - Priority
+     - Audience
+     - Doc target
+     - Verified gap
+     - Proposed addition
+     - Status
+   * - High
+     - user
+     - ``chatbot.rst``
+     - The chatbot page does not explain streamed responses, the temporary
+       ``thinking`` state, or the collapsible reasoning block shown when a
+       model emits reasoning tokens.
+     - Add a short ``Streaming responses`` section that explains incremental
+       rendering, the transient status label, and that reasoning output depends
+       on model behavior.
+     - Resolved
+   * - High
+     - user
+     - ``chatbot.rst``
+     - Setup and persistence copy still reads like both keys are expected.
+       The current implementation only requires the model key, treats the
+       management key as optional, and degrades the usage summary when that key
+       is absent.
+     - Rewrite setup, controls, persistence, and rate-limit text to separate
+       required vs optional keys and explain the no-management-key behavior.
+     - Resolved
+   * - Medium
+     - user
+     - ``chatbot.rst``
+     - The chatbot guide omits the purge confirmation dialog, the configured
+       model badge shown in the footer, and the built-in AI accuracy
+       disclaimer.
+     - Expand the controls/footer coverage to document the confirmation step,
+       the deleted data set, the model badge, and the disclaimer text.
+     - Resolved
+   * - Medium
+     - user
+     - ``getting-started.rst`` or a new navigation/readability page
+     - Header search, breadcrumbs, the back-to-top button, code language
+       badges, and text-size controls are implemented but do not have a user
+       guide. The text-size range and step limits are also undocumented.
+     - Add a short feature guide that covers where these controls appear and
+       documents the ``75`` to ``150`` percent range in ``10`` percent steps.
+     - Resolved
+   * - Low
+     - user
+     - ``dark-light-modes.rst``
+     - Theme toggle documentation does not mention that the theme updates the
+       ``theme-color`` meta tag to keep supported browser chrome aligned with
+       the active palette.
+     - Add a brief technical note to the theme-mode page.
+     - Resolved
+
+Deployer Backlog
+----------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 18 34 18 10
+
+   * - Priority
+     - Audience
+     - Doc target
+     - Verified gap
+     - Proposed addition
+     - Status
+   * - Medium
+     - deployer
+     - ``configuration.rst``
+     - The configuration reference omits ``chatbot_enabled`` and every
+       chatbot tuning option declared in ``theme.conf``:
+       ``chatbot_model``, ``chatbot_max_tokens``, ``chatbot_temperature``,
+       ``chatbot_top_p``, ``chatbot_frequency_penalty``,
+       ``chatbot_presence_penalty``, ``chatbot_page_text_limit``,
+       ``chatbot_max_history``, ``chatbot_reasoning_effort``, and
+       ``chatbot_system_prompt``.
+     - Add a chatbot configuration table and a minimal example showing how to
+       disable the chatbot and override model/runtime settings.
+     - Resolved
+   * - Low
+     - deployer
+     - ``color-system.rst``
+     - The page documents the core palette, but not the full token inventory
+       defined in ``clarity.css``. This is a reference expansion issue, not a
+       verified end-user defect.
+     - Add an extended token appendix only if full token-by-token overrides are
+       meant to be part of the supported customization surface.
+     - Resolved
+
+Maintainer Backlog
+------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 12 18 34 18 10
+
+   * - Priority
+     - Audience
+     - Doc target
+     - Verified gap
+     - Proposed addition
+     - Status
+   * - Low
+     - maintainer
+     - new maintainer workflow page
+     - The docs do not explain the local doc workflow in ``docs/Makefile``
+       or the release/build behavior in ``.github/workflows/ci.yml``. That
+       includes ``make html-dev``, ``make livehtml-dev``, port ``8537``,
+       editable installs, warnings-as-errors docs builds, and tag-based
+       release publishing.
+     - Add a maintainer-focused page or appendix and link it from the audit
+       topic page once it exists.
+     - Resolved
+
+Removed After Verification
+--------------------------
+
+- The auto-consent example already sets both ``window.__clarityConsent`` and
+  ``window.__clarityConsentDecided`` in ``consent.rst``.
+- ``chatbot.rst`` already lists horizontal rules in the markdown support
+  section.
+- The changelog pipeline is no longer a documentation gap: ``changelog.rst``
+  now includes the generated ``CHANGELOG.md``.
+- The older ``disable chatbot`` finding was stale. The current code exposes
+  ``chatbot_enabled`` and gates the chatbot markup in ``layout.html``. The
+  remaining issue is missing configuration documentation, which is tracked
+  above.
