@@ -35,13 +35,20 @@ with the Orbitron / Inter / Intel One Mono font stack.
 
    getting-started
    configuration
+   navigation-and-controls
    color-system
    typography
    dark-light-modes
+   chatbot
+   consent
 
 .. toctree::
    :maxdepth: 2
    :caption: Reference
 
+   readme
    components
+   maintainer-workflow
    changelog
+   privacy
+   audit/index

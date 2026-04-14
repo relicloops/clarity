@@ -47,6 +47,17 @@ The theme uses two ``data-`` attributes on the ``<html>`` element:
    The *user setting* (``"dark"``, ``"light"``, or ``"system"``). The toggle
    button uses this to show the correct icon.
 
+Browser Chrome Color
+~~~~~~~~~~~~~~~~~~~~
+
+Whenever the active theme changes, Clarity also updates the
+``<meta name="theme-color">`` tag to match the current ``--bg-primary``
+surface color.
+
+Browsers that respect ``theme-color`` can use this to tint tab bars, address
+bars, or other browser chrome so the shell around the page stays aligned with
+the selected dark or light palette.
+
 Flash Prevention
 ~~~~~~~~~~~~~~~~
 

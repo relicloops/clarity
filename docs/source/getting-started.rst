@@ -49,6 +49,7 @@ Then build the docs to preview changes:
 
 .. code-block:: bash
 
-   sphinx-build docs/ docs/_build/html
+   cd docs
+   make html-dev
 
-Open ``docs/_build/html/index.html`` in your browser.
+Open ``docs/build/html/index.html`` in your browser.
