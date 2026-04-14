@@ -5,7 +5,7 @@
 {%- endblock -%}
 
 {%- block body_tag %}
-<body data-font-stack="{{ theme_font_stack|default('default') }}">
+<body data-font-stack="{{ theme_font_stack|default('default') }}" data-nav-keys="{{ theme_navigation_with_keys|default('true')|lower }}">
 {%- endblock %}
 
 {%- block extrahead %}
@@ -69,6 +69,7 @@
 <div class="clarity-container">
   <aside class="clarity-sidebar" id="sidebar">
     <div class="sidebar-inner">
+      {% if not theme_sidebar_hide_name %}
       <div class="sidebar-header">
         <span class="project-name">{{ project }}</span>
         {% if release %}
@@ -77,6 +78,7 @@
         <span class="project-version">v{{ version }}</span>
         {% endif %}
       </div>
+      {% endif %}
       <nav class="sidebar-nav" aria-label="Main navigation">
         {{ toctree(maxdepth=theme_show_toc_level|int, titles_only=True, includehidden=True) }}
       </nav>
@@ -122,10 +124,12 @@
     </article>
 
     <aside class="clarity-toc">
-      <div class="toc-inner">
-        <h4 class="toc-title">On this page</h4>
-        {{ toc }}
-      </div>
+      <details class="toc-details">
+        <summary class="toc-title">On this page</summary>
+        <div class="toc-inner">
+          {{ toc }}
+        </div>
+      </details>
     </aside>
   </main>
 </div>
