@@ -200,6 +200,7 @@
   var TEXT_SIZE_DEFAULT = 100;
 
   function getStoredTextSize() {
+    if (!window.__clarityConsent) return TEXT_SIZE_DEFAULT;
     try {
       var val = parseInt(localStorage.getItem(TEXT_SIZE_KEY), 10);
       if (val >= TEXT_SIZE_MIN && val <= TEXT_SIZE_MAX) return val;
@@ -211,7 +212,9 @@
     var article = document.querySelector('.clarity-article');
     if (!article) return;
     article.style.setProperty('--content-font-size', (size / 100) + 'rem');
-    try { localStorage.setItem(TEXT_SIZE_KEY, String(size)); } catch (_) {}
+    if (window.__clarityConsent) {
+      try { localStorage.setItem(TEXT_SIZE_KEY, String(size)); } catch (_) {}
+    }
   }
 
   function initTextSize() {
