@@ -312,6 +312,38 @@
     first.classList.add('highlight-pulse');
   }
 
+  /* --- TOC responsive toggle (open over 1100px, closed below) --- */
+
+  function initTocResponsive() {
+    var details = document.querySelector('.clarity-toc .toc-details');
+    if (!details) return;
+    var userToggled = false;
+
+    details.addEventListener('toggle', function () {
+      userToggled = true;
+    });
+
+    function syncState() {
+      if (userToggled) return;
+      details.open = window.innerWidth > 1100;
+    }
+
+    syncState();
+    window.addEventListener('resize', syncState);
+
+    /* On mobile, close the TOC after clicking a link so the target anchor
+       lands at the correct scroll position (the sticky open TOC would
+       otherwise push the target below the viewport top). */
+    var tocLinks = details.querySelectorAll('a[href^="#"]');
+    for (var i = 0; i < tocLinks.length; i++) {
+      tocLinks[i].addEventListener('click', function () {
+        if (window.innerWidth <= 1100) {
+          details.open = false;
+        }
+      });
+    }
+  }
+
   /* --- Boot --- */
 
   function init() {
@@ -323,6 +355,7 @@
     initTextSize();
     initSearchEnhancements();
     initHighlightScroll();
+    initTocResponsive();
   }
 
   if (document.readyState === 'loading') {
