@@ -69,16 +69,20 @@
 <div class="clarity-container">
   <aside class="clarity-sidebar" id="sidebar">
     <div class="sidebar-inner">
-      {% if not theme_sidebar_hide_name %}
-      <div class="sidebar-header">
+      <div class="sidebar-header{% if not release and not version %} sidebar-header-no-version{% endif %}">
+        {% if not theme_sidebar_hide_name %}
         <span class="project-name">{{ project }}</span>
+        {% endif %}
         {% if release %}
-        <span class="project-version">v{{ release }}</span>
+        <span class="project-version">{% if not release.startswith('v') %}v{% endif %}{{ release }}</span>
         {% elif version %}
-        <span class="project-version">v{{ version }}</span>
+        <span class="project-version">{% if not version.startswith('v') %}v{% endif %}{{ version }}</span>
+        {% else %}
+        <span class="project-version project-version-missing"
+              title="Clarity could not find a version string. Set `release` (or `version`) in your docs/source/conf.py so readers can see which version of the docs they are on."
+              data-clarity-warn="version-missing">&#x26A0; version not set in conf.py</span>
         {% endif %}
       </div>
-      {% endif %}
       <nav class="sidebar-nav" aria-label="Main navigation">
         {{ toctree(maxdepth=theme_show_toc_level|int, titles_only=True, includehidden=True) }}
       </nav>

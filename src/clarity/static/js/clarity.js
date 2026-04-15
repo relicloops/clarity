@@ -346,6 +346,21 @@
 
   /* --- Boot --- */
 
+  /* --- Missing-version warning (DevTools console) --- */
+
+  function warnIfVersionMissing() {
+    if (document.querySelector('[data-clarity-warn="version-missing"]')) {
+      console.warn(
+        '[Clarity theme] No `release` or `version` is set in your ' +
+        'Sphinx conf.py. Readers will see a warning badge in the ' +
+        'sidebar until you set one. Example:\n' +
+        '    # docs/source/conf.py\n' +
+        '    version = "1.2"\n' +
+        '    release = "v1.2.3-000"'
+      );
+    }
+  }
+
   function init() {
     initSidebar();
     initTocHighlight();
@@ -356,6 +371,7 @@
     initSearchEnhancements();
     initHighlightScroll();
     initTocResponsive();
+    warnIfVersionMissing();
   }
 
   if (document.readyState === 'loading') {

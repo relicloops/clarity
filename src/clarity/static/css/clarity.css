@@ -383,6 +383,21 @@ body {
   opacity: 0.8;
 }
 
+/* Warning variant shown when neither `release` nor `version` is set
+   in conf.py. Intentionally visible (orange dashed pill) so the
+   deployer notices during local preview and adds the version. */
+.project-version.project-version-missing {
+  color: var(--neon-orange, #ff6600);
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px dashed rgba(255, 102, 0, 0.45);
+  border-radius: 3px;
+  padding: 0.15em 0.4em;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  opacity: 1;
+  cursor: help;
+}
+
 /* Sidebar navigation */
 .sidebar-nav ul {
   list-style: none;
