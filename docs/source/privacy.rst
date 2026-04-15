@@ -81,6 +81,11 @@ documentation server.
    * - ``clarity-chatbot-geometry``
      - AI assistant
      - Saved chatbot panel width, height, and screen position.
+   * - ``clarity-chatbot-settings-override``
+     - AI assistant
+     - JSON blob of per-field chatbot parameter overrides saved from the
+       ⚙ settings panel. Only fields the reader actually edited appear
+       here; the rest fall back to ``conf.py`` defaults.
 
 API key obfuscation
 ~~~~~~~~~~~~~~~~~~~
@@ -256,9 +261,9 @@ Summary
      - No cookies are set by the theme.
    * - Local storage
      - Origin-scoped
-     - 8 keys for preferences, chatbot state, saved geometry, and obfuscated
-       API keys.
-       Purgeable via UI button or browser tools.
+     - 9 keys for preferences, chatbot state, saved geometry, settings
+       overrides, and obfuscated API keys. Purgeable via UI button or
+       browser tools.
    * - Google Fonts
      - Optional
      - Loaded by default. Set ``font_stack: "system"`` to disable.

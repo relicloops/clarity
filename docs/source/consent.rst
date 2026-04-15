@@ -58,6 +58,7 @@ acceptance is purged. The following ``localStorage`` keys are removed:
 - ``clarity-chatbot-history``
 - ``clarity-chatbot-state``
 - ``clarity-chatbot-requests``
+- ``clarity-chatbot-settings-override``
 
 The ``clarity-consent`` key (set to ``declined``) is retained to prevent
 the banner from reappearing on every page.
