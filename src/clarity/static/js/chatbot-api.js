@@ -68,19 +68,28 @@
         callback(data.error.message);
         return;
       }
-      if (data && data.data && Array.isArray(data.data)) {
-        var totalRequests = 0;
-        var totalTokens = 0;
-        for (var i = 0; i < data.data.length; i++) {
-          totalRequests += (data.data[i].request_count || 0);
-          totalTokens += (data.data[i].prompt_tokens || 0) + (data.data[i].completion_tokens || 0);
-        }
-        callback(null, { requests: totalRequests, tokens: totalTokens });
-      } else {
-        callback('no data');
+      /* OpenRouter returns { data: [ {date, requests, prompt_tokens,
+         completion_tokens, ...}, ... ] }. Older/alt shapes may return
+         the rows directly as an array or use `request_count`. Handle
+         all three so this keeps working if the field gets renamed. */
+      var rows = null;
+      if (Array.isArray(data)) rows = data;
+      else if (data && Array.isArray(data.data)) rows = data.data;
+      if (!rows) { callback('no data'); return; }
+
+      var totalRequests = 0;
+      var totalTokens = 0;
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        totalRequests += (r.requests || r.request_count || 0);
+        totalTokens += (r.prompt_tokens || 0) + (r.completion_tokens || 0);
       }
+      callback(null, { requests: totalRequests, tokens: totalTokens });
     })
-    .catch(function () { callback('network error'); });
+    .catch(function (err) {
+      console.warn('[chatbot] activity fetch failed:', err && err.message);
+      callback('network error');
+    });
   }
 
   /* --- Streaming chat completion --- */
