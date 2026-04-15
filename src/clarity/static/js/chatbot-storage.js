@@ -16,8 +16,11 @@
   var STATE_STORAGE = 'clarity-chatbot-state';
   var REQUESTS_STORAGE = 'clarity-chatbot-requests';
   var GEOMETRY_STORAGE = 'clarity-chatbot-geometry';
+  var SETTINGS_OVERRIDE_STORAGE = 'clarity-chatbot-settings-override';
 
-  /* Settings read from data-* attributes on #clarity-chatbot (set via conf.py) */
+  /* Settings read from data-* attributes on #clarity-chatbot (set via
+     conf.py), merged with any per-reader overrides stored in
+     localStorage via the in-panel settings form. */
   function loadSettings() {
     var el = document.getElementById('clarity-chatbot');
     function attr(name, fallback) {
@@ -37,7 +40,7 @@
       var n = parseInt(v, 10);
       return isNaN(n) ? fallback : n;
     }
-    return {
+    var base = {
       model: attr('data-model', 'openai/gpt-oss-120b:free'),
       maxTokens: intn('data-max-tokens', 1024),
       temperature: num('data-temperature', 0.3),
@@ -49,6 +52,30 @@
       reasoningEffort: attr('data-reasoning-effort', ''),
       systemPrompt: attr('data-system-prompt', '')
     };
+    var override = loadSettingsOverride();
+    if (override) {
+      for (var k in override) {
+        if (!Object.prototype.hasOwnProperty.call(base, k)) continue;
+        if (override[k] === null || override[k] === undefined || override[k] === '') continue;
+        base[k] = override[k];
+      }
+    }
+    return base;
+  }
+
+  function loadSettingsOverride() {
+    var raw = safeGet(SETTINGS_OVERRIDE_STORAGE);
+    if (!raw) return null;
+    try { return JSON.parse(raw); }
+    catch (_) { return null; }
+  }
+
+  function saveSettingsOverride(obj) {
+    safeSet(SETTINGS_OVERRIDE_STORAGE, JSON.stringify(obj || {}));
+  }
+
+  function clearSettingsOverride() {
+    safeRemove(SETTINGS_OVERRIDE_STORAGE);
   }
 
   /* --- Safe localStorage helpers (consent-gated) --- */
@@ -138,6 +165,7 @@
     safeRemove(STATE_STORAGE);
     safeRemove(REQUESTS_STORAGE);
     safeRemove(GEOMETRY_STORAGE);
+    safeRemove(SETTINGS_OVERRIDE_STORAGE);
   }
 
   /* --- Local request counter (fallback when no mgmt key) --- */
@@ -199,6 +227,9 @@
       GEOMETRY: GEOMETRY_STORAGE
     },
     loadSettings: loadSettings,
+    loadSettingsOverride: loadSettingsOverride,
+    saveSettingsOverride: saveSettingsOverride,
+    clearSettingsOverride: clearSettingsOverride,
     safeGet: safeGet,
     safeSet: safeSet,
     safeRemove: safeRemove,
