@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v1.3.0-000 (2026-04-15)
+
+
+### Documentation
+
+- Complete Sphinx setup walkthrough (a3fd53f)
+- Describe CI split and versioning scheme (5448c40)
+- List chatbot settings override storage key (876609a)
+- Cross-link to runtime settings overlay (71a0ce8)
+- Document settings overlay, rate refresh, renderer hardening (ac28416)
+
 ## v1.2.3 (2026-04-14)
 
 
@@ -8,6 +19,10 @@
 
 - Bump actions to Node 24 majors (f4ca1dc)
 - Split tag-publish from main gate, reuse build+docs (eeaf007)
+
+### Miscellaneous
+
+- V1.2.3 (de3fc00)
 
 ## v1.2.2 (2026-04-14)
 

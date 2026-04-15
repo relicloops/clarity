@@ -3,8 +3,14 @@
 project = "Clarity"
 copyright = "2026, Simone Del Popolo"
 author = "Simone Del Popolo"
-version = "1.2"
-release = "1.2.3"
+# Display version follows the project's vMAJOR.MINOR.PATCH-BUILD tag
+# format (see the version-bumping skill). `version` is the short form
+# (MAJOR.MINOR) that Sphinx uses for generated URLs and breadcrumbs;
+# `release` is the full tag form shown in the sidebar and page header.
+# The PyPI-side version in pyproject.toml uses the PEP 440 4-segment
+# form (e.g. 1.2.3.0) because PEP 440 rejects the hyphen syntax.
+version = "1.3"
+release = "v1.3.0-000"
 
 extensions = ["myst_parser"]
 
