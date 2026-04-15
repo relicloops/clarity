@@ -123,6 +123,16 @@ Chatbot Example
 
 Set ``chatbot_enabled`` to ``False`` to remove the widget entirely.
 
+Runtime overrides
+~~~~~~~~~~~~~~~~~
+
+Every ``chatbot_*`` option above can be overridden at runtime without
+editing ``conf.py``. Readers click the ⚙ button in the chatbot header to
+open a settings overlay with an editable field per option, a hint bar,
+and ``Save`` / ``Reset`` / ``Cancel`` actions. Overrides are stored in the
+reader's browser only; the values in ``conf.py`` remain the default for
+everyone else. See :ref:`settings-panel` for the full field list.
+
 Dual Logos
 ----------
 
