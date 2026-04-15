@@ -13,19 +13,43 @@
   /* --- Lightweight Markdown --> HTML --- */
 
   function mdToHtml(md) {
+    /* Preserve a small whitelist of inline HTML tags the model may
+       emit directly. Translate them to sentinels BEFORE escaping so
+       the < and > do not get turned into &lt;/&gt;, then substitute
+       the real tags back at the end of the pipeline. */
     var html = md
+      .replace(/<br\s*\/?>/gi, '\x01BR\x01')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
     var codeBlocks = [];
-    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function (_, lang, code) {
+    /* Support both backtick (```) and tilde (~~~) fenced code blocks.
+       The backreference \1 ensures the closing fence matches the
+       opening one so ```foo~~~ is not treated as a block. Accept
+       optional \r before the first \n for CRLF-emitting models. */
+    html = html.replace(/(```|~~~)(\w*)\r?\n([\s\S]*?)\1/g, function (_, fence, lang, code) {
       var idx = codeBlocks.length;
       codeBlocks.push('<pre><code>' + code.trim() + '</code></pre>');
       return '\x00CODEBLOCK' + idx + '\x00';
     });
 
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    /* Inline code: extract to sentinels BEFORE running the bold /
+       italic / underscore passes so identifiers like
+       `html_theme_options["default_theme"]` are not eaten by the
+       emphasis rules (every pair of underscores inside code was being
+       turned into <em>, stripping the underscore pairs and corrupting
+       the identifier). The restore pass at the end of the function
+       swaps the sentinels back to real <code>...</code> spans.
+       `[^`\n]` also restricts inline code to a single line so stray
+       backticks do not swallow paragraph breaks. */
+    var inlineCodes = [];
+    html = html.replace(/`([^`\n]+)`/g, function (_, code) {
+      var idx = inlineCodes.length;
+      inlineCodes.push('<code>' + code + '</code>');
+      return '\x02INLINECODE' + idx + '\x02';
+    });
+
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
@@ -141,7 +165,15 @@
     closeList();
     if (inTable) flushTable();
 
-    return out.join('\n');
+    var result = out.join('\n');
+    /* Restore inline code spans first so the sentinel digits are not
+       matched by the <br> restore below. */
+    result = result.replace(/\x02INLINECODE(\d+)\x02/g, function (_, idx) {
+      return inlineCodes[parseInt(idx, 10)];
+    });
+    /* Restore whitelisted inline HTML tags. */
+    result = result.replace(/\x01BR\x01/g, '<br>');
+    return result;
   }
 
   /* --- Message rendering --- */
