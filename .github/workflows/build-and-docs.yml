@@ -24,6 +24,21 @@ jobs:
       - name: Install build tools
         run: pip install hatchling build
 
+      # On tag push, translate the git tag (vMAJOR.MINOR.PATCH-BUILD,
+      # e.g. v1.2.4-000) into the PEP 440 4-segment version
+      # (MAJOR.MINOR.PATCH.BUILD, e.g. 1.2.4.0) that PyPI accepts, and
+      # sync the docs release string. Untagged builds (main / PR)
+      # leave the repo values as-is.
+      - name: Sync version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_RAW="${GITHUB_REF_NAME#v}"           # 1.2.4-000
+          PY_VERSION="${TAG_RAW//-/.}"              # 1.2.4.0
+          python -c "import re, pathlib; p=pathlib.Path('pyproject.toml'); p.write_text(re.sub(r'^version = .*', f'version = \"${PY_VERSION}\"', p.read_text(), count=1, flags=re.M))"
+          python -c "import re, pathlib; p=pathlib.Path('docs/source/conf.py'); t=p.read_text(); t=re.sub(r'^release = .*', f'release = \"${GITHUB_REF_NAME}\"', t, count=1, flags=re.M); MM='.'.join('${PY_VERSION}'.split('.')[:2]); t=re.sub(r'^version = .*', f'version = \"{MM}\"', t, count=1, flags=re.M); p.write_text(t)"
+          echo "pyproject.toml version ->"; grep '^version = ' pyproject.toml
+          echo "conf.py version/release ->"; grep -E '^(version|release) = ' docs/source/conf.py
+
       - name: Build sdist and wheel
         run: python -m build
 
@@ -48,6 +63,17 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+
+      # Mirror of the build-job step: sync conf.py's release + version
+      # fields to the tag form on tag pushes so the rendered docs show
+      # the right version string in the sidebar.
+      - name: Sync docs version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_RAW="${GITHUB_REF_NAME#v}"
+          PY_VERSION="${TAG_RAW//-/.}"
+          python -c "import re, pathlib; p=pathlib.Path('docs/source/conf.py'); t=p.read_text(); t=re.sub(r'^release = .*', f'release = \"${GITHUB_REF_NAME}\"', t, count=1, flags=re.M); MM='.'.join('${PY_VERSION}'.split('.')[:2]); t=re.sub(r'^version = .*', f'version = \"{MM}\"', t, count=1, flags=re.M); p.write_text(t)"
+          grep -E '^(version|release) = ' docs/source/conf.py
 
       - name: Install theme and Sphinx
         run: pip install -e '.[docs]' sphinx
