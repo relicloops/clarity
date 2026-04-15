@@ -25,6 +25,9 @@
         <span id="chatbot-info-tip" class="chatbot-info-tip" hidden>Today's requests are tracked locally. The 30-day count comes from OpenRouter and does not include the current UTC day. Check your OpenRouter dashboard for real-time today usage.</span>
       </span>
       <div class="chatbot-controls">
+        <button id="chatbot-settings-btn" type="button"
+                aria-label="Settings"
+                title="Settings: override model and generation parameters from conf.py">&#x2699;</button>
         <button id="chatbot-purge" type="button"
                 aria-label="Purge all data"
                 title="Purge: erase API keys, history, and all chatbot data">&#x2327;</button>
@@ -37,12 +40,70 @@
       </div>
     </div>
 
+    <div id="chatbot-settings" class="chatbot-settings" hidden>
+      <div class="chatbot-settings-header">
+        <span class="chatbot-settings-title">&#x2699; Settings</span>
+        <span class="chatbot-settings-hint">Overrides <code>conf.py</code> defaults. Saved in your browser only.</span>
+      </div>
+      <div class="chatbot-settings-body">
+        <label data-hint="OpenRouter model slug (e.g. openai/gpt-oss-120b:free, anthropic/claude-sonnet-4-5, google/gemini-2.5-flash). Full list at openrouter.ai/models. Free-tier models are labelled :free. Paid models consume credit from the key you set below.">Model
+          <input type="text" data-setting="model" spellcheck="false" autocomplete="off">
+        </label>
+        <div class="chatbot-settings-grid">
+          <label data-hint="Maximum tokens the model may generate per reply. Higher = longer possible answers but more credit spent. Typical 512 to 2048.">Max tokens
+            <input type="number" data-setting="maxTokens" min="1" step="1">
+          </label>
+          <label data-hint="Creativity vs determinism. 0 = deterministic, repeat same output. 1 = balanced. Above 1 = increasingly random. 0.3 is a good default for docs Q&amp;A.">Temperature
+            <input type="number" data-setting="temperature" min="0" max="2" step="0.05">
+          </label>
+          <label data-hint="Nucleus sampling: only consider tokens whose cumulative probability is below this value. 1.0 = consider all. 0.9 = top 90 %. Usually leave at 1 and tune temperature instead.">Top p
+            <input type="number" data-setting="topP" min="0" max="1" step="0.05">
+          </label>
+          <label data-hint="Penalty (-2 to 2) applied to tokens the model has already produced in this reply. Positive values reduce literal word repetition.">Frequency penalty
+            <input type="number" data-setting="frequencyPenalty" min="-2" max="2" step="0.05">
+          </label>
+          <label data-hint="Penalty (-2 to 2) applied to tokens on topics already mentioned. Positive values push the model to introduce new ideas instead of repeating themes.">Presence penalty
+            <input type="number" data-setting="presencePenalty" min="-2" max="2" step="0.05">
+          </label>
+          <label data-hint="Max number of characters from the current page sent as context. Higher = more page content the model can cite, but uses more prompt tokens per request.">Page text limit
+            <input type="number" data-setting="pageTextLimit" min="100" step="100">
+          </label>
+          <label data-hint="How many past messages are kept in local conversation history and sent with each new request.">Max history
+            <input type="number" data-setting="maxHistory" min="1" step="1">
+          </label>
+          <label data-hint="Only for reasoning-capable models (e.g. o1, deepseek-r1). low = quick answers, high = longer thinking phase. Empty = no reasoning request; most models ignore this field.">Reasoning effort
+            <select data-setting="reasoningEffort">
+              <option value="">(default)</option>
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+            </select>
+          </label>
+        </div>
+        <label data-hint="Custom instructions prepended to every request, replacing the built-in &quot;doc assistant, page-only Q&amp;A&quot; prompt. Leave empty to keep the default.">System prompt
+          <textarea data-setting="systemPrompt" rows="3" spellcheck="false"
+                    placeholder="(use built-in default)"></textarea>
+        </label>
+      </div>
+      <div class="chatbot-settings-actions">
+        <button id="chatbot-settings-save" type="button"
+                data-hint="Write these values to localStorage and apply them on the next request. Blank fields fall back to the conf.py default.">&#x2713; Save</button>
+        <button id="chatbot-settings-reset" type="button"
+                data-hint="Wipe every override from localStorage. All fields revert to whatever is declared in docs/source/conf.py.">&#x21BA; Reset</button>
+        <button id="chatbot-settings-cancel" type="button"
+                data-hint="Close this panel without writing any change. Your current overrides stay untouched.">&#xD7; Cancel</button>
+      </div>
+
+      <div id="chatbot-settings-hint" class="chatbot-settings-hint-bar" aria-live="polite"></div>
+    </div>
+
     <div id="chatbot-purge-confirm" class="chatbot-purge-confirm" hidden>
       <p>This will permanently delete:</p>
       <ul>
         <li>Model API key and any optional Management API key</li>
         <li>Conversation history</li>
         <li>Panel state, saved size and position, and request counter</li>
+        <li>Any chatbot settings overrides</li>
       </ul>
       <div class="chatbot-purge-actions">
         <button id="chatbot-purge-yes" type="button">&#x2327; Purge</button>

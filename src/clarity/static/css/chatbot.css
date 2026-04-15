@@ -702,6 +702,199 @@
   font-style: italic;
 }
 
+/* --- Settings panel --- */
+.chatbot-settings {
+  /* Full-panel overlay: covers the whole chat window while open so
+     the settings form has room to breathe and the reader is not
+     distracted by the chat below. Absolute positioning is relative
+     to #chatbot-panel which is position:fixed. */
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbot-settings[hidden] {
+  display: none;
+}
+
+.chatbot-settings-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.chatbot-settings-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.chatbot-settings-title {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.chatbot-settings-hint {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+.chatbot-settings-hint code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  color: var(--text-secondary);
+}
+
+.chatbot-settings-body label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin: 0.4rem 0;
+}
+
+.chatbot-settings-body input,
+.chatbot-settings-body select,
+.chatbot-settings-body textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.3rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  box-sizing: border-box;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.chatbot-settings-body textarea {
+  resize: vertical;
+  min-height: 3em;
+  line-height: 1.4;
+}
+
+.chatbot-settings-body input:focus,
+.chatbot-settings-body select:focus,
+.chatbot-settings-body textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.chatbot-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.5rem;
+}
+
+.chatbot-settings-actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+  flex-shrink: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Warning-styled hint bar pinned at the bottom of the settings
+   overlay, below Save/Reset/Cancel. Updates instantly on hover over
+   any element with a data-hint attribute. */
+.chatbot-settings-hint-bar {
+  flex-shrink: 0;
+  margin-top: 0.45rem;
+  padding: 0.5rem 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: #ffcc00;
+  background: rgba(255, 204, 0, 0.08);
+  border: 1px dashed rgba(255, 204, 0, 0.45);
+  border-radius: 4px;
+  min-height: 3em;
+}
+
+.chatbot-settings-hint-bar:empty::before {
+  content: '\26A0 Hover any field or button to see what it does.';
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.chatbot-settings-actions button {
+  flex: 1;
+  padding: 0.35rem 0;
+  border-radius: 3px;
+  font-family: var(--font-heading);
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+#chatbot-settings-save {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+#chatbot-settings-save:hover {
+  background: var(--accent);
+  color: var(--bg-page);
+}
+
+#chatbot-settings-reset {
+  border: 1px solid rgba(255, 204, 0, 0.55);
+  background: rgba(255, 204, 0, 0.08);
+  color: #ffcc00;
+}
+#chatbot-settings-reset:hover {
+  border-color: #ffcc00;
+  background: rgba(255, 204, 0, 0.2);
+}
+
+#chatbot-settings-cancel {
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+}
+#chatbot-settings-cancel:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Settings button intentionally renders U+2699 as its platform emoji
+   glyph (silver-grey on dark, dark-blue on light on Apple systems)
+   so it is visually distinct from the accent-colored resize handle
+   and the red/green/yellow header controls. No color/font-variant
+   override -- the emoji picks its own colors per theme. */
+#chatbot-settings-btn {
+  border-color: var(--border-subtle);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+#chatbot-settings-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
 /* --- Purge Confirmation --- */
 .chatbot-purge-confirm {
   padding: 0.75rem;
@@ -930,14 +1123,42 @@
 }
 
 /* --- Minimized State --- */
+
+/* Hide everything under the header so the minimized panel is a
+   header-only pill. The > :not(.chatbot-header) selector catches
+   autocomplete / notice / warning / purge-confirm as well, without
+   needing to enumerate every class. */
+#chatbot-panel.minimized > :not(.chatbot-header),
 #chatbot-panel.minimized .chatbot-messages,
 #chatbot-panel.minimized .chatbot-input,
-#chatbot-panel.minimized .chatbot-apikey {
-  display: none;
+#chatbot-panel.minimized .chatbot-apikey,
+#chatbot-panel.minimized .chatbot-notice,
+#chatbot-panel.minimized .chatbot-limit-warning,
+#chatbot-panel.minimized .chatbot-purge-confirm,
+#chatbot-panel.minimized .chatbot-autocomplete {
+  display: none !important;
 }
 
 #chatbot-panel.minimized {
-  max-height: none;
+  /* !important overrides the inline height/max-height that the
+     drag/resize code writes on the element, so the panel collapses
+     to the natural header height instead of keeping the resized
+     dimensions. */
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* Tighter header bar when minimized so the pill is as short as
+   possible. */
+#chatbot-panel.minimized .chatbot-header {
+  padding: 0.35rem 0.55rem;
+  border-bottom: none;
+  cursor: move;
+}
+
+#chatbot-panel.minimized .chatbot-resize {
+  display: none !important;
+  pointer-events: none;
 }
 
 /* --- Responsive (viewport-based, default width only) --- */

@@ -48,6 +48,11 @@
     var limitWarning = document.getElementById('chatbot-limit-warning');
     var resizeHandle = document.getElementById('chatbot-resize');
     var panelHeader = panel.querySelector('.chatbot-header');
+    var settingsBtn = document.getElementById('chatbot-settings-btn');
+    var settingsPanel = document.getElementById('chatbot-settings');
+    var settingsSave = document.getElementById('chatbot-settings-save');
+    var settingsReset = document.getElementById('chatbot-settings-reset');
+    var settingsCancel = document.getElementById('chatbot-settings-cancel');
 
     /* --- Geometry restore --- */
 
@@ -120,6 +125,9 @@
       var startX, startY, startW, startH;
 
       resizeHandle.addEventListener('mousedown', function (e) {
+        /* Resize is a no-op while minimized; only dragging the header
+           should move the pill around in that state. */
+        if (panel.classList.contains('minimized')) return;
         resizing = true;
         var rect = panel.getBoundingClientRect();
         startX = e.clientX;
@@ -171,15 +179,19 @@
     var apiKey = storage.loadKey(storage.keys.KEY);
     var mgmtKey = storage.loadKey(storage.keys.MGMT_KEY);
 
-    console.log('[chatbot] model key:', apiKey ? apiKey.slice(0, 12) + '...' : 'none');
-    console.log('[chatbot] mgmt key:', mgmtKey ? mgmtKey.slice(0, 12) + '...' : 'none');
-
     function refreshRate() {
       render.updateRateDisplay(
         rateInfo, limitWarning, apiKey, mgmtKey,
         storage.getLocalRequestCount().count, api
       );
     }
+
+    /* Periodic refresh so the 30-day activity total and remaining
+       credit stay current while the reader leaves the panel open. */
+    setInterval(function () {
+      if (panel.hidden || !apiKey) return;
+      refreshRate();
+    }, 60000);
 
     var savedState = storage.loadState();
 
@@ -198,7 +210,30 @@
       if (apiKey) chatInput.focus();
     } else if (savedState === 'minimized') {
       panel.hidden = false;
+      /* Snapshot the geometry that loadGeometry() just applied so the
+         reader's resized dimensions come back when un-minimized. */
+      panel._savedHeight = panel.style.height;
+      panel._savedMaxHeight = panel.style.maxHeight;
+      panel.style.height = '';
+      panel.style.maxHeight = '';
       panel.classList.add('minimized');
+      setMinimizeButtonState(true);
+    }
+
+    /* --- Minimize/restore button glyph + labels --- */
+
+    function setMinimizeButtonState(isMinimized) {
+      if (isMinimized) {
+        minimizeBtn.textContent = '\u25A1';
+        minimizeBtn.setAttribute('aria-label', 'Restore');
+        minimizeBtn.setAttribute('title',
+          'Restore: expand chatbot panel to its previous size');
+      } else {
+        minimizeBtn.textContent = '\u2500';
+        minimizeBtn.setAttribute('aria-label', 'Minimize');
+        minimizeBtn.setAttribute('title',
+          'Minimize: collapse to header bar, keep chat active');
+      }
     }
 
     /* --- Header controls --- */
@@ -206,6 +241,7 @@
     toggle.addEventListener('click', function () {
       panel.hidden = false;
       panel.classList.remove('minimized');
+      setMinimizeButtonState(false);
       storage.saveState('open');
       if (apiKey) chatInput.focus();
       else apikeyInput.focus();
@@ -217,7 +253,23 @@
     });
 
     minimizeBtn.addEventListener('click', function () {
+      var willMinimize = !panel.classList.contains('minimized');
+
+      if (willMinimize) {
+        /* Stash the current inline height so the CSS `height:auto`
+           rule under .minimized can collapse the panel. Without this
+           the inline style set by drag/resize wins. */
+        panel._savedHeight = panel.style.height;
+        panel._savedMaxHeight = panel.style.maxHeight;
+        panel.style.height = '';
+        panel.style.maxHeight = '';
+      } else {
+        if (panel._savedHeight) panel.style.height = panel._savedHeight;
+        if (panel._savedMaxHeight) panel.style.maxHeight = panel._savedMaxHeight;
+      }
+
       var isMinimized = panel.classList.toggle('minimized');
+      setMinimizeButtonState(isMinimized);
       storage.saveState(isMinimized ? 'minimized' : 'open');
       if (!isMinimized && apiKey) {
         messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -248,6 +300,106 @@
       clearField(mgmtInput);
       mgmtInput.focus();
     });
+
+    /* --- Settings panel (conf.py overrides) --- */
+
+    function populateSettingsForm() {
+      var override = storage.loadSettingsOverride() || {};
+      var fields = settingsPanel.querySelectorAll('[data-setting]');
+      for (var i = 0; i < fields.length; i++) {
+        var key = fields[i].getAttribute('data-setting');
+        var overrideVal = override[key];
+        fields[i].value = (overrideVal === undefined || overrideVal === null) ? '' : overrideVal;
+        /* Show the current effective default as a placeholder so the
+           reader knows what they're overriding without looking at
+           conf.py. */
+        var defVal = settings[key];
+        if (fields[i].tagName !== 'SELECT') {
+          fields[i].setAttribute('placeholder',
+            defVal === undefined || defVal === null || defVal === '' ? '(default)' : String(defVal));
+        }
+      }
+    }
+
+    /* Re-populate `settings` in place so every closure already holding
+       a reference sees the fresh values on the next request. */
+    function reloadSettings() {
+      var fresh = storage.loadSettings();
+      for (var k in fresh) settings[k] = fresh[k];
+    }
+
+    var settingsHintBar = document.getElementById('chatbot-settings-hint');
+    if (settingsPanel && settingsHintBar) {
+      /* Event delegation: any descendant with a data-hint attribute
+         updates the footer warning bar immediately on mouseover. */
+      settingsPanel.addEventListener('mouseover', function (e) {
+        var target = e.target.closest('[data-hint]');
+        if (!target) return;
+        settingsHintBar.textContent = target.getAttribute('data-hint');
+      });
+      settingsPanel.addEventListener('mouseout', function (e) {
+        var related = e.relatedTarget;
+        if (related && related.closest && related.closest('[data-hint]')) return;
+        settingsHintBar.textContent = '';
+      });
+      /* Focusing a field (tab navigation) also shows the hint. */
+      settingsPanel.addEventListener('focusin', function (e) {
+        var target = e.target.closest('[data-hint]');
+        if (!target) return;
+        settingsHintBar.textContent = target.getAttribute('data-hint');
+      });
+      settingsPanel.addEventListener('focusout', function () {
+        settingsHintBar.textContent = '';
+      });
+    }
+
+    if (settingsBtn && settingsPanel) {
+      settingsBtn.addEventListener('click', function () {
+        /* Make sure the panel body is visible before showing settings. */
+        if (panel.classList.contains('minimized')) {
+          if (panel._savedHeight) panel.style.height = panel._savedHeight;
+          if (panel._savedMaxHeight) panel.style.maxHeight = panel._savedMaxHeight;
+          panel.classList.remove('minimized');
+          setMinimizeButtonState(false);
+          storage.saveState('open');
+        }
+        var opening = settingsPanel.hidden;
+        if (opening) populateSettingsForm();
+        settingsPanel.hidden = !opening;
+      });
+
+      settingsCancel.addEventListener('click', function () {
+        settingsPanel.hidden = true;
+      });
+
+      settingsSave.addEventListener('click', function () {
+        var fields = settingsPanel.querySelectorAll('[data-setting]');
+        var override = {};
+        for (var i = 0; i < fields.length; i++) {
+          var f = fields[i];
+          var key = f.getAttribute('data-setting');
+          var raw = (f.value || '').trim();
+          if (raw === '') continue;
+          var val;
+          if (f.type === 'number') {
+            val = parseFloat(raw);
+            if (isNaN(val)) continue;
+          } else {
+            val = raw;
+          }
+          override[key] = val;
+        }
+        storage.saveSettingsOverride(override);
+        reloadSettings();
+        settingsPanel.hidden = true;
+      });
+
+      settingsReset.addEventListener('click', function () {
+        storage.clearSettingsOverride();
+        reloadSettings();
+        populateSettingsForm();
+      });
+    }
 
     /* --- Key input helpers --- */
 
@@ -520,6 +672,7 @@
 
             history.push({ role: 'user', content: msg });
             storage.incrementLocalRequests();
+            refreshRate();
 
             api.sendMessageStream(readPrompt, [], '', apiKey, settings,
               makeStreamCallbacks('summarizing', function (err, fullText, reasoningText) {
@@ -550,6 +703,7 @@
       render.appendMessage(messagesEl, 'user', msg);
       history.push({ role: 'user', content: msg });
       storage.incrementLocalRequests();
+      refreshRate();
 
       api.sendMessageStream(msg, history.slice(0, -1), pageContent, apiKey, settings,
         makeStreamCallbacks('thinking', function (err, fullText, reasoningText) {
