@@ -54,37 +54,87 @@ without rebuilding or reinstalling a distribution artifact.
 CI Behavior
 -----------
 
-The GitHub Actions workflow in ``.github/workflows/ci.yml`` currently runs
-three jobs:
+The GitHub Actions setup is split across three workflow files so a red
+main gate cannot produce a green release:
 
 .. list-table::
    :header-rows: 1
-   :widths: 18 82
+   :widths: 28 72
 
-   * - Job
-     - Behavior
-   * - ``build``
-     - Builds the sdist and wheel and smoke-tests installation on Python
-       ``3.10``, ``3.12``, and ``3.13``.
-   * - ``docs``
-     - Builds the Sphinx docs on Python ``3.12`` with ``sphinx-build -W``, so
-       warnings fail the job.
-   * - ``publish``
-     - Runs only for tags matching ``refs/tags/v*`` after ``build`` and
-       ``docs`` succeed.
+   * - File
+     - Role
+   * - ``.github/workflows/main.yml``
+     - Runs on every push to ``main`` and every pull request. Calls the
+       reusable ``build-and-docs`` workflow. No publishing.
+   * - ``.github/workflows/ci.yml``
+     - Runs only on tag pushes matching ``v*``. Calls the same reusable
+       workflow, then publishes to PyPI and creates the GitHub release.
+       Keeps the filename ``ci.yml`` because PyPI's Trusted Publisher is
+       bound to that exact path.
+   * - ``.github/workflows/build-and-docs.yml``
+     - Reusable (``workflow_call``). Build matrix on Python ``3.10``,
+       ``3.12``, ``3.13``; docs built with ``sphinx-build -W`` on
+       Python ``3.12`` (warnings-as-errors).
+
+Because both entry points call the same reusable workflow, a tagged
+release runs the exact build + docs checks that ``main`` already has to
+pass. If either fails on the tagged commit, ``publish`` is skipped by
+``needs:`` and nothing is released.
 
 Release Behavior
 ----------------
 
-The publish job performs the current release workflow:
+The publish job in ``ci.yml`` performs:
 
 1. Download the built distribution artifacts.
-2. Publish the package to PyPI.
+2. Publish the package to PyPI via OIDC Trusted Publisher.
 3. Install ``git-cliff`` and generate release notes from ``cliff.toml``.
 4. Create a GitHub release for the current tag.
 
-Tags beginning with ``v0.`` are marked as prereleases. Other ``v*`` tags are
-published as regular releases.
+Tags beginning with ``v0.`` are marked as prereleases. Other ``v*`` tags
+are published as regular releases.
+
+Versioning and Release
+----------------------
+
+Git tags follow the ``vMAJOR.MINOR.PATCH-BUILD`` format from the
+``version-bumping`` skill (e.g. ``v1.3.0-000``). The ``-BUILD`` suffix
+is a zero-padded counter that rolls over into the next ``PATCH`` when
+it saturates. PyPI does not accept the hyphen form, so the repo keeps
+two versions in lockstep:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 34 26 40
+
+   * - Location
+     - Format
+     - Example
+   * - Git tag, GitHub release, CHANGELOG header
+     - ``vMAJOR.MINOR.PATCH-BUILD``
+     - ``v1.3.0-000``
+   * - ``docs/source/conf.py`` ``release``
+     - Same as the git tag
+     - ``"v1.3.0-000"``
+   * - ``docs/source/conf.py`` ``version``
+     - ``MAJOR.MINOR``
+     - ``"1.3"``
+   * - ``pyproject.toml`` ``version``
+     - PEP 440 4-segment
+     - ``"1.3.0.0"``
+
+The reusable ``build-and-docs.yml`` has a "Sync version from tag" step
+that only runs when ``github.ref`` starts with ``refs/tags/v``. It
+rewrites ``pyproject.toml`` and ``docs/source/conf.py`` to match the
+tag before the wheel is built, so:
+
+- Wheel filename: ``sphinx_clarity-1.3.0.0-...whl`` (PyPI accepts this).
+- Sidebar shows: ``v1.3.0-000``.
+- CHANGELOG header shows: ``## v1.3.0-000 (YYYY-MM-DD)``.
+
+``src/clarity/__init__.py`` reads ``__version__`` from
+``importlib.metadata.version("sphinx-clarity")`` rather than hardcoding,
+so the installed wheel's version is the source of truth at runtime.
 
 Practical Notes
 ---------------
