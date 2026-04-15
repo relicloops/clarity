@@ -10,7 +10,7 @@ author = "Simone Del Popolo"
 # The PyPI-side version in pyproject.toml uses the PEP 440 4-segment
 # form (e.g. 1.2.3.0) because PEP 440 rejects the hyphen syntax.
 version = "1.3"
-release = "v1.3.0-000"
+release = "v1.3.0-001"
 
 extensions = ["myst_parser"]
 

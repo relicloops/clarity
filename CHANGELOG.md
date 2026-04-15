@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v1.3.0-001 (2026-04-15)
+
+
+### Bug Fixes
+
+- Harden markdown renderer against common drifts (380c97f)
+- Read OpenRouter activity as 'requests' field (8a30abc)
+
+### CI
+
+- Translate vMAJOR.MINOR.PATCH-BUILD tag to PEP 440 on build (bbc17d9)
+
+### Features
+
+- Show the Sphinx project name in the panel title (0f2573d)
+- Read __version__ from importlib.metadata (35f6497)
+- Warn when release or version is missing from conf.py (5a925c7)
+- Settings overlay, minimize/restore toggle, rate refresh (7dc37a8)
+- Add settings override key and merge helpers (37d388e)
+
 ## v1.3.0-000 (2026-04-15)
 
 
@@ -11,6 +31,10 @@
 - List chatbot settings override storage key (876609a)
 - Cross-link to runtime settings overlay (71a0ce8)
 - Document settings overlay, rate refresh, renderer hardening (ac28416)
+
+### Miscellaneous
+
+- V1.3.0-000 (15b14fd)
 
 ## v1.2.3 (2026-04-14)
 
