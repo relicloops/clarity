@@ -125,28 +125,82 @@ current page and sidebar.
 Controls
 --------
 
-The chatbot header provides three control buttons:
+The chatbot header provides four control buttons:
 
 .. list-table::
    :header-rows: 1
-   :widths: 15 15 70
+   :widths: 16 16 68
 
    * - Button
      - Symbol
      - Action
+   * - **Settings**
+     - ⚙
+     - Opens a full-panel overlay with editable fields for every ``chatbot_*``
+       option from ``conf.py`` plus a hover hint bar. See
+       :ref:`settings-panel` below.
    * - **Purge**
      - ⌧
      - Opens a confirmation dialog before deleting stored model and management
-       keys, conversation history, panel state, saved panel geometry, and the
-       local request counter.
-   * - **Minimize**
-     - ─
-     - Collapses the panel to the header bar only, keeping its width.
-       Click again to expand.
+       keys, conversation history, panel state, saved panel geometry, the
+       local request counter, and any settings overrides.
+   * - **Minimize / Restore**
+     - ─ / □
+     - Collapses the panel to the header bar only. The glyph flips to ``□``
+       and the label to "Restore" while minimized; clicking ``□`` expands the
+       panel back to its previous size. Opening the settings panel while
+       minimized auto-expands first.
    * - **Close**
      - ×
      - Hides the panel. Your stored data and current panel state are
        preserved.
+
+.. _settings-panel:
+
+Settings Panel
+--------------
+
+Click the ⚙ button in the header to open the settings overlay. It covers
+the full chat panel and provides an editable field for every ``chatbot_*``
+option declared in ``conf.py``.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 26 74
+
+   * - Field
+     - Overrides
+   * - **Model**
+     - ``chatbot_model`` -- any OpenRouter model slug.
+   * - **Max tokens** / **Temperature** / **Top p**
+     - ``chatbot_max_tokens``, ``chatbot_temperature``, ``chatbot_top_p``.
+   * - **Frequency penalty** / **Presence penalty**
+     - ``chatbot_frequency_penalty``, ``chatbot_presence_penalty``.
+   * - **Page text limit** / **Max history**
+     - ``chatbot_page_text_limit``, ``chatbot_max_history``.
+   * - **Reasoning effort**
+     - ``chatbot_reasoning_effort`` -- select between ``low``, ``medium``,
+       ``high``, or the default.
+   * - **System prompt**
+     - ``chatbot_system_prompt`` -- leave empty to use the built-in
+       page-aware prompt.
+
+Each field placeholder shows the current effective default so you know what
+you are overriding. Hovering any field, button, or label updates a warning
+bar pinned at the bottom of the overlay with a one-line explanation --
+this replaces the browser's native tooltip delay with an immediate description.
+
+**Actions**
+
+- ``✓ Save`` persists any non-empty field to ``localStorage`` under
+  ``clarity-chatbot-settings-override`` and applies the values to the
+  next request. Empty fields fall back to the ``conf.py`` default.
+- ``↺ Reset`` clears the override entirely and reverts every field to the
+  ``conf.py`` default, including reasoning effort and system prompt.
+- ``× Cancel`` closes the overlay without writing any change.
+
+Overrides are per-browser and per-reader. They do not affect other visitors
+and they do not change the baseline shown in the model badge footer.
 
 Footer Notice
 -------------
@@ -182,6 +236,10 @@ granted:
      - Local request counter for the current UTC day.
    * - ``clarity-chatbot-geometry``
      - Saved panel position and size after drag or resize actions.
+   * - ``clarity-chatbot-settings-override``
+     - Per-field chatbot parameter overrides saved from the ⚙ settings
+       panel (JSON). Only fields the reader actually filled in appear
+       here; everything else falls back to the ``conf.py`` default.
 
 The panel state and saved geometry are restored on page reload. Conversation
 history persists across page navigations on the same origin.
@@ -219,12 +277,16 @@ The full status line can look like this:
 ``4 req today · 28 last 30d · free tier · remaining: $0.1234``
 
 - **Today's requests** come from a local counter stored in ``localStorage``.
-  The OpenRouter activity API only returns completed UTC days and does not
-  include the current day.
+  The counter bumps the instant you submit a message, so you see the change
+  immediately rather than at the end of the stream.
 - **Last 30 days** comes from ``GET /api/v1/activity`` via the optional
-  management key.
+  management key. The OpenRouter activity API only returns completed UTC
+  days and does not include the current day.
 - **Remaining credits** and **tier** come from ``GET /api/v1/key`` via the
   model key.
+
+While the panel is open, the rate line auto-refreshes every 60 seconds so
+the 30-day total and remaining credit stay current without a page reload.
 
 .. admonition:: Note
 
@@ -257,9 +319,10 @@ The chatbot uses three OpenRouter endpoints:
      - Model
      - Credit balance, tier, daily, weekly, and monthly usage
    * - GET
-     - ``/api/v1/activity?date=YYYY-MM-DD``
+     - ``/api/v1/activity``
      - Management
-     - Real request counts for completed UTC days
+     - Real request counts and token usage for the last 30 completed UTC
+       days.
 
 **Chat completions** (model key):
 
@@ -299,22 +362,32 @@ Returns ``limit``, ``limit_remaining``, ``is_free_tier``, and
 
 .. code-block:: javascript
 
-   fetch('https://openrouter.ai/api/v1/activity?date=2025-04-13', {
+   fetch('https://openrouter.ai/api/v1/activity', {
      headers: { 'Authorization': 'Bearer ' + mgmtKey }
    });
 
-Returns an array of activity items with ``request_count``, ``prompt_tokens``,
-``completion_tokens``, and ``cost`` per model per day. Only completed UTC days
-are available, not the current day.
+Returns an array of activity items with ``requests``, ``prompt_tokens``,
+``completion_tokens``, and ``usage`` per model per day covering the last 30
+completed UTC days. The current day is not included. Clarity sums the
+``requests`` field across every row to produce the 30-day count shown in
+the panel header; the legacy ``request_count`` field name is accepted as a
+fallback in case OpenRouter reverts the rename.
 
 Markdown Rendering
 ------------------
 
 Assistant responses are rendered from markdown to HTML. Supported elements:
 
-- **Headings** (``#`` through ``######``)
-- **Bold** (``**text**``) and **italic** (``*text*``)
-- **Inline code** (````code````) and **code blocks** (triple backticks)
-- **Unordered lists** (``- item``) and **ordered lists** (``1. item``)
-- **Tables** (pipe-delimited ``| col | col |``)
-- **Horizontal rules** (``---``)
+- **Headings** (``#`` through ``######``).
+- **Bold** (``**text**``) and **italic** (``*text*``).
+- **Inline code** (````code````) and **code blocks** (triple backtick
+  ``` ``` ``` or triple tilde ``~~~`` fences, both CRLF-tolerant).
+- **Unordered lists** (``- item``) and **ordered lists** (``1. item``).
+- **Tables** (pipe-delimited ``| col | col |``).
+- **Horizontal rules** (``---``).
+- **Line breaks**: literal ``<br>`` tags the model emits are preserved,
+  everything else is HTML-escaped.
+
+Inline code spans are extracted before any emphasis passes run, so
+identifiers like ``html_theme_options["default_theme"]`` survive through
+the ``_`` italic rule intact.
