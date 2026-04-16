@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v1.3.0-002 (2026-04-16)
+
+
+### Bug Fixes
+
+- Panel min-height, always-visible AI notice, settings overlay clearance (e561a39)
+
+### Documentation
+
+- On-going sidebar section for Plans and Audit (6614e2a)
+- Add plans directory with IndexedDB and shared-counter drafts (143177e)
+- Add 2026-04-16 code-review snapshot (89afc32)
+
 ## v1.3.0-001 (2026-04-15)
 
 
@@ -20,6 +33,10 @@
 - Warn when release or version is missing from conf.py (5a925c7)
 - Settings overlay, minimize/restore toggle, rate refresh (7dc37a8)
 - Add settings override key and merge helpers (37d388e)
+
+### Miscellaneous
+
+- V1.3.0-001 (24b126b)
 
 ## v1.3.0-000 (2026-04-15)
 
