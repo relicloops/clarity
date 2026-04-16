@@ -1,0 +1,226 @@
+/* ==========================================================================
+   Clarity -- Enhanced Search Results
+   Per-match line/column positions, grouped by file, with context
+   snippets and links to the nearest heading anchor.
+   ========================================================================== */
+
+/* --- Results container --- */
+.clarity-search-results {
+  margin-top: 1rem;
+}
+
+.clarity-search-summary {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 1rem;
+}
+
+/* --- Spinner (inline in results area) --- */
+.clarity-search-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin: 1rem 0;
+}
+
+.clarity-search-spinner-icon {
+  font-size: 1.6rem;
+  animation:
+    clarity-spin 1s linear infinite,
+    clarity-spinner-color 6s linear infinite,
+    clarity-spinner-glow 1.5s ease-in-out infinite;
+}
+
+/* --- File group --- */
+.clarity-search-file {
+  margin-bottom: 1.25rem;
+}
+
+.clarity-search-file-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0.4rem;
+}
+
+.clarity-search-file-name {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.clarity-search-file-count {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  color: var(--text-tertiary);
+}
+
+/* --- Match row --- */
+.clarity-search-match {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.25rem 0 0.25rem 0.75rem;
+  font-size: 0.85em;
+  line-height: 1.5;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: background 0.1s;
+  border-radius: 3px;
+}
+
+.clarity-search-match:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.clarity-search-pos {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  min-width: 5.5em;
+}
+
+.clarity-search-context {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clarity-search-context mark {
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.clarity-search-arrow {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* --- Show more toggle --- */
+.clarity-search-more {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  margin-top: 0.25rem;
+  margin-left: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.clarity-search-more:hover {
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
+
+/* --- Searching overlay (shown for 3s minimum) --- */
+.clarity-search-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.clarity-search-overlay-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10rem;
+  height: 10rem;
+  font-size: 4.5rem;
+  line-height: 1;
+  border: 4px solid;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  animation:
+    clarity-spin 1.8s linear infinite,
+    clarity-spinner-color 6s linear infinite,
+    clarity-search-circle-glow 2s ease-in-out infinite;
+}
+
+@keyframes clarity-search-circle-glow {
+  0%, 100% {
+    opacity: 0.7;
+    border-color: currentColor;
+    box-shadow: 0 0 8px currentColor, inset 0 0 8px currentColor;
+    text-shadow: 0 0 8px currentColor, 0 0 20px currentColor;
+  }
+  50% {
+    opacity: 1;
+    border-color: currentColor;
+    box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, inset 0 0 15px currentColor;
+    text-shadow: 0 0 15px currentColor, 0 0 35px currentColor, 0 0 60px currentColor;
+  }
+}
+
+.clarity-search-overlay-label {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+/* --- Regex toggle --- */
+.clarity-search-regex-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.clarity-search-regex-toggle input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+.clarity-search-regex-toggle.active {
+  color: var(--accent);
+}
+
+/* --- Show positions button (for > 20 results) --- */
+.clarity-search-expand-btn {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  margin-left: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.65em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: transparent;
+}
+
+.clarity-search-expand-btn:hover {
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
