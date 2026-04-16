@@ -387,6 +387,64 @@ The DOMContentLoaded guard remains; `storage.ready()` runs inside it.
 
 ---
 
+## Update check (v2 upgrade from v1 sessionStorage)
+
+v1 stores update-check results in `sessionStorage` (per-tab, per-session,
+ephemeral). v2 moves this to IndexedDB so the check runs on a
+configurable schedule instead of once per tab session.
+
+### IndexedDB store addition
+
+Add a fourth object store to the `clarity-chatbot` database:
+
+#### `update_check` -- cached PyPI version data
+
+```
+{
+  key:         'latest',
+  versions:    ['1.3.0.3', '1.3.0.4', ...],
+  current:     '1.3.0.2',
+  checked_at:  1713000000000,
+  dismissed:   false
+}
+```
+
+- **keyPath**: `key` (always `'latest'`, single-row store).
+
+### Theme option (v2)
+
+```ini
+# theme.conf
+update_check = False
+update_check_schedule = daily
+```
+
+`update_check_schedule` accepts a value from:
+
+| Value | Behavior |
+|-------|----------|
+| `daily` | Fetch PyPI once per UTC day (default when `update_check = True`). |
+| `weekly` | Fetch once per calendar week. |
+| `monthly` | Fetch once per calendar month. |
+| `manual` | Never auto-fetch. Triggered only by the reader pressing `Opt+U` (macOS) / `Alt+U` (Win/Linux). |
+
+The schedule is checked against `checked_at` in the IndexedDB store.
+If the elapsed time since the last check exceeds the interval, the
+fetch fires on the next page load (consent-gated as in v1).
+
+### Keybinding: `Opt+U` / `Alt+U` (shipped in v1)
+
+Already implemented in v1's `update-check.js`. Pressing `Opt+U`
+(macOS) / `Alt+U` (Win/Linux) forces an immediate PyPI fetch,
+bypassing the sessionStorage cache and the localStorage dismissed
+flag. In v2, this keybinding will also bypass the schedule timer
+(daily/weekly/monthly) stored in IndexedDB.
+
+When `update_check_schedule` is set to `manual`, this keybinding is
+the ONLY way to trigger a check -- no auto-fetch on page load.
+
+---
+
 ## Open questions
 
 1. ~~Should the history panel show a search field?~~

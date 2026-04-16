@@ -39,6 +39,8 @@ What Is Blocked Before Consent
    * - AI assistant
      - API keys and history cannot be saved. The chatbot does not persist
        any data.
+   * - Update check
+     - No request to PyPI is made. The update banner never appears.
    * - Google Fonts
      - Not loaded. The theme falls back to the ``system`` font stack
        (native OS fonts).
@@ -58,7 +60,10 @@ acceptance is purged. The following ``localStorage`` keys are removed:
 - ``clarity-chatbot-history``
 - ``clarity-chatbot-state``
 - ``clarity-chatbot-requests``
+- ``clarity-chatbot-geometry``
 - ``clarity-chatbot-settings-override``
+- ``clarity-skin``
+- ``clarity-update-dismissed``
 
 The ``clarity-consent`` key (set to ``declined``) is retained to prevent
 the banner from reappearing on every page.

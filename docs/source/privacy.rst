@@ -86,6 +86,15 @@ documentation server.
      - JSON blob of per-field chatbot parameter overrides saved from the
        ⚙ settings panel. Only fields the reader actually edited appear
        here; the rest fall back to ``conf.py`` defaults.
+   * - ``clarity-skin``
+     - Skins
+     - The reader's chosen skin name (e.g. ``"matrix"``). Absent when the
+       default dark / light / system toggle is active.
+   * - ``clarity-update-dismissed``
+     - Update checker
+     - Set to ``"1"`` when the reader dismisses the update banner. Persists
+       permanently until cleared via the chatbot ⌧ Purge or a consent
+       revoke. Prevents the banner from reappearing on every page.
 
 API key obfuscation
 ~~~~~~~~~~~~~~~~~~~
@@ -153,6 +162,24 @@ To avoid this, set ``font_stack`` to ``"system"`` in your ``conf.py``:
    }
 
 This uses your operating system's native fonts and makes no external requests.
+
+PyPI Update Check
+~~~~~~~~~~~~~~~~~
+
+When ``update_check`` is set to ``True`` in ``html_theme_options`` **and** the
+reader has accepted the privacy consent banner, the theme makes a single
+``GET`` request to ``https://pypi.org/pypi/sphinx-clarity/json`` once per tab
+session. This request transmits the reader's IP address and browser metadata
+to PyPI's CDN (Fastly). No cookies, no API keys, and no page content are
+sent.
+
+The response (a JSON listing of all published versions) is cached in
+``sessionStorage`` so subsequent page navigations within the same tab do not
+trigger additional requests. ``sessionStorage`` data is cleared automatically
+when the tab is closed.
+
+If ``update_check`` is ``False`` (the default) or the reader declined consent,
+no request to PyPI is made.
 
 OpenRouter API
 ~~~~~~~~~~~~~~
@@ -261,9 +288,11 @@ Summary
      - No cookies are set by the theme.
    * - Local storage
      - Origin-scoped
-     - 9 keys for preferences, chatbot state, saved geometry, settings
-       overrides, and obfuscated API keys. Purgeable via UI button or
-       browser tools.
+     - 12 keys for preferences, chatbot state, saved geometry, settings
+       overrides, obfuscated API keys, skin choice, and update-check
+       dismissed flag. Purgeable via UI button or browser tools. One
+       additional ``sessionStorage`` key (``clarity-update-check``)
+       caches the PyPI version check per tab session.
    * - Google Fonts
      - Optional
      - Loaded by default. Set ``font_stack: "system"`` to disable.

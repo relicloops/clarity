@@ -5,18 +5,22 @@ palette and a built-in AI documentation assistant.
 
 ## Features
 
-- **Dark / light / system** theme toggle, remembered across visits
+- **Dark / light / system** theme toggle with Unicode glyphs (sun / moon / half-circle), remembered across visits
 - **Dual-accent palette** -- phosphor-green in dark mode, UV-violet in light
-- **Three-column layout** -- sidebar, content, on-this-page table of contents
-- **Responsive** -- works on desktop, tablet, and mobile
+- **Three-column layout** -- sidebar, content, collapsible on-this-page table of contents (sticky on desktop, collapsible below header on mobile)
+- **Responsive** -- desktop, tablet, and mobile breakpoints at 1100 / 900 / 640 px
 - **Keyboard navigation** -- arrow keys for prev/next, `/` to focus search
-- **Text size controls** -- readers can scale the article 75 % -- 150 %
-- **Language-tagged code blocks** with Pygments-styled syntax colors
+- **Text size controls** -- readers can scale the article 75 % -- 150 %, all components scale together (em units)
+- **Language-tagged code blocks** with extended Pygments token coverage for Python, Rust, Go, JS, C
 - **Dual logo support** -- different images for dark and light modes
-- **AI assistant** -- page-aware chatbot with `/goto` navigation and `/read`
-  page-summarization commands, powered by your own OpenRouter key
-- **GDPR / ePrivacy consent** -- built-in banner, no third-party plugins,
-  nothing stored until the reader accepts
+- **AI assistant** -- page-aware chatbot with `/goto` navigation, `/read` page-summarization, and a `⚙` settings overlay where readers can override model, temperature, reasoning effort, and every other `chatbot_*` option from `conf.py` at runtime
+- **Draggable and resizable** chatbot panel with geometry persistence, minimize/restore toggle (`─` / `□`), and container queries for responsive inner layout
+- **GDPR / ePrivacy consent** -- built-in banner, no third-party plugins, nothing stored until the reader accepts. Google Fonts loaded only after consent
+- **Update checker** -- opt-in PyPI version check (consent-gated, `Opt+U` / `Alt+U` keybinding). Shows a top banner with links to every newer release, and a rainbow-glowing `⊛` spinner in the header while checking
+- **Retro 404 page** -- Press Start 2P pixelated font for the 404 heading (consent-gated Google Font, falls back to system when declined)
+- **Version warning** -- orange sidebar badge when `release` or `version` is missing from `conf.py`, plus a DevTools console warning so deployers notice before publishing
+- **Sidebar version display** -- auto-prefixes `v` when the release string doesn't start with one; supports the `vMAJOR.MINOR.PATCH-BUILD` tag format
+- **6 built-in skins** -- Unicorn (pastel light), Programmer (clean docs light), Matrix (green-on-black), Rainbow (saturated rainbow light), Darcula (deep dark), Coder (editor dark). Footer selector lets readers switch; deployers set a default via `skin` in `conf.py`. When a skin is active, the dark/light/system toggle is disabled
 
 ## Install
 
@@ -204,9 +208,64 @@ questions about the current page.
 Click the `⚙` button in the chat panel to open the settings overlay.
 Every `chatbot_*` option from `conf.py` is editable there -- model,
 temperature, reasoning effort, system prompt. Overrides are saved in
-the reader's own browser and don't affect anyone else.
+the reader's own browser and don't affect anyone else. Hover any field
+to see a one-line explanation in the warning bar at the bottom of the
+overlay.
 
-### 8. Keep going
+### 8. Enable the update checker (optional)
+
+```python
+html_theme_options = {
+    # ...
+    "update_check": True,
+}
+```
+
+When enabled (and after the reader accepts the privacy banner), the
+theme checks PyPI once per tab session for newer versions of
+`sphinx-clarity`. If any exist, a top banner appears with version
+links and a `pip install --upgrade` hint. The banner is dismissible
+and stays dismissed permanently (stored in localStorage).
+
+You can also press `Opt+U` (macOS) or `Alt+U` (Win/Linux) to force
+a fresh check at any time -- it bypasses the cache and the dismissed
+state. A rainbow-glowing `⊛` spinner appears in the header while the
+check runs.
+
+### 9. Add a retro 404 page (optional)
+
+```python
+html_theme_options = {
+    # ...
+    "retro_404": True,
+}
+
+html_additional_pages = {"404": "notfound.html"}
+```
+
+Builds a `404.html` with a neon-glow `404` heading in the Press
+Start 2P pixelated font (loaded via Google Fonts after consent).
+Most hosting providers serve `404.html` automatically for missing
+paths. Falls back to the heading font when consent is declined or
+`retro_404` is `False`.
+
+### 10. Pick a skin (optional)
+
+The footer has a "Skin" dropdown. Readers can switch at any time.
+To set a default for your site:
+
+```python
+html_theme_options = {
+    # ...
+    "skin": "matrix",  # or "unicorn", "programmer", "rainbow", "darcula", "coder"
+}
+```
+
+When a skin is active, the dark/light/system toggle disappears -- the
+skin controls the full palette. Switching back to "Default" restores
+the toggle.
+
+### 11. Keep going
 
 - `configuration.rst` -- every `html_theme_options` field and default.
 - `chatbot.rst` -- assistant setup, slash commands, settings overlay.

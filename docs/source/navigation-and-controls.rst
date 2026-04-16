@@ -55,6 +55,9 @@ When ``navigation_with_keys`` is enabled:
 - ``ArrowLeft`` opens the previous-page link when one exists.
 - ``ArrowRight`` opens the next-page link when one exists.
 - ``/`` focuses the header search input.
+- ``Opt+U`` (macOS) / ``Alt+U`` (Win/Linux) forces a PyPI version check
+  when ``update_check`` is enabled. A rainbow-glowing ``⊛`` spinner
+  appears in the header while the check runs.
 
 Keyboard shortcuts are ignored while the reader is typing in an input,
 textarea, select field, or other editable region.

@@ -35,6 +35,32 @@ Core Theme Options
    * - ``sidebar_hide_name``
      - ``False``
      - Hide the project name and version block in the sidebar header.
+   * - ``update_check``
+     - ``False``
+     - When ``True``, the theme fetches the PyPI JSON API once per session
+       to check for newer versions of ``sphinx-clarity``. If newer versions
+       exist, a top banner with version links appears. The fetch only runs
+       after the reader accepts the privacy consent banner. Results are
+       cached in ``sessionStorage`` so the check fires once per tab, not on
+       every page navigation. Press ``Opt+U`` (macOS) or ``Alt+U``
+       (Win/Linux) to force a fresh check at any time.
+       Set to ``False`` (the default) to disable.
+   * - ``retro_404``
+     - ``True``
+     - When ``True`` and the deployer adds
+       ``html_additional_pages = {"404": "notfound.html"}`` to ``conf.py``,
+       the 404 page heading renders in the Press Start 2P pixelated font
+       (loaded via Google Fonts after consent). Set to ``False`` to use the
+       normal heading font.
+   * - ``skin``
+     - ``"default"``
+     - Active CSS skin. Available values: ``"default"`` (the built-in
+       dark / light / system toggle), ``"unicorn"``, ``"programmer"``,
+       ``"matrix"``, ``"rainbow"``, ``"darcula"``, ``"coder"``. When a skin
+       other than ``"default"`` is set, the theme toggle is hidden and the
+       skin owns the entire visual surface. The reader can also switch skins
+       via the footer selector, which overrides this deployer default in
+       ``localStorage``.
 
 Chatbot Options
 ---------------
