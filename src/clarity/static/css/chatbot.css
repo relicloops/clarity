@@ -59,6 +59,7 @@
   left: 1rem;
   z-index: 170;
   width: 65%;
+  min-height: 420px;
   max-height: calc(100vh - var(--header-height) - 2rem);
   display: flex;
   flex-direction: column;
@@ -704,17 +705,21 @@
 
 /* --- Settings panel --- */
 .chatbot-settings {
-  /* Full-panel overlay: covers the whole chat window while open so
-     the settings form has room to breathe and the reader is not
-     distracted by the chat below. Absolute positioning is relative
-     to #chatbot-panel which is position:fixed. */
+  /* Near-full overlay: covers the chat window from the top down to
+     just above the AI notice, which stays visible at the bottom at
+     z-index 8. Using calc(100% - 3.2rem) instead of bottom:0 so
+     the notice is never hidden behind the overlay. */
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100% - 3.2rem);
   z-index: 6;
   padding: 0.75rem;
   background: var(--bg-primary);
   display: flex;
   flex-direction: column;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .chatbot-settings[hidden] {
@@ -1042,12 +1047,19 @@
 }
 
 /* --- AI Notice & Model Badge --- */
+/* The AI notice must always be visible at the bottom of the chatbot
+   panel regardless of which overlay (settings, purge confirm) is open.
+   position:relative + z-index:8 keeps it in the flex flow AND paints
+   it above the absolute overlays (z:6). */
 .chatbot-notice {
+  position: relative;
+  z-index: 8;
+  flex-shrink: 0;
   font-size: 0.7rem;
   line-height: 1.45;
   color: var(--text-tertiary);
   padding: 0.5em 0.65em;
-  margin: 0.25em 0;
+  margin: auto 0 0.25em 0;
   border: 1px dashed rgba(255, 153, 0, 0.25);
   border-radius: 4px;
   background: rgba(255, 153, 0, 0.04);
