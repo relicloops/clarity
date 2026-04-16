@@ -43,9 +43,24 @@
     preconnect2.crossOrigin = '';
     document.head.appendChild(preconnect2);
 
+    var fontUrl = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Intel+One+Mono:wght@400;500;600;700';
+
+    /* If the 404 retro class is on the page, also load Press Start 2P. */
+    if (document.querySelector('.clarity-404-retro')) {
+      fontUrl += '&family=Press+Start+2P';
+    }
+
+    fontUrl += '&display=swap';
+
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Intel+One+Mono:wght@400;500;600;700&display=swap';
+    link.href = fontUrl;
+    link.onload = function () {
+      /* Set the retro font CSS variable so the 404 heading picks it up. */
+      if (document.querySelector('.clarity-404-retro')) {
+        document.documentElement.style.setProperty('--font-retro', "'Press Start 2P', cursive");
+      }
+    };
     document.head.appendChild(link);
   }
 
@@ -56,7 +71,11 @@
       'clarity-theme', 'clarity-text-size',
       'clarity-chatbot-key', 'clarity-chatbot-mgmt-key',
       'clarity-chatbot-history', 'clarity-chatbot-state',
-      'clarity-chatbot-requests'
+      'clarity-chatbot-requests',
+      'clarity-chatbot-geometry',
+      'clarity-chatbot-settings-override',
+      'clarity-update-dismissed',
+      'clarity-skin'
     ];
     for (var i = 0; i < keys.length; i++) {
       try { localStorage.removeItem(keys[i]); } catch (_) {}

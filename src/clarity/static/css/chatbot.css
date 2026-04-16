@@ -79,29 +79,16 @@
   display: none;
 }
 
-/* Dark theme panel background */
-:root #chatbot-panel,
-[data-theme="dark"] #chatbot-panel {
-  background: rgba(18, 18, 26, 0.95);
+/* Panel background uses the header token so it follows both the
+   dark/light toggle AND any active skin. No more hardcoded rgba. */
+#chatbot-panel {
+  background: var(--bg-header);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
-/* Light theme panel background */
 [data-theme="light"] #chatbot-panel {
-  background: rgba(240, 240, 245, 0.95);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) #chatbot-panel {
-    background: rgba(240, 240, 245, 0.95);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  }
 }
 
 /* --- Panel Header (draggable) --- */
@@ -1155,8 +1142,10 @@
   /* !important overrides the inline height/max-height that the
      drag/resize code writes on the element, so the panel collapses
      to the natural header height instead of keeping the resized
-     dimensions. */
+     dimensions. min-height:0 cancels the 420px floor that keeps
+     the full panel usable. */
   height: auto !important;
+  min-height: 0 !important;
   max-height: none !important;
 }
 
@@ -1171,6 +1160,99 @@
 #chatbot-panel.minimized .chatbot-resize {
   display: none !important;
   pointer-events: none;
+}
+
+/* --- Light theme: yellow (#ffcc00) -> dark orange (#cc7700) ---
+   Yellow text and borders are invisible or washed-out on the light
+   background. Dark orange provides the same "caution/info" signal
+   without tipping into red. Applied to every element that uses
+   #ffcc00 in its default (dark-theme) palette. */
+
+[data-theme="light"] .chatbot-info-btn {
+  border-color: rgba(204, 119, 0, 0.5);
+  background: rgba(204, 119, 0, 0.1);
+  color: #cc7700;
+}
+
+[data-theme="light"] .chatbot-info-btn:hover {
+  background: rgba(204, 119, 0, 0.2);
+  border-color: #cc7700;
+  box-shadow: 0 0 8px rgba(204, 119, 0, 0.3);
+}
+
+[data-theme="light"] #chatbot-close {
+  color: #cc7700;
+  border-color: rgba(204, 119, 0, 0.3);
+}
+
+[data-theme="light"] #chatbot-close:hover {
+  border-color: #cc7700;
+  background: rgba(204, 119, 0, 0.1);
+}
+
+[data-theme="light"] .chatbot-msg-thinking {
+  background: rgba(204, 119, 0, 0.06);
+  border-color: rgba(204, 119, 0, 0.15);
+  border-left-color: rgba(204, 119, 0, 0.4);
+}
+
+[data-theme="light"] .chatbot-thinking-dots span {
+  color: #cc7700;
+}
+
+[data-theme="light"] .chatbot-thinking-label {
+  color: #cc7700;
+}
+
+[data-theme="light"] .chatbot-msg-reasoning {
+  background: rgba(204, 119, 0, 0.04);
+  border-color: rgba(204, 119, 0, 0.1);
+  border-left-color: rgba(204, 119, 0, 0.3);
+}
+
+[data-theme="light"] .chatbot-msg-reasoning details summary::before {
+  color: #cc7700;
+}
+
+[data-theme="light"] .chatbot-reasoning-text {
+  border-top-color: rgba(204, 119, 0, 0.1);
+}
+
+[data-theme="light"] .chatbot-settings-hint-bar {
+  color: #cc7700;
+  background: rgba(204, 119, 0, 0.06);
+  border-color: rgba(204, 119, 0, 0.35);
+}
+
+[data-theme="light"] #chatbot-settings-reset {
+  border-color: rgba(204, 119, 0, 0.5);
+  background: rgba(204, 119, 0, 0.06);
+  color: #cc7700;
+}
+
+[data-theme="light"] #chatbot-settings-reset:hover {
+  border-color: #cc7700;
+  background: rgba(204, 119, 0, 0.15);
+}
+
+/* Also the AI notice footer uses #ff9900 (orange) which is fine on
+   dark but can be hard to read on some light backgrounds. Darken
+   slightly for light theme. */
+[data-theme="light"] .chatbot-notice {
+  color: #995500;
+  border-color: rgba(153, 85, 0, 0.3);
+  background: rgba(153, 85, 0, 0.04);
+}
+
+[data-theme="light"] .chatbot-model-badge {
+  color: #995500;
+  background: rgba(153, 85, 0, 0.08);
+  border-color: rgba(153, 85, 0, 0.25);
+}
+
+[data-theme="light"] .chatbot-model-badge:hover {
+  background: rgba(153, 85, 0, 0.15);
+  border-color: #995500;
 }
 
 /* --- Responsive (viewport-based, default width only) --- */

@@ -166,6 +166,8 @@
     safeRemove(REQUESTS_STORAGE);
     safeRemove(GEOMETRY_STORAGE);
     safeRemove(SETTINGS_OVERRIDE_STORAGE);
+    safeRemove('clarity-update-dismissed');
+    safeRemove('clarity-skin');
   }
 
   /* --- Local request counter (fallback when no mgmt key) --- */

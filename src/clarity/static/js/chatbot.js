@@ -249,6 +249,18 @@
 
     closeBtn.addEventListener('click', function () {
       panel.hidden = true;
+      /* Reset inline geometry so the next open starts at CSS defaults
+         instead of a stale drag/resize position. */
+      panel.style.width = '';
+      panel.style.height = '';
+      panel.style.top = '';
+      panel.style.left = '';
+      panel.style.right = '';
+      panel.style.maxHeight = '';
+      panel._savedHeight = '';
+      panel._savedMaxHeight = '';
+      panel.classList.remove('minimized');
+      setMinimizeButtonState(false);
       storage.saveState('closed');
     });
 
