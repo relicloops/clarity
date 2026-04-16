@@ -9,8 +9,8 @@ author = "Simone Del Popolo"
 # `release` is the full tag form shown in the sidebar and page header.
 # The PyPI-side version in pyproject.toml uses the PEP 440 4-segment
 # form (e.g. 1.2.3.0) because PEP 440 rejects the hyphen syntax.
-version = "1.3"
-release = "v1.3.0-002"
+version = "1.4"
+release = "v1.4.0-000"
 
 extensions = ["myst_parser"]
 

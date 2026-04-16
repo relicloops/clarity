@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v1.4.0-000 (2026-04-16)
+
+
+### Bug Fixes
+
+- Panel min-height, AI notice footer, minimize, close reset, light-theme (27bdc5d)
+
+### Documentation
+
+- Skins, update-check, search, 404, and plans updates (dc0d8c1)
+
+### Features
+
+- Retro 404 page with Press Start 2P pixelated font (1035d69)
+- Enhanced results with per-match line/column positions (a83a0b9)
+- PyPI version check with Opt+U keybinding (7a9cdf8)
+- 6 standalone CSS skins with footer selector (990f8d4)
+
 ## v1.3.0-002 (2026-04-16)
 
 
@@ -13,6 +31,10 @@
 - On-going sidebar section for Plans and Audit (6614e2a)
 - Add plans directory with IndexedDB and shared-counter drafts (143177e)
 - Add 2026-04-16 code-review snapshot (89afc32)
+
+### Miscellaneous
+
+- V1.3.0-002 (0363326)
 
 ## v1.3.0-001 (2026-04-15)
 
