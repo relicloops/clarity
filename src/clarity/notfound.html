@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{# 404 template for Clarity. To use it, create a `404.rst` in your
+   docs/source/ with:
+
+   :orphan:
+   :nosearch:
+   :template: notfound.html
+
+   Page Not Found
+   ==============
+
+   (The body text is ignored -- the template overrides the block.)
+#}
+
+{% block body %}
+<div class="clarity-404">
+  <div class="clarity-404-hero">
+    <span class="clarity-404-code{% if theme_retro_404 != False %} clarity-404-retro{% endif %}">404</span>
+    <span class="clarity-404-label">Page not found</span>
+  </div>
+  <p class="clarity-404-hint">
+    The page you are looking for does not exist, has been moved, or was
+    never built. Check the URL or start over from the home page.
+  </p>
+  <a class="clarity-404-link" href="{{ pathto(master_doc) }}">&#x2190; Back to {{ project }}</a>
+</div>
+{% endblock %}
