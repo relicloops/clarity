@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Clarity Skin: Unicorn
+   Pastel rainbow palette on a soft light background. Whimsical, friendly,
+   and warm. Headings use Quicksand; body uses Nunito.
+   Mode: light only (theme toggle disabled when active).
+   ========================================================================== */
+
+:root[data-skin="unicorn"] {
+  /* --- Palette --- */
+  --accent: #b388ff;
+  --accent-dark: #9c5cf7;
+  --accent-glow: rgba(179, 136, 255, 0.25);
+
+  /* --- Surfaces (fully opaque so nothing looks glassy) --- */
+  --bg-page: #fef6ff;
+  --bg-primary: #fef6ff;
+  --bg-secondary: #fff0f5;
+  --bg-header: #f0e6f6;
+  --bg-code: #f5eefa;
+  --bg-input: #f5eefa;
+  --bg-card: #ffffff;
+
+  /* --- Text (full opacity for readability) --- */
+  --text-primary: #2e1a47;
+  --text-secondary: #5a3d7a;
+  --text-tertiary: #8a6daa;
+
+  /* --- Borders --- */
+  --border-subtle: rgba(179, 136, 255, 0.18);
+  --border-accent: #b388ff;
+
+  /* --- Links --- */
+  --link-color: #e57399;
+  --link-hover: #b388ff;
+
+  /* --- Selection --- */
+  --selection-bg: rgba(179, 136, 255, 0.2);
+  --scrollbar-thumb: rgba(179, 136, 255, 0.25);
+  --scrollbar-track: transparent;
+
+  /* --- Fonts --- */
+  --font-heading: 'Quicksand', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+
+  /* --- Neon overrides (pastel variants) --- */
+  --neon-cyan: #80deea;
+  --neon-pink: #f48fb1;
+  --neon-orange: #ffab91;
+  --neon-red: #ef9a9a;
+
+  /* --- Phosphor / violet tokens used by components --- */
+  --phosphor-green: #a5d6a7;
+  --phosphor-green-dark: #66bb6a;
+  --uv-violet: #b388ff;
+  --uv-violet-dark: #9c5cf7;
+}

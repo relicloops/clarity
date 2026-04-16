@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Clarity Skin: Darcula
+   Deep-contrast dark theme with muted purples, warm grays, and soft
+   orange accents. Designed for comfortable extended reading in low
+   light conditions.
+   Mode: dark only (theme toggle disabled when active).
+   ========================================================================== */
+
+:root[data-skin="darcula"] {
+  /* --- Palette --- */
+  --accent: #cc7832;
+  --accent-dark: #a05a20;
+  --accent-glow: rgba(204, 120, 50, 0.2);
+
+  /* --- Surfaces --- */
+  --bg-page: #2b2b2b;
+  --bg-primary: #2b2b2b;
+  --bg-secondary: #242424;
+  --bg-header: rgba(43, 43, 43, 0.97);
+  --bg-code: #1e1e1e;
+  --bg-input: rgba(255, 255, 255, 0.05);
+  --bg-card: #313335;
+
+  /* --- Text --- */
+  --text-primary: #a9b7c6;
+  --text-secondary: rgba(169, 183, 198, 0.75);
+  --text-tertiary: rgba(169, 183, 198, 0.5);
+
+  /* --- Borders --- */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: #cc7832;
+
+  /* --- Links --- */
+  --link-color: #6897bb;
+  --link-hover: #a9dcf2;
+
+  /* --- Selection --- */
+  --selection-bg: rgba(33, 66, 131, 0.4);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.12);
+  --scrollbar-track: transparent;
+
+  /* --- Fonts --- */
+  --font-heading: 'Fira Sans', sans-serif;
+  --font-body: 'Fira Sans', sans-serif;
+  --font-mono: 'Fira Mono', 'Fira Code', monospace;
+
+  /* --- Neon overrides (warm, muted) --- */
+  --neon-cyan: #6897bb;
+  --neon-pink: #9876aa;
+  --neon-orange: #cc7832;
+  --neon-red: #bc3f3c;
+
+  --phosphor-green: #6a8759;
+  --phosphor-green-dark: #4e6b45;
+  --uv-violet: #9876aa;
+  --uv-violet-dark: #7a5a8c;
+}

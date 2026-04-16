@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Clarity Skin: Matrix
+   Green monochrome on black. Monospace everywhere. High-contrast terminal
+   feel with glow on accent elements. Pure dark aesthetic.
+   Mode: dark only (theme toggle disabled when active).
+   ========================================================================== */
+
+:root[data-skin="matrix"] {
+  /* --- Palette --- */
+  --accent: #00ff41;
+  --accent-dark: #00b330;
+  --accent-glow: rgba(0, 255, 65, 0.3);
+
+  /* --- Surfaces --- */
+  --bg-page: #000000;
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #000000;
+  --bg-header: rgba(0, 0, 0, 0.97);
+  --bg-code: rgba(0, 255, 65, 0.04);
+  --bg-input: rgba(0, 255, 65, 0.05);
+  --bg-card: rgba(0, 255, 65, 0.02);
+
+  /* --- Text --- */
+  --text-primary: #00ff41;
+  --text-secondary: rgba(0, 255, 65, 0.7);
+  --text-tertiary: rgba(0, 255, 65, 0.45);
+
+  /* --- Borders --- */
+  --border-subtle: rgba(0, 255, 65, 0.12);
+  --border-accent: #00ff41;
+
+  /* --- Links --- */
+  --link-color: #00ff41;
+  --link-hover: #66ff8c;
+
+  /* --- Selection --- */
+  --selection-bg: rgba(0, 255, 65, 0.2);
+  --scrollbar-thumb: rgba(0, 255, 65, 0.2);
+  --scrollbar-track: transparent;
+
+  /* --- Fonts (monospace everywhere) --- */
+  --font-heading: 'Share Tech Mono', monospace;
+  --font-body: 'Share Tech Mono', monospace;
+  --font-mono: 'Share Tech Mono', monospace;
+
+  /* --- Neon overrides (green monochrome) --- */
+  --neon-cyan: #00ff41;
+  --neon-pink: #00ff41;
+  --neon-orange: #66ff8c;
+  --neon-red: #ff3333;
+
+  --phosphor-green: #00ff41;
+  --phosphor-green-dark: #00b330;
+  --uv-violet: #00ff41;
+  --uv-violet-dark: #00b330;
+}

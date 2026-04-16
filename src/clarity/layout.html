@@ -4,8 +4,12 @@
 <!DOCTYPE html>
 {%- endblock -%}
 
+{%- block htmltag %}
+<html{% if language %} lang="{{ language }}"{% endif %} data-skin="{{ theme_skin|default('default') }}">
+{%- endblock %}
+
 {%- block body_tag %}
-<body data-font-stack="{{ theme_font_stack|default('default') }}" data-nav-keys="{{ theme_navigation_with_keys|default('true')|lower }}">
+<body data-font-stack="{{ theme_font_stack|default('default') }}" data-nav-keys="{{ theme_navigation_with_keys|default('true')|lower }}" data-update-check="{{ theme_update_check|default('false')|lower }}" data-clarity-version="{{ release|default(version)|default('') }}">
 {%- endblock %}
 
 {%- block extrahead %}
@@ -20,6 +24,41 @@
 <link rel="stylesheet" href="{{ pathto('_static/css/chatbot.css', 1) }}">
 {% endif %}
 <link rel="stylesheet" href="{{ pathto('_static/css/consent.css', 1) }}">
+<link rel="stylesheet" href="{{ pathto('_static/css/search-results.css', 1) }}">
+<script>
+/* Early skin loader: runs in <head> BEFORE first paint to avoid a
+   flash of the default theme when the reader has a skin stored.
+   Reads localStorage synchronously (before consent.js), sets
+   data-skin on <html>, and injects the skin <link>. The full
+   skin-switcher.js in the footer handles the <select> and fonts. */
+(function () {
+  try {
+    var s = localStorage.getItem('clarity-skin');
+    if (!s || s === 'default') {
+      var d = document.documentElement.getAttribute('data-skin');
+      if (!d || d === 'default') return;
+      s = d;
+    }
+    document.documentElement.setAttribute('data-skin', s);
+    /* Resolve _static base from this script's own URL context. */
+    var scripts = document.getElementsByTagName('script');
+    var me = scripts[scripts.length - 1];
+    var base = '{{ pathto("_static/", 1) }}';
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.id = 'clarity-skin-css';
+    link.href = base + 'css/skins/' + s + '.css';
+    document.head.appendChild(link);
+    /* Set data-theme to match the skin's mode so [data-theme] selectors
+       fire on first paint. */
+    var modes = {unicorn:'light',programmer:'light',matrix:'dark',rainbow:'light',darcula:'dark',coder:'dark'};
+    if (modes[s]) {
+      document.documentElement.setAttribute('data-theme', modes[s]);
+      document.documentElement.setAttribute('data-theme-setting', modes[s]);
+    }
+  } catch (_) {}
+})();
+</script>
 {% endblock %}
 
 {%- block header %}
@@ -50,6 +89,8 @@
     {% if theme_chatbot_enabled != False %}
     {% include "chatbot.html" %}
     {% endif %}
+
+    <span id="clarity-update-spinner" class="clarity-update-spinner" hidden>&#x229B;</span>
 
     <div class="header-spacer"></div>
     <div class="header-controls">
@@ -89,7 +130,7 @@
     </div>
   </aside>
 
-  <main class="clarity-main">
+  <main class="clarity-main" role="main">
     <article class="clarity-article">
       <div class="text-size-controls" aria-label="Text size">
         <button class="text-size-btn" id="text-size-decrease" type="button" aria-label="Decrease text size" title="Decrease text size">&#x2212;</button>
@@ -149,6 +190,18 @@
       Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
       using the <a href="https://github.com/relicloops/clarity">Clarity</a> theme
       &#xb7; <a class="footer-consent-link" onclick="window.__clarityRevokeConsent &amp;&amp; window.__clarityRevokeConsent()" title="Change privacy settings">Privacy settings</a>
+      &#xb7; <span class="clarity-skin-select">
+        <label for="skin-select">Skin</label>
+        <select id="skin-select">
+          <option value="default">Default</option>
+          <option value="unicorn">Unicorn</option>
+          <option value="programmer">Programmer</option>
+          <option value="matrix">Matrix</option>
+          <option value="rainbow">Rainbow</option>
+          <option value="darcula">Darcula</option>
+          <option value="coder">Coder</option>
+        </select>
+      </span>
     </div>
   </div>
 </footer>
@@ -157,11 +210,16 @@
 <script src="{{ pathto('_static/js/consent.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/clarity.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/theme-toggle.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/search-enhance.js', 1) }}"></script>
 {% if theme_chatbot_enabled != False %}
 <script src="{{ pathto('_static/js/chatbot-storage.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/chatbot-api.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/chatbot-render.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/chatbot-commands.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/chatbot.js', 1) }}"></script>
+{% endif %}
+<script src="{{ pathto('_static/js/skin-switcher.js', 1) }}"></script>
+{% if theme_update_check != False %}
+<script src="{{ pathto('_static/js/update-check.js', 1) }}"></script>
 {% endif %}
 {% endblock %}

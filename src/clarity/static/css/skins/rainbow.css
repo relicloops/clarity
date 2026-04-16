@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Clarity Skin: Rainbow
+   "Oh my eyes!" -- maximum saturation, maximum contrast. Every surface
+   gets a color. Borders are candy-striped via a gradient. The accent
+   rotates across the full spectrum. Not subtle. Not sorry.
+   Mode: light only (theme toggle disabled when active).
+   ========================================================================== */
+
+:root[data-skin="rainbow"] {
+  /* --- Palette --- */
+  --accent: #ff0055;
+  --accent-dark: #cc0044;
+  --accent-glow: rgba(255, 0, 85, 0.35);
+
+  /* --- Surfaces --- */
+  --bg-page: #fffde7;
+  --bg-primary: #fffde7;
+  --bg-secondary: #e8f5e9;
+  --bg-header: rgba(225, 245, 254, 0.97);
+  --bg-code: #fff3e0;
+  --bg-input: #f3e5f5;
+  --bg-card: #e8eaf6;
+
+  /* --- Text --- */
+  --text-primary: #1a0033;
+  --text-secondary: #4a0072;
+  --text-tertiary: #6a1b9a;
+
+  /* --- Borders --- */
+  --border-subtle: #ff9800;
+  --border-accent: #ff0055;
+
+  /* --- Links --- */
+  --link-color: #2979ff;
+  --link-hover: #ff0055;
+
+  /* --- Selection --- */
+  --selection-bg: rgba(255, 235, 59, 0.5);
+  --scrollbar-thumb: #ff9800;
+  --scrollbar-track: #e1f5fe;
+
+  /* --- Fonts --- */
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+
+  /* --- Neon overrides (screaming primaries) --- */
+  --neon-cyan: #00e5ff;
+  --neon-pink: #ff0080;
+  --neon-orange: #ff6d00;
+  --neon-red: #ff1744;
+
+  --phosphor-green: #00e676;
+  --phosphor-green-dark: #00c853;
+  --uv-violet: #d500f9;
+  --uv-violet-dark: #aa00ff;
+}
+
+/* --- Rainbow-specific overrides that go beyond tokens --- */
+
+/* Header: candy gradient bottom border */
+:root[data-skin="rainbow"] .clarity-header {
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, #ff0055, #ff6d00, #ffea00, #00e676, #2979ff, #d500f9) 1;
+}
+
+/* Sidebar nav links cycle colors */
+:root[data-skin="rainbow"] .sidebar-nav a:nth-child(6n+1) { color: #ff0055; }
+:root[data-skin="rainbow"] .sidebar-nav a:nth-child(6n+2) { color: #ff6d00; }
+:root[data-skin="rainbow"] .sidebar-nav a:nth-child(6n+3) { color: #00c853; }
+:root[data-skin="rainbow"] .sidebar-nav a:nth-child(6n+4) { color: #2979ff; }
+:root[data-skin="rainbow"] .sidebar-nav a:nth-child(6n+5) { color: #d500f9; }
+:root[data-skin="rainbow"] .sidebar-nav a:nth-child(6n+6) { color: #ffea00; }
+
+/* Headings cycle rainbow */
+:root[data-skin="rainbow"] .page-content h1 { color: #ff0055; }
+:root[data-skin="rainbow"] .page-content h2 { color: #2979ff; }
+:root[data-skin="rainbow"] .page-content h3 { color: #00c853; }
+:root[data-skin="rainbow"] .page-content h4 { color: #ff6d00; }
+:root[data-skin="rainbow"] .page-content h5 { color: #d500f9; }
+:root[data-skin="rainbow"] .page-content h6 { color: #ffea00; }
+
+/* Admonition border: rainbow gradient left edge */
+:root[data-skin="rainbow"] .page-content .admonition {
+  border-left: 4px solid;
+  border-image: linear-gradient(180deg, #ff0055, #ff6d00, #ffea00, #00e676, #2979ff, #d500f9) 1;
+}
+
+/* Code blocks: vivid tinted background */
+:root[data-skin="rainbow"] .page-content pre {
+  border-left: 3px solid #ff6d00;
+  background: #fff8e1;
+}
+
+/* Footer: rainbow gradient top border */
+:root[data-skin="rainbow"] .clarity-footer {
+  border-top: 3px solid;
+  border-image: linear-gradient(90deg, #d500f9, #2979ff, #00e676, #ffea00, #ff6d00, #ff0055) 1;
+}
+
+/* Version badge: vivid green */
+:root[data-skin="rainbow"] .project-version {
+  color: #00c853;
+}
+
+/* Back-to-top button: hot pink */
+:root[data-skin="rainbow"] .back-to-top {
+  background: #ff0055;
+  color: #ffffff;
+  border-color: #ff0055;
+}

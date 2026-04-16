@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Clarity Skin: Programmer
+   Clean documentation-focused light theme. Neutral white/gray, dark text,
+   blue links. System fonts only -- no Google Fonts loaded. Optimized for
+   long reading sessions with minimal visual noise.
+   Mode: light only (theme toggle disabled when active).
+   ========================================================================== */
+
+:root[data-skin="programmer"] {
+  /* --- Palette --- */
+  --accent: #0969da;
+  --accent-dark: #0550ae;
+  --accent-glow: rgba(9, 105, 218, 0.15);
+
+  /* --- Surfaces --- */
+  --bg-page: #ffffff;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f8fa;
+  --bg-header: rgba(255, 255, 255, 0.97);
+  --bg-code: #f6f8fa;
+  --bg-input: #f6f8fa;
+  --bg-card: #f6f8fa;
+
+  /* --- Text --- */
+  --text-primary: #1f2328;
+  --text-secondary: #656d76;
+  --text-tertiary: #8b949e;
+
+  /* --- Borders --- */
+  --border-subtle: #d1d9e0;
+  --border-accent: #0969da;
+
+  /* --- Links --- */
+  --link-color: #0969da;
+  --link-hover: #0550ae;
+
+  /* --- Selection --- */
+  --selection-bg: rgba(9, 105, 218, 0.15);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --scrollbar-track: transparent;
+
+  /* --- Fonts (system only) --- */
+  --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* --- Neon overrides (muted for clean look) --- */
+  --neon-cyan: #0969da;
+  --neon-pink: #cf222e;
+  --neon-orange: #bf5700;
+  --neon-red: #cf222e;
+
+  --phosphor-green: #1a7f37;
+  --phosphor-green-dark: #116329;
+  --uv-violet: #8250df;
+  --uv-violet-dark: #6639ba;
+}
