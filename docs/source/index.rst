@@ -51,4 +51,10 @@ with the Orbitron / Inter / Intel One Mono font stack.
    maintainer-workflow
    changelog
    privacy
+
+.. toctree::
+   :maxdepth: 2
+   :caption: On-going
+
+   plans/index
    audit/index
