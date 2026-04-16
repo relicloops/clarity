@@ -17,5 +17,6 @@ Verified audit entry points and dated snapshots for Clarity.
    :maxdepth: 1
    :caption: Snapshots
 
+   2026-04-16-code-review
    2026-04-14-docs
    2026-04-14
