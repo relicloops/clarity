@@ -35,12 +35,22 @@
   try {
     /* Check localStorage first (consent-granted readers), fall back to
        sessionStorage (declined-consent readers whose in-tab pick still
-       lives there). Runs before consent.js so we try both. */
-    var s = null;
-    try { s = localStorage.getItem('clarity-skin'); } catch (_) {}
-    if (!s) {
-      try { s = sessionStorage.getItem('clarity-skin'); } catch (_) {}
+       lives there). Runs before privacy.js / consent.js so we try both
+       stores manually. Values may be plain strings (pre-v1.5) or a
+       {v, t} envelope -- parse transparently either way. */
+    function readSkin(store) {
+      var raw;
+      try { raw = store.getItem('clarity-skin'); } catch (_) { return null; }
+      if (!raw) return null;
+      if (raw.charAt(0) === '{') {
+        try {
+          var env = JSON.parse(raw);
+          if (env && Object.prototype.hasOwnProperty.call(env, 'v')) return env.v;
+        } catch (_) {}
+      }
+      return raw;
     }
+    var s = readSkin(localStorage) || readSkin(sessionStorage);
     if (!s || s === 'default') {
       var d = document.documentElement.getAttribute('data-skin');
       if (!d || d === 'default') return;

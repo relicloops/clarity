@@ -39,26 +39,39 @@
   var skinLink = document.getElementById('clarity-skin-css') || null;
   var fontLink = document.getElementById('clarity-skin-fonts') || null;
 
-  /* --- Safe storage (consent -> localStorage, decline -> sessionStorage) --- */
+  /* --- Safe storage (privacy.canStore -> localStorage + envelope,
+         else sessionStorage). Legacy plain strings round-trip via
+         unwrapEnvelope on first read. --- */
 
-  function pickStore() {
-    if (window.__clarityConsent) {
+  function pickStore(key) {
+    var priv = window.__clarityPrivacy;
+    if (priv && priv.canStore(key)) {
       try { return window.localStorage; } catch (_) { return null; }
     }
     try { return window.sessionStorage; } catch (_) { return null; }
   }
 
   function safeGet(key) {
-    var store = pickStore();
+    var store = pickStore(key);
     if (!store) return null;
-    try { return store.getItem(key); }
+    var raw;
+    try { raw = store.getItem(key); }
     catch (_) { return null; }
+    var priv = window.__clarityPrivacy;
+    if (!priv) return raw;
+    var val = priv.unwrapEnvelope(raw, priv.ttl(key));
+    if (val === null && raw !== null) {
+      try { store.removeItem(key); } catch (_) {}
+    }
+    return val;
   }
 
   function safeSet(key, value) {
-    var store = pickStore();
+    var store = pickStore(key);
     if (!store) return;
-    try { store.setItem(key, value); }
+    var priv = window.__clarityPrivacy;
+    var raw = priv ? priv.wrapEnvelope(value) : String(value);
+    try { store.setItem(key, raw); }
     catch (_) {}
   }
 
@@ -166,9 +179,12 @@
          returns to their dark/light/system preference. Honour the
          same consent-gated store used by theme-toggle.js. */
       var storedTheme = null;
-      var themeStore = pickStore();
+      var themeStore = pickStore('clarity-theme');
       if (themeStore) {
-        try { storedTheme = themeStore.getItem('clarity-theme'); } catch (_) {}
+        var rawTheme;
+        try { rawTheme = themeStore.getItem('clarity-theme'); } catch (_) {}
+        var priv = window.__clarityPrivacy;
+        storedTheme = priv ? priv.unwrapEnvelope(rawTheme, priv.ttl('clarity-theme')) : rawTheme;
       }
       if (storedTheme) {
         var effective = storedTheme === 'system'

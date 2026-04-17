@@ -1,9 +1,9 @@
 /* ==========================================================================
    Clarity — Theme Toggle (dark / light / system)
    Storage:
-     - consent granted  -> localStorage['clarity-theme'] (survives restart)
-     - consent declined -> sessionStorage['clarity-theme'] (tab-scoped)
-     - file:// protocol -> window.name fallback
+     - privacy.canStore(clarity-theme) = true  -> localStorage + envelope
+     - privacy.canStore(clarity-theme) = false -> sessionStorage (tab)
+     - file:// protocol                        -> window.name fallback
    ========================================================================== */
 
 (function () {
@@ -15,8 +15,9 @@
 
   /* --- Safe storage access --- */
 
-  function pickStore() {
-    if (window.__clarityConsent) {
+  function pickStore(key) {
+    var priv = window.__clarityPrivacy;
+    if (priv && priv.canStore(key)) {
       try { return window.localStorage; } catch (_) { return null; }
     }
     try { return window.sessionStorage; } catch (_) { return null; }
@@ -24,13 +25,23 @@
 
   function safeGet(storage, key) {
     if (!storage) return null;
-    try { return storage.getItem(key); }
+    var raw;
+    try { raw = storage.getItem(key); }
     catch (_) { return null; }
+    var priv = window.__clarityPrivacy;
+    if (!priv) return raw;
+    var val = priv.unwrapEnvelope(raw, priv.ttl(key));
+    if (val === null && raw !== null) {
+      try { storage.removeItem(key); } catch (_) {}
+    }
+    return val;
   }
 
   function safeSet(storage, key, value) {
     if (!storage) return false;
-    try { storage.setItem(key, value); return true; }
+    var priv = window.__clarityPrivacy;
+    var raw = priv ? priv.wrapEnvelope(value) : String(value);
+    try { storage.setItem(key, raw); return true; }
     catch (_) { return false; }
   }
 
@@ -86,7 +97,7 @@
       if (stored && THEMES.indexOf(stored) !== -1) return stored;
     }
 
-    stored = safeGet(pickStore(), STORAGE_KEY);
+    stored = safeGet(pickStore(STORAGE_KEY), STORAGE_KEY);
     if (stored && THEMES.indexOf(stored) !== -1) return stored;
 
     if (!preferNameStore) {
@@ -98,7 +109,7 @@
   }
 
   function setStoredTheme(theme) {
-    safeSet(pickStore(), STORAGE_KEY, theme);
+    safeSet(pickStore(STORAGE_KEY), STORAGE_KEY, theme);
     setNameValue(STORAGE_KEY, theme, preferNameStore);
   }
 

@@ -15,10 +15,48 @@
 
   var PYPI_URL = 'https://pypi.org/pypi/sphinx-clarity/json';
   var SESSION_KEY = 'clarity-update-check';
-  /* Dismissed flag stored in localStorage (not sessionStorage) so the
-     banner stays hidden permanently until the reader clears their
-     localStorage or uses the chatbot Purge action. */
+  /* Dismissed flag stored in the consent-gated store (localStorage if
+     privacy.canStore(DISMISSED_KEY), else sessionStorage) so a reader
+     who has not granted storage consent still gets a fresh banner on
+     every fresh tab instead of leaking a persistent dismissed flag. */
   var DISMISSED_KEY = 'clarity-update-dismissed';
+
+  function dismissedStore() {
+    var priv = window.__clarityPrivacy;
+    if (priv && priv.canStore(DISMISSED_KEY)) {
+      try { return window.localStorage; } catch (_) { return null; }
+    }
+    try { return window.sessionStorage; } catch (_) { return null; }
+  }
+
+  function setDismissed() {
+    var store = dismissedStore();
+    if (!store) return;
+    var priv = window.__clarityPrivacy;
+    var raw = priv ? priv.wrapEnvelope('1') : '1';
+    try { store.setItem(DISMISSED_KEY, raw); } catch (_) {}
+  }
+
+  function isDismissed() {
+    var store = dismissedStore();
+    if (!store) return false;
+    var raw;
+    try { raw = store.getItem(DISMISSED_KEY); } catch (_) { return false; }
+    if (!raw) return false;
+    var priv = window.__clarityPrivacy;
+    if (!priv) return !!raw;
+    var val = priv.unwrapEnvelope(raw, priv.ttl(DISMISSED_KEY));
+    if (val === null) {
+      try { store.removeItem(DISMISSED_KEY); } catch (_) {}
+      return false;
+    }
+    return val === '1';
+  }
+
+  function clearDismissed() {
+    try { localStorage.removeItem(DISMISSED_KEY); } catch (_) {}
+    try { sessionStorage.removeItem(DISMISSED_KEY); } catch (_) {}
+  }
 
   /* --- Gate: deployer opt-in --- */
 
@@ -126,7 +164,7 @@
     dismiss.textContent = '\u00D7';
     dismiss.addEventListener('click', function () {
       banner.remove();
-      try { localStorage.setItem(DISMISSED_KEY, '1'); } catch (_) {}
+      setDismissed();
     });
 
     banner.appendChild(text);
@@ -147,9 +185,7 @@
     if (!window.__clarityConsent) return;
 
     if (!force) {
-      try {
-        if (localStorage.getItem(DISMISSED_KEY)) return;
-      } catch (_) {}
+      if (isDismissed()) return;
     }
 
     var currentVersion = getCurrentVersion();
@@ -216,7 +252,7 @@
     var isU = (e.key === 'u' || e.key === 'U' || e.code === 'KeyU');
     if (e.altKey && isU) {
       e.preventDefault();
-      try { localStorage.removeItem(DISMISSED_KEY); } catch (_) {}
+      clearDismissed();
       try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
       removeBanner();
       runCheck(true);

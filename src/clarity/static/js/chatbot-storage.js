@@ -79,31 +79,44 @@
   }
 
   /* --- Safe storage helpers ---
-     With consent   -> localStorage (survives browser restart).
-     Without consent -> sessionStorage (cleared on tab close).
-     This replaces the previous "no consent = no-op" behaviour so that
-     settings, history, geometry and state still work within the tab
-     even when the reader declined the privacy banner. Digest/ingest
-     read through these helpers. */
+     pickStore(key) routes through window.__clarityPrivacy.canStore so
+     the per-key CAN/CANNOT from the Privacy Settings modal is
+     respected. Without canStore access, values land in sessionStorage
+     (tab-scoped, cleared on close). With canStore access, values land
+     in localStorage wrapped in a {v, t} envelope so the TTL sweep can
+     purge expired entries. Legacy plain strings round-trip via
+     unwrapEnvelope on first read and are re-wrapped on the next write. */
 
-  function pickStore() {
-    if (window.__clarityConsent) {
+  function pickStore(key) {
+    var priv = window.__clarityPrivacy;
+    if (priv && priv.canStore(key)) {
       try { return window.localStorage; } catch (_) { return null; }
     }
     try { return window.sessionStorage; } catch (_) { return null; }
   }
 
   function safeGet(key) {
-    var store = pickStore();
+    var store = pickStore(key);
     if (!store) return null;
-    try { return store.getItem(key); }
+    var raw;
+    try { raw = store.getItem(key); }
     catch (_) { return null; }
+    var priv = window.__clarityPrivacy;
+    if (!priv) return raw;
+    var val = priv.unwrapEnvelope(raw, priv.ttl(key));
+    if (val === null && raw !== null) {
+      /* Expired envelope -- purge on read. */
+      try { store.removeItem(key); } catch (_) {}
+    }
+    return val;
   }
 
   function safeSet(key, value) {
-    var store = pickStore();
+    var store = pickStore(key);
     if (!store) return false;
-    try { store.setItem(key, value); return true; }
+    var priv = window.__clarityPrivacy;
+    var raw = priv ? priv.wrapEnvelope(value) : String(value == null ? '' : value);
+    try { store.setItem(key, raw); return true; }
     catch (_) { return false; }
   }
 

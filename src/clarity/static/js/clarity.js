@@ -209,10 +209,26 @@
   var TEXT_SIZE_STEP = 10;
   var TEXT_SIZE_DEFAULT = 100;
 
+  function textSizeStore() {
+    var priv = window.__clarityPrivacy;
+    if (priv && priv.canStore(TEXT_SIZE_KEY)) {
+      try { return window.localStorage; } catch (_) { return null; }
+    }
+    try { return window.sessionStorage; } catch (_) { return null; }
+  }
+
   function getStoredTextSize() {
-    if (!window.__clarityConsent) return TEXT_SIZE_DEFAULT;
+    var store = textSizeStore();
+    if (!store) return TEXT_SIZE_DEFAULT;
     try {
-      var val = parseInt(localStorage.getItem(TEXT_SIZE_KEY), 10);
+      var raw = store.getItem(TEXT_SIZE_KEY);
+      var priv = window.__clarityPrivacy;
+      var unwrapped = priv ? priv.unwrapEnvelope(raw, priv.ttl(TEXT_SIZE_KEY)) : raw;
+      if (unwrapped === null && raw !== null) {
+        try { store.removeItem(TEXT_SIZE_KEY); } catch (_) {}
+        return TEXT_SIZE_DEFAULT;
+      }
+      var val = parseInt(unwrapped, 10);
       if (val >= TEXT_SIZE_MIN && val <= TEXT_SIZE_MAX) return val;
     } catch (_) {}
     return TEXT_SIZE_DEFAULT;
@@ -222,9 +238,11 @@
     var article = document.querySelector('.clarity-article');
     if (!article) return;
     article.style.setProperty('--content-font-size', (size / 100) + 'rem');
-    if (window.__clarityConsent) {
-      try { localStorage.setItem(TEXT_SIZE_KEY, String(size)); } catch (_) {}
-    }
+    var store = textSizeStore();
+    if (!store) return;
+    var priv = window.__clarityPrivacy;
+    var raw = priv ? priv.wrapEnvelope(size) : String(size);
+    try { store.setItem(TEXT_SIZE_KEY, raw); } catch (_) {}
   }
 
   function initTextSize() {
