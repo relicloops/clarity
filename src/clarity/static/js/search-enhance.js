@@ -494,24 +494,6 @@
     return a;
   }
 
-  /* --- Spinner --- */
-
-  function createSpinner(text) {
-    var el = document.createElement('div');
-    el.className = 'clarity-search-spinner';
-
-    var icon = document.createElement('span');
-    icon.className = 'clarity-search-spinner-icon';
-    icon.textContent = '\u229B';
-    el.appendChild(icon);
-
-    var label = document.createElement('span');
-    label.textContent = text;
-    el.appendChild(label);
-
-    return el;
-  }
-
   /* --- Extract filename from URL --- */
 
   function extractFileName(href) {

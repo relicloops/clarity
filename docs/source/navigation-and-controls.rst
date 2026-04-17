@@ -10,9 +10,42 @@ Header Search
 Every page includes a search input in the header. Press ``/`` to focus it when
 ``navigation_with_keys`` is enabled.
 
-On the search results page, Clarity adds a small location badge beside results
-that point to an anchor. This helps readers see which section of a page matched
-the query.
+Enhanced results
+~~~~~~~~~~~~~~~~
+
+On the search results page, Clarity replaces Sphinx's default one-card-per-page
+layout with a per-match breakdown. Each matching page is grouped and every
+occurrence of the search term is listed with its ``[line:col]`` position and a
+context snippet. The ``->`` link navigates to the nearest heading anchor on the
+target page with ``?highlight=`` appended, so Sphinx's built-in highlighter
+fires on arrival.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Control
+     - Behaviour
+   * - ``/regex/`` toggle
+     - Checkbox beside the search input. When enabled, the query string is
+       interpreted as a JavaScript regular expression (case-insensitive).
+       Invalid patterns silently fall back to plain-text matching.
+   * - Auto-scan threshold
+     - When the search matches **20 or fewer pages**, positions are fetched and
+       rendered immediately. Above the threshold, each file gets a
+       ``Show positions`` button so readers can opt in per file (avoids fetching
+       a hundred pages for a common word).
+   * - Per-file cap
+     - Up to 10 match rows render per file. A ``+ N more (show all)`` button
+       reveals the rest on click.
+   * - Searching overlay
+     - While pages are being scanned, a centred rainbow-glowing ``⁇``
+       (U+2047) inside a circle spins above a ``Searching N pages for "term"``
+       label. The overlay stays visible for at least three seconds so the reader
+       sees that work happened even when the scan finishes instantly.
+
+Match rows render in the active skin's palette -- no separate styling per
+skin. Results remain readable and scrollable on narrow viewports.
 
 Breadcrumbs
 -----------

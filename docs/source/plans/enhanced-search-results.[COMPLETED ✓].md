@@ -3,8 +3,8 @@ title: Enhanced search results with per-match line and column positions
 tags:
   - "#clarity"
   - "#search"
-status: draft
-updated: 2026-04-16
+status: completed
+updated: 2026-04-17
 priority: high
 phase: implementation
 ---
@@ -223,10 +223,14 @@ container, replacing Sphinx's default list.
    for > 20. The threshold is 20 (not 10) to cover most real searches
    while avoiding the "search for 'the' fetches 200 pages" problem.
 
-4. **Spinner symbol**: use `⊛` (U+229B, same as the update-check
-   spinner) with the rainbow-glow animation while the position
-   scanner fetches and parses pages. Placed inline in the search
-   results area (not in the header).
+4. **Spinner symbol**: use `⁇` (U+2047, double question mark) inside
+   a rainbow-glowing circle, centered as a full-overlay above a
+   "Searching N pages for <term>" label. Replaces the initial
+   `⊛` (U+229B) proposal -- the larger circular overlay reads
+   better on a full search page than an inline spinner. The update
+   check keeps `⊛` in the header; they remain visually distinct so
+   the two flows aren't confused. Minimum display time: 3 seconds
+   so the reader always sees that work happened.
 
 ---
 
