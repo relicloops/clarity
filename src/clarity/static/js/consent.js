@@ -64,7 +64,10 @@
     document.head.appendChild(link);
   }
 
-  /* --- Purge all non-essential localStorage on decline --- */
+  /* --- Purge all non-essential storage on decline --- */
+  /* Clears both localStorage (previous consented session leftovers) and
+     sessionStorage (current tab -- forces a clean slate before the
+     decline takes effect). */
 
   function purgeNonEssential() {
     var keys = [
@@ -79,6 +82,7 @@
     ];
     for (var i = 0; i < keys.length; i++) {
       try { localStorage.removeItem(keys[i]); } catch (_) {}
+      try { sessionStorage.removeItem(keys[i]); } catch (_) {}
     }
   }
 

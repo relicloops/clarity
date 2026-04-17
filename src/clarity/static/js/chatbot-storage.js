@@ -78,23 +78,40 @@
     safeRemove(SETTINGS_OVERRIDE_STORAGE);
   }
 
-  /* --- Safe localStorage helpers (consent-gated) --- */
+  /* --- Safe storage helpers ---
+     With consent   -> localStorage (survives browser restart).
+     Without consent -> sessionStorage (cleared on tab close).
+     This replaces the previous "no consent = no-op" behaviour so that
+     settings, history, geometry and state still work within the tab
+     even when the reader declined the privacy banner. Digest/ingest
+     read through these helpers. */
+
+  function pickStore() {
+    if (window.__clarityConsent) {
+      try { return window.localStorage; } catch (_) { return null; }
+    }
+    try { return window.sessionStorage; } catch (_) { return null; }
+  }
 
   function safeGet(key) {
-    if (!window.__clarityConsent) return null;
-    try { return localStorage.getItem(key); }
+    var store = pickStore();
+    if (!store) return null;
+    try { return store.getItem(key); }
     catch (_) { return null; }
   }
 
   function safeSet(key, value) {
-    if (!window.__clarityConsent) return false;
-    try { localStorage.setItem(key, value); return true; }
+    var store = pickStore();
+    if (!store) return false;
+    try { store.setItem(key, value); return true; }
     catch (_) { return false; }
   }
 
+  /* Remove from both stores so a consent toggle doesn't leave a stale
+     copy behind in the inactive one. */
   function safeRemove(key) {
-    try { localStorage.removeItem(key); }
-    catch (_) {}
+    try { localStorage.removeItem(key); } catch (_) {}
+    try { sessionStorage.removeItem(key); } catch (_) {}
   }
 
   /* --- Key obfuscation (not encryption) ---

@@ -1,7 +1,9 @@
 /* ==========================================================================
    Clarity — Theme Toggle (dark / light / system)
-   Storage: localStorage key 'clarity-theme'
-   Fallback: window.name for file:// protocol
+   Storage:
+     - consent granted  -> localStorage['clarity-theme'] (survives restart)
+     - consent declined -> sessionStorage['clarity-theme'] (tab-scoped)
+     - file:// protocol -> window.name fallback
    ========================================================================== */
 
 (function () {
@@ -12,6 +14,13 @@
   var NAME_PREFIX = 'cl:';
 
   /* --- Safe storage access --- */
+
+  function pickStore() {
+    if (window.__clarityConsent) {
+      try { return window.localStorage; } catch (_) { return null; }
+    }
+    try { return window.sessionStorage; } catch (_) { return null; }
+  }
 
   function safeGet(storage, key) {
     if (!storage) return null;
@@ -70,7 +79,6 @@
   /* --- Theme storage --- */
 
   function getStoredTheme() {
-    if (!window.__clarityConsent) return 'system';
     var stored;
 
     if (preferNameStore) {
@@ -78,7 +86,7 @@
       if (stored && THEMES.indexOf(stored) !== -1) return stored;
     }
 
-    stored = safeGet(localStorage, STORAGE_KEY);
+    stored = safeGet(pickStore(), STORAGE_KEY);
     if (stored && THEMES.indexOf(stored) !== -1) return stored;
 
     if (!preferNameStore) {
@@ -90,8 +98,7 @@
   }
 
   function setStoredTheme(theme) {
-    if (!window.__clarityConsent) return;
-    safeSet(localStorage, STORAGE_KEY, theme);
+    safeSet(pickStore(), STORAGE_KEY, theme);
     setNameValue(STORAGE_KEY, theme, preferNameStore);
   }
 

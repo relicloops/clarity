@@ -39,23 +39,32 @@
   var skinLink = document.getElementById('clarity-skin-css') || null;
   var fontLink = document.getElementById('clarity-skin-fonts') || null;
 
-  /* --- Safe localStorage (consent-gated) --- */
+  /* --- Safe storage (consent -> localStorage, decline -> sessionStorage) --- */
+
+  function pickStore() {
+    if (window.__clarityConsent) {
+      try { return window.localStorage; } catch (_) { return null; }
+    }
+    try { return window.sessionStorage; } catch (_) { return null; }
+  }
 
   function safeGet(key) {
-    if (!window.__clarityConsent) return null;
-    try { return localStorage.getItem(key); }
+    var store = pickStore();
+    if (!store) return null;
+    try { return store.getItem(key); }
     catch (_) { return null; }
   }
 
   function safeSet(key, value) {
-    if (!window.__clarityConsent) return;
-    try { localStorage.setItem(key, value); }
+    var store = pickStore();
+    if (!store) return;
+    try { store.setItem(key, value); }
     catch (_) {}
   }
 
   function safeRemove(key) {
-    try { localStorage.removeItem(key); }
-    catch (_) {}
+    try { localStorage.removeItem(key); } catch (_) {}
+    try { sessionStorage.removeItem(key); } catch (_) {}
   }
 
   /* --- Resolve the _static/ base path from an existing theme asset --- */
@@ -154,9 +163,13 @@
       showThemeToggle();
       safeRemove(STORAGE_KEY);
       /* Restore the theme toggle's last-known choice so the reader
-         returns to their dark/light/system preference. */
+         returns to their dark/light/system preference. Honour the
+         same consent-gated store used by theme-toggle.js. */
       var storedTheme = null;
-      try { storedTheme = localStorage.getItem('clarity-theme'); } catch (_) {}
+      var themeStore = pickStore();
+      if (themeStore) {
+        try { storedTheme = themeStore.getItem('clarity-theme'); } catch (_) {}
+      }
       if (storedTheme) {
         var effective = storedTheme === 'system'
           ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')

@@ -2,8 +2,9 @@ Privacy and Data Storage
 ========================
 
 Clarity does not use cookies. All user preferences and chatbot data are stored
-in your browser's ``localStorage``, scoped to the documentation site origin.
-No data is sent to the documentation host server beyond normal page requests.
+in your browser's ``localStorage`` (after consent) or ``sessionStorage`` (before
+or after declining consent), scoped to the documentation site origin. No data
+is sent to the documentation host server beyond normal page requests.
 
 This page documents every piece of data the theme stores or transmits.
 
@@ -15,8 +16,10 @@ consent banner on first visit. Until you make a choice:
 
 - **No data** is written to ``localStorage`` (except the consent choice itself)
 - **No external requests** are made to Google Fonts
-- The theme toggle and text size controls still work but preferences are not
-  persisted across pages
+- The theme toggle, text size, skin and chatbot controls still work, but
+  preferences live in ``sessionStorage`` instead of ``localStorage`` -- they
+  survive page navigations inside the current tab and are cleared when the
+  tab closes. Nothing persists across browser sessions.
 
 .. list-table::
    :header-rows: 1
@@ -28,8 +31,9 @@ consent banner on first visit. Until you make a choice:
      - Enables ``localStorage`` for all features (theme, text size, chatbot).
        Loads Google Fonts if the default font stack is active.
    * - **Decline**
-     - Clears any previously stored non-essential data. Features continue to
-       work in the current page but preferences reset on navigation.
+     - Clears any previously stored non-essential ``localStorage`` data.
+       Features continue to work in the current tab via ``sessionStorage``,
+       which is cleared automatically when the tab closes.
 
 Your consent choice is stored as ``clarity-consent`` in ``localStorage``.
 This key is considered strictly necessary for the consent mechanism and is
@@ -134,6 +138,16 @@ When the documentation is served via the ``file://`` protocol (local HTML
 files), ``localStorage`` may be unavailable. In this case, the theme toggle
 stores preferences in ``window.name`` using a ``cl:`` JSON prefix. This data
 does not persist across browser sessions.
+
+``sessionStorage`` fallback
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the reader has **not accepted** the consent banner (no decision yet, or
+an explicit decline), the same key names above are written to
+``sessionStorage`` instead of ``localStorage``. ``sessionStorage`` is scoped
+to a single browser tab and is wiped automatically when the tab closes.
+This keeps preferences usable during a reading session without creating any
+persistent record across visits.
 
 External Requests
 -----------------
@@ -290,9 +304,11 @@ Summary
      - Origin-scoped
      - 12 keys for preferences, chatbot state, saved geometry, settings
        overrides, obfuscated API keys, skin choice, and update-check
-       dismissed flag. Purgeable via UI button or browser tools. One
-       additional ``sessionStorage`` key (``clarity-update-check``)
-       caches the PyPI version check per tab session.
+       dismissed flag. When consent is declined the same keys are
+       redirected to ``sessionStorage`` (tab-scoped, cleared on tab close).
+       Purgeable via UI button or browser tools. One additional
+       ``sessionStorage`` key (``clarity-update-check``) caches the PyPI
+       version check per tab session regardless of consent.
    * - Google Fonts
      - Optional
      - Loaded by default. Set ``font_stack: "system"`` to disable.

@@ -33,7 +33,14 @@
    skin-switcher.js in the footer handles the <select> and fonts. */
 (function () {
   try {
-    var s = localStorage.getItem('clarity-skin');
+    /* Check localStorage first (consent-granted readers), fall back to
+       sessionStorage (declined-consent readers whose in-tab pick still
+       lives there). Runs before consent.js so we try both. */
+    var s = null;
+    try { s = localStorage.getItem('clarity-skin'); } catch (_) {}
+    if (!s) {
+      try { s = sessionStorage.getItem('clarity-skin'); } catch (_) {}
+    }
     if (!s || s === 'default') {
       var d = document.documentElement.getAttribute('data-skin');
       if (!d || d === 'default') return;
