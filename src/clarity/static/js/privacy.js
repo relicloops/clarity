@@ -268,4 +268,32 @@
      populated window.__clarityConsent -- entryFor() reads
      clarity-consent directly from localStorage. */
   try { sweep(); } catch (_) {}
+
+  /* Re-run the sweep when the tab regains focus after a long pause
+     so a reader who leaves a doc open overnight gets a fresh purge
+     at wake-up. Debounced to once per minute to avoid rerunning on
+     every rapid tab switch. */
+  var lastSweep = Date.now();
+  function maybeResweep() {
+    if (document.visibilityState && document.visibilityState !== 'visible') return;
+    if (Date.now() - lastSweep < 60 * 1000) return;
+    lastSweep = Date.now();
+    try { sweep(); } catch (_) {}
+  }
+  if (typeof document.addEventListener === 'function') {
+    document.addEventListener('visibilitychange', maybeResweep);
+    window.addEventListener('focus', maybeResweep);
+  }
+
+  /* Cross-tab coordination: when another tab writes clarity-privacy,
+     rebuild the derived view so canStore/canFetch reflect the new
+     rules in all open tabs. */
+  if (typeof window.addEventListener === 'function') {
+    window.addEventListener('storage', function (e) {
+      if (e && (e.key === PRIVACY_KEY || e.key === CONSENT_KEY)) {
+        try { sweep(); } catch (_) {}
+        notify();
+      }
+    });
+  }
 })();
