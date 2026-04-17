@@ -45,6 +45,12 @@
         <span class="chatbot-settings-title">&#x2699; Settings</span>
         <span class="chatbot-settings-hint">Overrides <code>conf.py</code> defaults. Saved in your browser only.</span>
       </div>
+      <div class="chatbot-transfer-actions" role="group" aria-label="Conversation transfer">
+        <button id="chatbot-digest-btn" type="button" class="chatbot-transfer-btn"
+                data-hint="Digest: download your conversation as JSON (or Markdown/Plain text bundled with JSON). The file contains messages only -- never API keys.">&#x21E9; Digest history</button>
+        <button id="chatbot-ingest-btn" type="button" class="chatbot-transfer-btn"
+                data-hint="Ingest: load a previously digested JSON file and restore the conversation. Choose Replace (discard current) or Append.">&#x21E7; Ingest history</button>
+      </div>
       <div class="chatbot-settings-body">
         <label data-hint="OpenRouter model slug (e.g. openai/gpt-oss-120b:free, anthropic/claude-sonnet-4-5, google/gemini-2.5-flash). Full list at openrouter.ai/models. Free-tier models are labelled :free. Paid models consume credit from the key you set below.">Model
           <input type="text" data-setting="model" spellcheck="false" autocomplete="off">
@@ -106,8 +112,48 @@
         <li>Any chatbot settings overrides</li>
       </ul>
       <div class="chatbot-purge-actions">
-        <button id="chatbot-purge-yes" type="button">&#x2327; Purge</button>
+        <button id="chatbot-purge-digest" type="button"
+                title="Digest first: save a copy of this conversation, then continue to purge.">&#x21E9; Digest first</button>
         <button id="chatbot-purge-no" type="button">&#xD7; Cancel</button>
+        <button id="chatbot-purge-yes" type="button">&#x2327; Purge</button>
+      </div>
+    </div>
+
+    <div id="chatbot-digest-modal" class="chatbot-digest-modal" hidden>
+      <div class="chatbot-digest-title">&#x21E9; Digest conversation</div>
+      <label class="chatbot-digest-field">
+        <span>Filename</span>
+        <input id="chatbot-digest-filename" type="text" spellcheck="false" autocomplete="off">
+      </label>
+      <div class="chatbot-digest-note">Extension (<code>.json</code> or <code>.zip</code>) is appended automatically.</div>
+      <fieldset class="chatbot-digest-format">
+        <legend>Format</legend>
+        <label><input type="radio" name="chatbot-digest-format" value="json" checked> JSON</label>
+        <label><input type="radio" name="chatbot-digest-format" value="md"> Markdown <span class="chatbot-digest-sub">(+ JSON bundle)</span></label>
+        <label><input type="radio" name="chatbot-digest-format" value="txt"> Plain text <span class="chatbot-digest-sub">(+ JSON bundle)</span></label>
+      </fieldset>
+      <div id="chatbot-digest-status" class="chatbot-digest-status" aria-live="polite"></div>
+      <div class="chatbot-digest-actions">
+        <button id="chatbot-digest-cancel" type="button">&#xD7; Cancel</button>
+        <button id="chatbot-digest-save" type="button">&#x2713; Save</button>
+      </div>
+    </div>
+
+    <div id="chatbot-ingest-modal" class="chatbot-ingest-modal" hidden>
+      <div class="chatbot-ingest-title">&#x21E7; Ingest conversation</div>
+      <p class="chatbot-ingest-note">Select a <code>.json</code> file digested from Clarity.</p>
+      <label class="chatbot-ingest-file">
+        <input id="chatbot-ingest-input" type="file" accept="application/json,.json">
+      </label>
+      <fieldset class="chatbot-ingest-mode">
+        <legend>Mode</legend>
+        <label><input type="radio" name="chatbot-ingest-mode" value="replace" checked> Replace current conversation</label>
+        <label><input type="radio" name="chatbot-ingest-mode" value="append"> Append to current conversation</label>
+      </fieldset>
+      <div id="chatbot-ingest-status" class="chatbot-ingest-status" aria-live="polite"></div>
+      <div class="chatbot-ingest-actions">
+        <button id="chatbot-ingest-cancel" type="button">&#xD7; Cancel</button>
+        <button id="chatbot-ingest-load" type="button">&#x2713; Load</button>
       </div>
     </div>
 

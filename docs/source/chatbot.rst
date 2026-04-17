@@ -202,8 +202,83 @@ this replaces the browser's native tooltip delay with an immediate description.
 Overrides are per-browser and per-reader. They do not affect other visitors
 and they do not change the baseline shown in the model badge footer.
 
-Footer Notice
--------------
+.. _digest-ingest:
+
+Digest and Ingest
+-----------------
+
+The chatbot can **digest** the current conversation to a file and **ingest**
+a previously digested file back into the panel. Both actions run entirely in
+your browser -- no network requests, no uploads, no server.
+
+Digest
+~~~~~~
+
+Digest downloads the in-memory conversation. It works whether you accepted or
+declined the consent banner, because the digest reads the live messages array
+rather than persistent storage.
+
+Click **⇩ Digest history** at the top of the settings panel, or use
+**⇩ Digest first** in the purge confirmation to save a copy before clearing
+everything.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Format
+     - File delivered
+   * - **JSON**
+     - ``<filename>.json`` -- the canonical, machine-readable form. Ingest
+       only accepts this format.
+   * - **Markdown**
+     - ``<filename>.zip`` containing ``digest.md`` (human-readable) and
+       ``digest.json`` (round-trip source).
+   * - **Plain text**
+     - ``<filename>.zip`` containing ``digest.txt`` and ``digest.json``.
+
+The JSON is always bundled with Markdown or Plain text so a later ingest
+works without asking you to re-export.
+
+**What the file contains**: schema identifier, export timestamp, origin,
+current page URL and title, model name, system-prompt fingerprint (a short
+hash, not the prompt itself), ``max_history`` setting, and the message list
+with role, content, optional timestamp, and optional reasoning trace.
+
+**What the file does not contain**: API keys, management keys, request
+counter, saved panel geometry, or settings overrides. A digest is a
+conversation artifact, not a full backup.
+
+Ingest
+~~~~~~
+
+Click **⇧ Ingest history** in the settings panel. Pick a ``.json`` file
+previously exported with Digest.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Mode
+     - Effect
+   * - **Replace** (default)
+     - Discards the current in-panel conversation and installs the ingested
+       messages in its place.
+   * - **Append**
+     - Concatenates the ingested messages after the current conversation.
+
+The loader validates:
+
+- ``schema`` equals ``clarity-chatbot-digest/v1``. Other values are rejected.
+- ``messages`` is an array of ``{ role, content }`` pairs.
+- Each ``role`` is one of ``user``, ``assistant``, or ``system``. Rows with
+  other roles are dropped and reported in the status line.
+- Total ingested message count is capped at ``max_history * 4`` (hard ceiling
+  5,000) to keep pathological files from stalling the panel.
+- Any ``api_key`` field in the file is ignored and not stored.
+
+After a successful ingest, the conversation re-renders in place and your
+next question continues the restored thread.
 
 The footer of the chatbot panel shows two pieces of state:
 
@@ -216,7 +291,9 @@ Persistence
 -----------
 
 The chatbot stores the following keys in ``localStorage`` after consent is
-granted:
+granted. When the reader declined (or has not yet decided), the same keys
+are written to ``sessionStorage`` instead, which is cleared automatically
+when the browser tab closes:
 
 .. list-table::
    :header-rows: 1

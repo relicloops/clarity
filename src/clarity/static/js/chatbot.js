@@ -53,6 +53,19 @@
     var settingsSave = document.getElementById('chatbot-settings-save');
     var settingsReset = document.getElementById('chatbot-settings-reset');
     var settingsCancel = document.getElementById('chatbot-settings-cancel');
+    var digestBtn = document.getElementById('chatbot-digest-btn');
+    var ingestBtn = document.getElementById('chatbot-ingest-btn');
+    var digestModal = document.getElementById('chatbot-digest-modal');
+    var digestFilenameInput = document.getElementById('chatbot-digest-filename');
+    var digestSave = document.getElementById('chatbot-digest-save');
+    var digestCancel = document.getElementById('chatbot-digest-cancel');
+    var digestStatus = document.getElementById('chatbot-digest-status');
+    var ingestModal = document.getElementById('chatbot-ingest-modal');
+    var ingestFileInput = document.getElementById('chatbot-ingest-input');
+    var ingestLoad = document.getElementById('chatbot-ingest-load');
+    var ingestCancel = document.getElementById('chatbot-ingest-cancel');
+    var ingestStatus = document.getElementById('chatbot-ingest-status');
+    var purgeDigest = document.getElementById('chatbot-purge-digest');
 
     /* --- Geometry restore --- */
 
@@ -289,21 +302,18 @@
       }
     });
 
-    /* --- Purge (two-step confirm) --- */
+    /* --- Purge (two-step confirm, optional digest-first) --- */
 
     var purgeConfirm = document.getElementById('chatbot-purge-confirm');
     var purgeYes = document.getElementById('chatbot-purge-yes');
     var purgeNo = document.getElementById('chatbot-purge-no');
 
-    purgeBtn.addEventListener('click', function () { purgeConfirm.hidden = false; });
-    purgeNo.addEventListener('click', function () { purgeConfirm.hidden = true; });
-
-    purgeYes.addEventListener('click', function () {
+    function doPurge() {
       purgeConfirm.hidden = true;
       storage.purgeAll();
       apiKey = null;
       mgmtKey = null;
-      history = [];
+      history.length = 0;
       messagesEl.innerHTML = '';
       rateInfo.textContent = '';
       limitWarning.hidden = true;
@@ -311,7 +321,159 @@
       clearField(apikeyInput);
       clearField(mgmtInput);
       mgmtInput.focus();
-    });
+    }
+
+    purgeBtn.addEventListener('click', function () { purgeConfirm.hidden = false; });
+    purgeNo.addEventListener('click', function () { purgeConfirm.hidden = true; });
+    purgeYes.addEventListener('click', doPurge);
+
+    /* --- Runtime bridge for digest / ingest ---
+       Exposes the live history array to Chatbot.digest and Chatbot.ingest
+       so the digest uses the in-memory conversation first (works even
+       when consent is declined) and ingest can re-render after import. */
+
+    Chatbot.runtime = {
+      getHistory: function () { return history; },
+      setHistory: function (arr) {
+        history.length = 0;
+        for (var i = 0; i < arr.length; i++) history.push(arr[i]);
+        storage.saveHistory(history, settings.maxHistory);
+        messagesEl.innerHTML = '';
+        render.renderHistory(messagesEl, history, projectName);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      },
+      getSettings: function () { return settings; }
+    };
+
+    /* --- Digest modal --- */
+
+    var digestPendingPurge = false;
+
+    function setDigestStatus(text, cls) {
+      if (!digestStatus) return;
+      digestStatus.className = 'chatbot-digest-status' + (cls ? ' ' + cls : '');
+      digestStatus.textContent = text || '';
+    }
+
+    function openDigestModal(prefillName) {
+      if (!digestModal) return;
+      var hasHist = Chatbot.digest && Chatbot.digest.hasHistory();
+      setDigestStatus(
+        hasHist ? '' : 'Conversation is empty -- nothing to digest.',
+        hasHist ? '' : 'is-error'
+      );
+      if (digestFilenameInput) {
+        digestFilenameInput.value = prefillName ||
+          (Chatbot.digest ? Chatbot.digest.defaultFilename() : 'clarity-chat');
+      }
+      digestModal.hidden = false;
+      if (digestFilenameInput) {
+        setTimeout(function () { digestFilenameInput.focus(); digestFilenameInput.select(); }, 20);
+      }
+    }
+
+    function closeDigestModal() {
+      if (digestModal) digestModal.hidden = true;
+      digestPendingPurge = false;
+    }
+
+    if (digestBtn) {
+      digestBtn.addEventListener('click', function () { openDigestModal(); });
+    }
+    if (digestCancel) {
+      digestCancel.addEventListener('click', closeDigestModal);
+    }
+    if (digestSave) {
+      digestSave.addEventListener('click', function () {
+        if (!Chatbot.digest) {
+          setDigestStatus('Digest module missing.', 'is-error');
+          return;
+        }
+        var fmtEl = digestModal.querySelector('input[name="chatbot-digest-format"]:checked');
+        var fmt = fmtEl ? fmtEl.value : 'json';
+        var name = (digestFilenameInput && digestFilenameInput.value) || '';
+        var res = Chatbot.digest.run(fmt, name);
+        if (!res.ok) {
+          setDigestStatus(
+            res.reason === 'empty'
+              ? 'Conversation is empty -- nothing to digest.'
+              : 'Digest failed (' + res.reason + ').',
+            'is-error'
+          );
+          return;
+        }
+        setDigestStatus('Saved ' + res.file + ' (' + res.count + ' messages).', 'is-ok');
+        var chainPurge = digestPendingPurge;
+        setTimeout(function () {
+          closeDigestModal();
+          if (chainPurge) doPurge();
+        }, 400);
+      });
+    }
+
+    /* Purge-first-digest: open digest modal, chain to purge on save. */
+    if (purgeDigest) {
+      purgeDigest.addEventListener('click', function () {
+        digestPendingPurge = true;
+        openDigestModal();
+      });
+    }
+
+    /* --- Ingest modal --- */
+
+    function setIngestStatus(text, cls) {
+      if (!ingestStatus) return;
+      ingestStatus.className = 'chatbot-ingest-status' + (cls ? ' ' + cls : '');
+      ingestStatus.textContent = text || '';
+    }
+
+    function openIngestModal() {
+      if (!ingestModal) return;
+      setIngestStatus('');
+      if (ingestFileInput) ingestFileInput.value = '';
+      ingestModal.hidden = false;
+    }
+
+    function closeIngestModal() {
+      if (ingestModal) ingestModal.hidden = true;
+    }
+
+    if (ingestBtn) {
+      ingestBtn.addEventListener('click', openIngestModal);
+    }
+    if (ingestCancel) {
+      ingestCancel.addEventListener('click', closeIngestModal);
+    }
+    if (ingestLoad) {
+      ingestLoad.addEventListener('click', function () {
+        if (!Chatbot.ingest) {
+          setIngestStatus('Ingest module missing.', 'is-error');
+          return;
+        }
+        var file = ingestFileInput && ingestFileInput.files && ingestFileInput.files[0];
+        if (!file) {
+          setIngestStatus('Pick a .json file first.', 'is-error');
+          return;
+        }
+        var modeEl = ingestModal.querySelector('input[name="chatbot-ingest-mode"]:checked');
+        var mode = modeEl ? modeEl.value : 'replace';
+        setIngestStatus('Loading...', '');
+        Chatbot.ingest.run(file, mode).then(function (res) {
+          if (!res.ok) {
+            setIngestStatus(res.error || 'Ingest failed.', 'is-error');
+            return;
+          }
+          var parts = [mode === 'append' ? 'Appended' : 'Replaced', res.ingested + ' messages.'];
+          if (res.dropped) parts.push(res.dropped + ' dropped.');
+          if (res.truncated) parts.push(res.truncated + ' truncated.');
+          setIngestStatus(parts.join(' '), 'is-ok');
+          refreshRate();
+          setTimeout(closeIngestModal, 600);
+        }).catch(function (e) {
+          setIngestStatus('Ingest failed: ' + (e && e.message ? e.message : String(e)), 'is-error');
+        });
+      });
+    }
 
     /* --- Settings panel (conf.py overrides) --- */
 

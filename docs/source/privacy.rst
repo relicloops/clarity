@@ -149,6 +149,26 @@ to a single browser tab and is wiped automatically when the tab closes.
 This keeps preferences usable during a reading session without creating any
 persistent record across visits.
 
+Chatbot digest and ingest
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The chatbot panel can **digest** a conversation to a local file and
+**ingest** a previously digested file back into the panel. Both operations
+run entirely in the browser -- no network requests, no server uploads.
+
+The exported file contains only: schema identifier, export timestamp,
+origin, current page URL and title, model name, a non-cryptographic
+system-prompt fingerprint, ``max_history`` setting, and the message list
+(role, content, optional timestamp, optional reasoning trace).
+
+The exported file explicitly does **not** contain: the model API key, the
+management API key, the request counter, saved panel geometry, or settings
+overrides.
+
+On ingest, any ``api_key`` field that appears in a supplied JSON is
+ignored. Schema validation rejects files that do not match
+``clarity-chatbot-digest/v1``. See :ref:`digest-ingest` for full details.
+
 External Requests
 -----------------
 
