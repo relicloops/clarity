@@ -131,6 +131,22 @@
   color: var(--text-primary);
 }
 
+.clarity-privacy-table tbody tr {
+  transition: background 0.12s;
+}
+
+.clarity-privacy-table tbody tr:hover {
+  background: var(--bg-card);
+}
+
+/* Safari drops box-shadow on <tr> (anonymous table box). Apply the
+   accent bar to the first cell of the row instead -- works across
+   Safari, Chrome and Firefox. */
+.clarity-privacy-table tbody tr:hover > td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+  transition: box-shadow 0.12s;
+}
+
 .clarity-privacy-table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -196,6 +212,29 @@
 .clarity-privacy-ttl:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+/* Hover-hint overlay -- same warning-style pattern as the chatbot
+   settings panel. Populated on row hover, falls back to an empty-
+   state prompt when nothing is hovered. */
+.clarity-privacy-hint-bar {
+  flex-shrink: 0;
+  margin: 0 1rem 0.6rem;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #ff6600;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px dashed rgba(255, 102, 0, 0.45);
+  border-radius: 4px;
+  min-height: 2.6em;
+}
+
+.clarity-privacy-hint-bar:empty::before {
+  content: '\26A0 Hover any row to see what it controls.';
+  opacity: 0.55;
+  font-style: italic;
 }
 
 .clarity-privacy-footer {

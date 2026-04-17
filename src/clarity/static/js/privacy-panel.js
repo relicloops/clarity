@@ -56,7 +56,7 @@
 
   /* --- State --- */
 
-  var panel, rowsEl, presetEl, statusEl;
+  var panel, rowsEl, presetEl, statusEl, hintEl;
   var pendingEntries;  /* { '<name>': { allow, ttl } } built up by the UI */
 
   function init() {
@@ -64,6 +64,7 @@
     rowsEl    = document.getElementById('clarity-privacy-rows');
     presetEl  = document.getElementById('clarity-privacy-preset');
     statusEl  = document.getElementById('clarity-privacy-status');
+    hintEl    = document.getElementById('clarity-privacy-hint');
     if (!panel || !rowsEl) return;
 
     document.getElementById('clarity-privacy-save').addEventListener('click', onSave);
@@ -88,6 +89,30 @@
     presetEl.addEventListener('change', function () {
       applyPreset(presetEl.value);
     });
+
+    /* Hover-hint overlay: update the bar on mouseover of any row
+       carrying a data-hint, clear on mouseout. Focus events mirror
+       hover so keyboard navigation also shows the hint. */
+    if (rowsEl && hintEl) {
+      rowsEl.addEventListener('mouseover', function (e) {
+        var tr = e.target.closest && e.target.closest('tr[data-hint]');
+        if (!tr) return;
+        hintEl.textContent = tr.getAttribute('data-hint') || '';
+      });
+      rowsEl.addEventListener('mouseout', function (e) {
+        var related = e.relatedTarget;
+        if (related && related.closest && related.closest('tr[data-hint]')) return;
+        hintEl.textContent = '';
+      });
+      rowsEl.addEventListener('focusin', function (e) {
+        var tr = e.target.closest && e.target.closest('tr[data-hint]');
+        if (!tr) return;
+        hintEl.textContent = tr.getAttribute('data-hint') || '';
+      });
+      rowsEl.addEventListener('focusout', function () {
+        hintEl.textContent = '';
+      });
+    }
 
     /* Global open hook. Any script (consent banner, footer link,
        chatbot shortcut) can dispatch a CustomEvent to open the modal
@@ -148,6 +173,10 @@
   function renderRow(group) {
     var tr = document.createElement('tr');
     if (group.type === 'external') tr.classList.add('clarity-privacy-external-section');
+    /* Set the hover hint on the row itself so the hint bar picks it
+       up via event delegation. Keep the inline note hidden from sight
+       -- it'd double the text. */
+    if (group.note) tr.setAttribute('data-hint', group.note);
 
     /* Label cell */
     var labelTd = document.createElement('td');
@@ -155,12 +184,6 @@
     label.className = 'clarity-privacy-row-label';
     label.textContent = group.label;
     labelTd.appendChild(label);
-    if (group.note) {
-      var note = document.createElement('span');
-      note.className = 'clarity-privacy-row-note';
-      note.textContent = group.note;
-      labelTd.appendChild(note);
-    }
     tr.appendChild(labelTd);
 
     /* Allow cell */
