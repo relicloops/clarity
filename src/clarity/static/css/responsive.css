@@ -119,9 +119,12 @@
     text-align: left;
   }
 
-  /* Text size controls */
+  /* Text size controls -- push below the sticky TOC bar so the
+     "On this page" bar never visually overlaps the -/+ buttons on
+     mobile-ish layouts. 641-900 range uses a slightly smaller offset
+     than the compact 640 breakpoint. */
   .text-size-controls {
-    top: calc(var(--header-height) + 0.5rem);
+    top: calc(var(--header-height) + 0.5rem + 31px);
   }
 
   /* Back to top */
@@ -162,7 +165,7 @@
 
   .text-size-controls {
     right: 1rem;
-    top: 0.5rem;
+    top: calc(0.5rem + 86px);
   }
 
   .page-content h1 { font-size: 1.4em; }

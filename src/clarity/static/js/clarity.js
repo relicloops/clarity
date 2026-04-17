@@ -238,11 +238,17 @@
     var article = document.querySelector('.clarity-article');
     if (!article) return;
     article.style.setProperty('--content-font-size', (size / 100) + 'rem');
+    updateTextSizeBadge(size);
     var store = textSizeStore();
     if (!store) return;
     var priv = window.__clarityPrivacy;
     var raw = priv ? priv.wrapEnvelope(size) : String(size);
     try { store.setItem(TEXT_SIZE_KEY, raw); } catch (_) {}
+  }
+
+  function updateTextSizeBadge(size) {
+    var badge = document.getElementById('text-size-percent');
+    if (badge) badge.textContent = size + '%';
   }
 
   function initTextSize() {
@@ -251,22 +257,28 @@
     if (!decrease || !increase) return;
 
     var current = getStoredTextSize();
+    /* Always update the badge so the reader sees the current percentage
+       on boot, even when the size is at the default. Only re-apply the
+       CSS variable when the stored value deviates from default. */
+    updateTextSizeBadge(current);
     if (current !== TEXT_SIZE_DEFAULT) {
       applyTextSize(current);
     }
 
     decrease.addEventListener('click', function () {
       current = getStoredTextSize();
-      if (current > TEXT_SIZE_MIN) {
-        current -= TEXT_SIZE_STEP;
+      var next = Math.max(TEXT_SIZE_MIN, current - TEXT_SIZE_STEP);
+      if (next !== current) {
+        current = next;
         applyTextSize(current);
       }
     });
 
     increase.addEventListener('click', function () {
       current = getStoredTextSize();
-      if (current < TEXT_SIZE_MAX) {
-        current += TEXT_SIZE_STEP;
+      var next = Math.min(TEXT_SIZE_MAX, current + TEXT_SIZE_STEP);
+      if (next !== current) {
+        current = next;
         applyTextSize(current);
       }
     });

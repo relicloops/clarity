@@ -477,16 +477,23 @@ body {
   position: relative;
 }
 
-/* --- Text Size Controls --- */
+/* --- Text Size Controls ---
+   Sticky at the top of the article so the reader can always adjust
+   zoom without scrolling back. z-index > 90 so it stays above the
+   collapsible "On this page" TOC bar that goes sticky below 1100 px.
+   Still below the privacy modal (500) and the consent banner so
+   dialog surfaces aren't blocked. */
 .text-size-controls {
   position: sticky;
-  top: calc(var(--header-height) + 0.75rem);
+  top: calc(var(--header-height) + 0.75rem + 26px);
   display: flex;
   gap: 0;
-  z-index: 10;
+  z-index: 100;
   width: fit-content;
   margin-left: auto;
   margin-bottom: -28px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .text-size-btn {
@@ -524,6 +531,34 @@ body {
 .text-size-btn:active {
   background: var(--accent);
   color: var(--bg-page);
+}
+
+/* Floating percentage badge -- small red circle above the -/+ pair.
+   Higher z-index than the buttons so it sits on top; pointer-events
+   none so clicks pass through. Red background + white text are
+   intentionally skin-independent so the badge reads the same way
+   across every theme and skin. */
+.text-size-percent {
+  position: absolute;
+  top: calc(-1rem - 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  background: #ff3366;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Content font size driven by JS — applied to article so headings,
