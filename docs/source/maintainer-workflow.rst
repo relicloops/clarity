@@ -206,6 +206,48 @@ tag before the wheel is built, so:
 ``importlib.metadata.version("sphinx-clarity")`` rather than hardcoding,
 so the installed wheel's version is the source of truth at runtime.
 
+Issue Triage
+------------
+
+``.github/ISSUE_TEMPLATE/`` ships **structured YAML issue forms**
+instead of the default Markdown templates. Two forms plus a chooser:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 28 28 44
+
+   * - Form
+     - Auto-labels
+     - Required fields
+   * - ``bug_report.yml``
+     - ``bug`` + ``needs-triage``
+     - Clarity version, feature area, Python version, Sphinx version,
+       reproduction steps, expected vs actual.
+   * - ``feature_request.yml``
+     - ``type:feature`` + ``needs-triage``
+     - Feature area, problem statement, proposed solution.
+   * - ``config.yml``
+     - n/a
+     - ``blank_issues_enabled: false`` + contact links to Discussions,
+       the docs tree, and the audit tree.
+
+Both forms share the same **feature area** enum so triage can filter
+by category consistently: Theme / Chatbot / Search / Privacy / Update
+checker / Text-size / Retro 404 / Docs-CI-packaging / Other. The bug
+form additionally collects the active **skin** (Default, Unicorn,
+Programmer, Matrix, Rainbow, Darcula, Coder) and an optional
+``html_theme_options`` paste block rendered as Python for copy/paste
+triage.
+
+Both forms pre-fill the issue title (``[bug] `` or ``[feature] ``) so
+the tracker list stays readable at a glance. The chooser disables
+blank issues -- readers must pick a form or follow a contact link.
+
+When editing a form, keep the ``id`` values stable. GitHub stores
+form submissions as rendered Markdown with hidden ``<!-- ... -->``
+comments keyed on the ``id``; renaming an id loses the link between
+old and new submissions.
+
 Practical Notes
 ---------------
 

@@ -1,0 +1,123 @@
+name: Bug report
+description: A behaviour or rendering defect in the Clarity Sphinx theme.
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Before filing, please check the
+        [bugs audit](https://github.com/relicloops/clarity/blob/main/docs/source/audit/bugs.rst)
+        and skim
+        [open issues](https://github.com/relicloops/clarity/issues?q=is%3Aissue)
+        so we can avoid duplicates.
+
+  - type: input
+    id: clarity-version
+    attributes:
+      label: Clarity version
+      description: Run `pip show sphinx-clarity`, or read the sidebar badge.
+      placeholder: "v1.5.0-000"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature-area
+    attributes:
+      label: Feature area
+      description: Which part of the theme does the bug affect?
+      options:
+        - Theme (dark / light / skin)
+        - Chatbot
+        - Search
+        - Privacy / consent
+        - Update checker
+        - Text-size controls
+        - Retro 404
+        - Docs / CI / packaging
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.12.3"
+    validations:
+      required: true
+
+  - type: input
+    id: sphinx-version
+    attributes:
+      label: Sphinx version
+      description: Run `sphinx-build --version`.
+      placeholder: "7.3.7"
+    validations:
+      required: true
+
+  - type: input
+    id: browser-os
+    attributes:
+      label: Browser + OS
+      description: Fill this in for rendering or UI bugs.
+      placeholder: "Firefox 126 on macOS 14.5"
+
+  - type: dropdown
+    id: active-skin
+    attributes:
+      label: Active skin
+      description: Which skin was selected when the bug occurred?
+      options:
+        - default (dark / light / system)
+        - unicorn
+        - programmer
+        - matrix
+        - rainbow
+        - darcula
+        - coder
+
+  - type: textarea
+    id: theme-options
+    attributes:
+      label: Your html_theme_options
+      description: Paste the relevant block from your `conf.py` if the bug is configuration-sensitive.
+      render: python
+      placeholder: |
+        html_theme_options = {
+            "default_theme": "system",
+            "chatbot_enabled": True,
+            "skin": "matrix",
+        }
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual behaviour
+      description: What did you expect to see, and what actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Browser DevTools console output
+      description: Paste any errors or warnings from the Console tab.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / screen recording
+      description: Drag images or video files into this field.

@@ -1,0 +1,74 @@
+name: Feature request
+description: Suggest a new capability or improvement for the Clarity theme.
+title: "[feature] "
+labels: ["type:feature", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! A few of these may already be drafted
+        under
+        [docs/source/plans/](https://github.com/relicloops/clarity/tree/main/docs/source/plans)
+        -- if your proposal matches an existing draft, please comment
+        on that plan or its issue rather than filing a new one.
+
+  - type: dropdown
+    id: feature-area
+    attributes:
+      label: Feature area
+      description: Which part of the theme would this touch?
+      options:
+        - Theme (dark / light / skin)
+        - Chatbot
+        - Search
+        - Privacy / consent
+        - Update checker
+        - Text-size controls
+        - Retro 404
+        - Docs / CI / packaging
+        - Other
+        - New area (describe below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What are you trying to do that doesn't work today?
+      placeholder: "When I ..., Clarity doesn't ... so I end up ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What should the theme do instead? Be as concrete as you can -- UI sketch, config example, or pseudocode are all welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you thought about and why they fell short.
+
+  - type: dropdown
+    id: milestone
+    attributes:
+      label: Target milestone
+      description: Where does this belong in the release train?
+      options:
+        - v1.x (additive to peak v1, non-breaking)
+        - v2 (bigger architectural leap, may be breaking)
+        - No preference
+
+  - type: dropdown
+    id: pr
+    attributes:
+      label: Would you submit a pull request?
+      options:
+        - "Yes"
+        - Maybe with guidance
+        - "No -- reporting only"

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions
+    url: https://github.com/relicloops/clarity/discussions
+    about: General questions, theme customization help, deployment advice.
+  - name: Documentation
+    url: https://github.com/relicloops/clarity/tree/main/docs/source
+    about: Browse the full docs before filing -- answers to common questions live here.
+  - name: Existing audits
+    url: https://github.com/relicloops/clarity/tree/main/docs/source/audit
+    about: Check if the issue is already tracked under bugs / security / refactoring.

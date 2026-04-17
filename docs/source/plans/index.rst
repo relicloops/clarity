@@ -15,6 +15,7 @@ Design documents for upcoming features and architectural changes.
    :maxdepth: 1
    :caption: Completed
 
+   issue-templates-tailoring.[COMPLETED ✓]
    clarity-v1-5-0.[COMPLETED ✓]
    granular-privacy-and-ttl.[COMPLETED ✓]
    enhanced-search-results.[COMPLETED ✓]
