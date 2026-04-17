@@ -4,20 +4,76 @@ name: CI
 # filename (.github/workflows/ci.yml) so the publish job MUST live here.
 # Main-branch and PR checks live in main.yml instead.
 #
-# Flow: tag push -> reusable build + docs -> publish to PyPI + GitHub
-# release. If build or docs fails, publish is skipped by needs: and
-# nothing is released.
+# Flow: tag push -> gate decision + reusable build/docs (parallel).
+# When the gate says the tag carries wheel-relevant changes, publish to
+# PyPI and create a GitHub release. When only docs/plans/audits/README
+# changed, skip publish -- the tag is still recorded as a milestone.
+#
+# Gate rules:
+#   - Diff `git diff --name-only <prev-tag> <this-tag>` against the
+#     wheel-relevant path list (src/clarity/**, pyproject.toml,
+#     README.md, LICENSE).
+#   - First ever tag -> publish.
+#   - Annotated tag message containing `[force-publish]` -> publish.
+#   - Annotated tag message containing `[skip-publish]` -> skip.
 
 on:
   push:
     tags: ['v*']
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.decide.outputs.should_publish }}
+      reason: ${{ steps.decide.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: decide
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          PREV=$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || echo "")
+          MSG=$(git tag -l --format='%(contents)' "${TAG}")
+          PUBLISH=true
+          REASON="default: first tag, publishing"
+          if [ -n "$PREV" ]; then
+            CHANGED=$(git diff --name-only "$PREV" "$TAG" -- \
+              'src/clarity/**' \
+              'pyproject.toml' \
+              'README.md' \
+              'LICENSE' || true)
+            if [ -n "$CHANGED" ]; then
+              PUBLISH=true
+              REASON="wheel-relevant paths changed since $PREV"
+              echo "$CHANGED" | sed 's/^/changed: /'
+            else
+              PUBLISH=false
+              REASON="no wheel-relevant changes since $PREV"
+            fi
+          fi
+          if printf '%s' "$MSG" | grep -q '\[force-publish\]'; then
+            PUBLISH=true
+            REASON="forced by tag annotation [force-publish]"
+          fi
+          if printf '%s' "$MSG" | grep -q '\[skip-publish\]'; then
+            PUBLISH=false
+            REASON="skipped by tag annotation [skip-publish]"
+          fi
+          echo "should_publish=$PUBLISH" >> "$GITHUB_OUTPUT"
+          echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+          echo "::notice title=Publish decision::${PUBLISH} -- ${REASON}"
+
   check:
     uses: ./.github/workflows/build-and-docs.yml
 
   publish:
-    needs: check
+    needs: [gate, check]
+    if: needs.gate.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
@@ -60,3 +116,24 @@ jobs:
             --notes-file RELEASE_NOTES.md \
             $PRERELEASE_FLAG \
             dist/*
+
+  skipped:
+    needs: [gate, check]
+    if: needs.gate.outputs.should_publish == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        env:
+          REASON: ${{ needs.gate.outputs.reason }}
+        run: |
+          echo "::notice title=Publish skipped::${REASON}"
+          {
+            echo "## Publish skipped"
+            echo ""
+            echo "This tag did not publish to PyPI."
+            echo ""
+            echo "**Reason:** ${REASON}"
+            echo ""
+            echo "Add \`[force-publish]\` to the tag annotation if you need"
+            echo "to push a wheel anyway (e.g. recovering a failed upload)."
+          } >> "$GITHUB_STEP_SUMMARY"

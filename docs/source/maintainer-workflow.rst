@@ -67,10 +67,11 @@ main gate cannot produce a green release:
      - Runs on every push to ``main`` and every pull request. Calls the
        reusable ``build-and-docs`` workflow. No publishing.
    * - ``.github/workflows/ci.yml``
-     - Runs only on tag pushes matching ``v*``. Calls the same reusable
-       workflow, then publishes to PyPI and creates the GitHub release.
-       Keeps the filename ``ci.yml`` because PyPI's Trusted Publisher is
-       bound to that exact path.
+     - Runs only on tag pushes matching ``v*``. Computes a publish gate
+       from the tag diff, then calls the same reusable workflow, and
+       publishes to PyPI plus creates the GitHub release only when the
+       gate says publish. Keeps the filename ``ci.yml`` because PyPI's
+       Trusted Publisher is bound to that exact path.
    * - ``.github/workflows/build-and-docs.yml``
      - Reusable (``workflow_call``). Build matrix on Python ``3.10``,
        ``3.12``, ``3.13``; docs built with ``sphinx-build -W`` on
@@ -78,18 +79,87 @@ main gate cannot produce a green release:
 
 Because both entry points call the same reusable workflow, a tagged
 release runs the exact build + docs checks that ``main`` already has to
-pass. If either fails on the tagged commit, ``publish`` is skipped by
-``needs:`` and nothing is released.
+pass. If either the ``check`` job or the publish gate says no,
+``publish`` is skipped by ``needs:`` / ``if:`` and nothing is released.
+
+Tag Types and Publish Gate
+--------------------------
+
+Git tags in this repository are used for two distinct purposes:
+
+1. **Milestones**: a tag marks a point in history even when the theme
+   itself is unchanged (docs-only work, audit snapshots, CHANGELOG
+   regeneration, Makefile or CI tweaks). These tags must NOT produce a
+   new PyPI release because nothing shipped in the wheel actually
+   changed.
+2. **Wheel releases**: a tag bundles a change in ``src/clarity/``,
+   ``pyproject.toml``, ``README.md`` (PyPI long-description), or
+   ``LICENSE``. Those tags MUST produce a new PyPI release.
+
+The ``gate`` job inside ``ci.yml`` decides automatically which case
+applies. It diffs the tag against the previous ``v*`` tag and publishes
+only when at least one of the wheel-relevant paths changed:
+
+.. code-block:: text
+
+   src/clarity/**
+   pyproject.toml
+   README.md
+   LICENSE
+
+Anything else -- ``docs/**``, ``CHANGELOG.md``, ``cliff.toml``,
+``.github/**``, ``Makefile``, ``.prompt/**``, audits, plans -- is
+considered documentation or tooling and does not warrant a republish.
+
+Override markers
+~~~~~~~~~~~~~~~~
+
+Two optional markers in the **annotated** tag message override the
+default diff-based decision:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 24 76
+
+   * - Marker
+     - Behaviour
+   * - ``[force-publish]``
+     - Publish even if no wheel-relevant paths changed. Use for
+       re-pushing an identical wheel after a failed upload.
+   * - ``[skip-publish]``
+     - Skip publish even if wheel-relevant paths changed. Use to cut
+       a code milestone without releasing to PyPI yet.
+
+Markers apply only to annotated tags. Light-weight tags have no
+annotation and therefore fall through to the diff-based default, which
+also matches the GPG-signing requirement.
+
+Examples:
+
+.. code-block:: bash
+
+   # Docs-only tag: gate skips publish automatically.
+   git tag -s v1.4.0-001 -m "docs: clarify skin contract"
+
+   # Code change + explicit skip (maintainer wants to delay release).
+   git tag -s v1.5.0-000 -m "feat: granular privacy [skip-publish]"
+
+   # Republish identical wheel after a transient PyPI upload failure.
+   git tag -s v1.4.1-000 -m "chore: republish v1.4.1 [force-publish]"
 
 Release Behavior
 ----------------
 
-The publish job in ``ci.yml`` performs:
+When the gate says publish, the ``publish`` job in ``ci.yml`` performs:
 
 1. Download the built distribution artifacts.
 2. Publish the package to PyPI via OIDC Trusted Publisher.
 3. Install ``git-cliff`` and generate release notes from ``cliff.toml``.
 4. Create a GitHub release for the current tag.
+
+When the gate says skip, a small ``skipped`` job writes a summary to
+the GitHub Actions run page explaining why. No PyPI upload, no GitHub
+release. The tag itself remains as the historical milestone.
 
 Tags beginning with ``v0.`` are marked as prereleases. Other ``v*`` tags
 are published as regular releases.
