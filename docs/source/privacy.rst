@@ -100,6 +100,138 @@ documentation server.
        permanently until cleared via the chatbot ⌧ Purge or a consent
        revoke. Prevents the banner from reappearing on every page.
 
+.. _granular-privacy:
+
+Granular Controls and Retention
+-------------------------------
+
+Since v1.5.0, Clarity exposes **per-feature consent** and **automatic
+purge** (TTL) on top of the coarse Accept / Decline choice. Readers open
+the Privacy Settings modal from the consent banner's ``Customize...``
+button, the footer ``Privacy settings`` link, or a shortcut inside the
+chatbot settings panel.
+
+The modal has one row per category. For each row the reader picks:
+
+- **Allow** -- ``CAN`` (data persists in ``localStorage``) or ``CANNOT``
+  (data goes to ``sessionStorage`` instead, cleared when the tab closes;
+  external requests are suppressed entirely).
+- **Purge after** -- only for storage rows. ``Never`` / ``1 day`` /
+  ``1 week`` / ``1 month``. A boot-time sweep removes any value whose
+  age exceeds the TTL, with a follow-up check on every read and on
+  tab-focus events.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 50 25
+
+   * - Category
+     - Covers
+     - Type
+   * - Theme + text size
+     - ``clarity-theme``, ``clarity-text-size``
+     - Storage
+   * - Skin
+     - ``clarity-skin``
+     - Storage
+   * - Chatbot API keys
+     - ``clarity-chatbot-key``, ``clarity-chatbot-mgmt-key``
+     - Storage
+   * - Chatbot history
+     - ``clarity-chatbot-history``
+     - Storage
+   * - Chatbot panel state
+     - ``clarity-chatbot-state``, ``clarity-chatbot-geometry``,
+       ``clarity-chatbot-settings-override``, ``clarity-chatbot-requests``
+     - Storage
+   * - Update-banner dismiss
+     - ``clarity-update-dismissed``
+     - Storage
+   * - Google Fonts
+     - ``fonts.googleapis.com`` + ``fonts.gstatic.com``
+     - External
+   * - PyPI update check
+     - ``pypi.org/pypi/sphinx-clarity/json``
+     - External
+   * - OpenRouter API
+     - ``openrouter.ai`` (chat completions, key info, activity)
+     - External
+
+TTL reference
+~~~~~~~~~~~~~
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Label
+     - Meaning
+   * - ``Never``
+     - Data persists until the reader or deployer clears it.
+   * - ``1 day``
+     - Envelope expires 24 hours after the most recent write.
+   * - ``1 week``
+     - Envelope expires 7 days after the most recent write.
+   * - ``1 month``
+     - Envelope expires 30 days after the most recent write.
+
+TTL is **lazy**: a reader who never returns leaves stale data in
+``localStorage`` until they next visit. A clock skew between visits
+could delay or accelerate purge by the skew amount; Clarity trusts
+the browser's ``Date.now()`` without any network time sync.
+
+Presets
+~~~~~~~
+
+The modal's ``Preset`` dropdown applies the same choice to every row
+in one click:
+
+- ``All CAN, purge Never`` -- today's default behaviour when the reader
+  clicks ``Accept all``.
+- ``All CANNOT`` -- identical to ``Decline all``; nothing persists.
+- ``All CAN, purge 1 day`` / ``1 week`` / ``1 month`` -- persistence
+  with a maintenance window.
+
+After picking a preset the reader can still fine-tune individual rows
+before saving.
+
+Storage format
+~~~~~~~~~~~~~~
+
+The modal writes one JSON blob under ``clarity-privacy`` in
+``localStorage``:
+
+.. code-block:: json
+
+   {
+     "schema": "clarity-privacy/v1",
+     "updated": 1713355200000,
+     "consent": {
+       "clarity-theme":    { "allow": true,  "ttl": "never" },
+       "clarity-skin":     { "allow": true,  "ttl": "never" },
+       "fonts.googleapis": { "allow": false, "ttl": "never" }
+     }
+   }
+
+Stored values use an envelope ``{ v, t }`` so the sweep can compute age
+against the effective TTL:
+
+.. code-block:: json
+
+   { "v": "matrix", "t": 1713355200000 }
+
+Legacy v1.4 values (plain strings, no envelope) round-trip transparently
+on first read and are re-wrapped on the next write.
+
+Resetting
+~~~~~~~~~
+
+``Reset privacy`` in the modal clears both ``clarity-privacy`` and
+``clarity-consent`` so the banner returns on the next page load. Every
+stored preference remains on disk; only the consent record is removed
+so the reader can re-decide. To wipe preferences too, use the chatbot
+purge button or the snippet under :ref:`clearing-stored-data`.
+
 API key obfuscation
 ~~~~~~~~~~~~~~~~~~~
 
@@ -113,6 +245,8 @@ plain text in the browser's storage inspector.
    not protect against a determined attacker with same-origin JavaScript
    execution (e.g. XSS). Treat your documentation site origin with the same
    care as any site that handles credentials.
+
+.. _clearing-stored-data:
 
 Clearing stored data
 ~~~~~~~~~~~~~~~~~~~~

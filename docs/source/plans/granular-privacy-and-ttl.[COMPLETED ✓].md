@@ -5,10 +5,10 @@ tags:
   - "#privacy"
   - "#consent"
   - "#storage"
-status: draft
+status: completed
 updated: 2026-04-17
 priority: high
-phase: design
+phase: implementation
 ---
 
 # Granular Privacy and Scheduled Purge

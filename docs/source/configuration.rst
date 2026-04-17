@@ -159,6 +159,19 @@ and ``Save`` / ``Reset`` / ``Cancel`` actions. Overrides are stored in the
 reader's browser only; the values in ``conf.py`` remain the default for
 everyone else. See :ref:`settings-panel` for the full field list.
 
+Privacy Settings Entry Point
+----------------------------
+
+The footer ``Privacy settings`` link opens a standalone modal where
+readers can toggle CAN / CANNOT for every storage key and external
+request, and pick an automatic purge TTL (Never / 1 day / 1 week /
+1 month) per category. See :ref:`granular-privacy` on the privacy
+page for the full schema and categories.
+
+The modal is also reachable from the consent banner's
+``Customize...`` button and from a shortcut inside the chatbot
+settings panel, so the three entry points share one surface.
+
 Dual Logos
 ----------
 

@@ -164,9 +164,34 @@ scope per the plan.
 6. `docs(privacy): granular controls section + TTL table`
 7. `docs(plans): mark granular-privacy completed`
 
+### Wave 1.5 -- text-size polish
+
+Small final UI touch before the release ceremony: the text-size
+controls currently give zero feedback about the active zoom level.
+Add a small percentage badge that **floats above** the `-`/`+` pair
+at a higher z-index so the buttons stay fully clickable while the
+current percentage reads out at the top centre of the control group.
+
+- Markup: `<span id="text-size-percent" class="text-size-percent">100%</span>`
+  added as a child of `.text-size-controls` in
+  `src/clarity/layout.html`.
+- Style: the parent `.text-size-controls` becomes
+  `position: relative`. The span is `position: absolute` anchored
+  top centre (`top: -1em; left: 50%; transform: translateX(-50%);`)
+  with `z-index: 2` (buttons implicitly at 1). CSS
+  `text-decoration: overline` on the span produces the thin line
+  above the number. Muted colour by default, accent on hover/focus.
+  `pointer-events: none` so clicks pass through to the buttons.
+- JS: `initTextSize()` in `src/clarity/static/js/clarity.js` renders
+  the current size into the span on boot and on every `-` / `+`
+  click. Shares `getStoredTextSize` / `applyTextSize` -- no extra
+  state.
+
+Commit: `feat(text-size): show current percentage between controls`.
+
 ### Wave 2 -- release ceremony
 
-**2.1 README audit + surgical edits** (per the audit report, 3-4
+**2.1 README audit + surgical edits** (per the audit report, 4-5
 targeted additions; no rewrite):
 
 - New Features bullet: Chatbot Digest/Ingest.
@@ -364,7 +389,7 @@ After the skill confirms the version:
 
 ## Commit order (explicit)
 
-Total: ~14 commits culminating in the v1.5.0-000 tag.
+Total: ~15 commits culminating in the v1.5.0-000 tag.
 
 0. `docs(plans): save v1.5.0-000 release plan` (copy this plan into
    `docs/source/plans/clarity-v1-5-0.[ACTIVE ▸].md` + index wire-up;
@@ -382,9 +407,12 @@ Total: ~14 commits culminating in the v1.5.0-000 tag.
 9. `feat(privacy): Customize button + standalone settings modal`
 10. `feat(privacy): boot-time TTL sweep`
 11. `docs(privacy): granular controls section + TTL table`
-12. `docs(readme): digest/ingest, enhanced search, sessionStorage,
-    granular privacy`
-13. `chore(release): bump to v1.5.0-000` (pyproject + conf.py +
+12. `feat(text-size): show current percentage between controls`
+    (Wave 1.5 polish; floating badge above the -/+ pair with
+    overline decoration and pointer-events: none).
+13. `docs(readme): digest/ingest, enhanced search, sessionStorage,
+    granular privacy, text-size percentage`
+14. `chore(release): bump to v1.5.0-000` (pyproject + conf.py +
     CHANGELOG together, CHANGELOG last; invokes the `version-bumping`
     skill to confirm the bump type before editing files). Also
     renames `docs/source/plans/clarity-v1-5-0.[ACTIVE ▸].md` ->
