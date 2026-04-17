@@ -4,7 +4,7 @@ tags:
   - "#clarity"
   - "#release"
   - "#v1-5-0"
-status: active
+status: completed
 updated: 2026-04-17
 priority: critical
 phase: implementation

@@ -1,6 +1,42 @@
 # Changelog
 
 
+## v1.5.0-000 (2026-04-17)
+
+
+### Bug Fixes
+
+- Close enhanced-search loose ends (363d39e)
+
+### CI
+
+- Publish to PyPI only when wheel-relevant paths change (43f5bb7)
+
+### Documentation
+
+- Text-size badge, digest/ingest, enhanced search, privacy (387235f)
+- Granular controls section + TTL table (ad2c586)
+- Mark digest/ingest, publish-gate completed; add drafts (2bbb452)
+- Save v1.5.0-000 release plan (715fc94)
+
+### Features
+
+- Current-percentage badge + sticky clamping polish (b80c094)
+- Visibility + cross-tab TTL sweep triggers (7e60ff4)
+- Customize button + standalone settings modal (c07a12b)
+- Gate external fetches on canFetch(host) (3a0aa8f)
+- Foundation module with envelope + canStore/canFetch (779a395)
+- Digest and ingest conversation history (637cda2)
+- SessionStorage fallback when consent is declined (29051bc)
+
+### Refactoring
+
+- Route JS IIFEs through privacy.canStore + envelope (f3365c5)
+
+### Style
+
+- Hover highlight, hint bar, orange alerts (9bc55f7)
+
 ## v1.4.0-000 (2026-04-16)
 
 

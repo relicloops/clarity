@@ -7,7 +7,6 @@ Design documents for upcoming features and architectural changes.
    :maxdepth: 1
    :caption: Active / Draft
 
-   clarity-v1-5-0.[ACTIVE ▸]
    indexeddb-chatbot-storage.[DRAFT ○]
    shared-request-counter.[DRAFT ○]
    source-in-docs.[DRAFT ○]
@@ -16,6 +15,7 @@ Design documents for upcoming features and architectural changes.
    :maxdepth: 1
    :caption: Completed
 
+   clarity-v1-5-0.[COMPLETED ✓]
    granular-privacy-and-ttl.[COMPLETED ✓]
    enhanced-search-results.[COMPLETED ✓]
    conditional-pypi-publish.[COMPLETED ✓]
