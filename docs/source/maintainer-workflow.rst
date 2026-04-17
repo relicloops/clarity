@@ -239,8 +239,9 @@ Programmer, Matrix, Rainbow, Darcula, Coder) and an optional
 ``html_theme_options`` paste block rendered as Python for copy/paste
 triage.
 
-Both forms pre-fill the issue title (``[bug] `` or ``[feature] ``) so
-the tracker list stays readable at a glance. The chooser disables
+Both forms pre-fill the issue title prefix (``[bug]`` or
+``[feature]``, each followed by a trailing space) so the tracker
+list stays readable at a glance. The chooser disables
 blank issues -- readers must pick a form or follow a contact link.
 
 When editing a form, keep the ``id`` values stable. GitHub stores
