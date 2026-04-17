@@ -10,12 +10,15 @@ palette and a built-in AI documentation assistant.
 - **Three-column layout** -- sidebar, content, collapsible on-this-page table of contents (sticky on desktop, collapsible below header on mobile)
 - **Responsive** -- desktop, tablet, and mobile breakpoints at 1100 / 900 / 640 px
 - **Keyboard navigation** -- arrow keys for prev/next, `/` to focus search
-- **Text size controls** -- readers can scale the article 75 % -- 150 %, all components scale together (em units)
+- **Text size controls** -- readers can scale the article 75 % -- 150 %, all components scale together (em units); a floating percentage badge above the `-` / `+` pair shows the current size at a glance
 - **Language-tagged code blocks** with extended Pygments token coverage for Python, Rust, Go, JS, C
 - **Dual logo support** -- different images for dark and light modes
 - **AI assistant** -- page-aware chatbot with `/goto` navigation, `/read` page-summarization, and a `⚙` settings overlay where readers can override model, temperature, reasoning effort, and every other `chatbot_*` option from `conf.py` at runtime
+- **Chatbot digest / ingest** -- export the current conversation as JSON, Markdown + JSON (zip), or plain text + JSON (zip); re-import any JSON later via Replace or Append. API keys are never included
+- **Enhanced search** -- per-match `[line:col]` positions grouped by file, plain-text or `/regex/` matching, a `+ N more` toggle per file, and a rainbow-glowing `⁇` overlay while pages are being scanned
 - **Draggable and resizable** chatbot panel with geometry persistence, minimize/restore toggle (`─` / `□`), and container queries for responsive inner layout
-- **GDPR / ePrivacy consent** -- built-in banner, no third-party plugins, nothing stored until the reader accepts. Google Fonts loaded only after consent
+- **GDPR / ePrivacy consent** -- built-in banner, no third-party plugins, nothing stored until the reader accepts. Google Fonts loaded only after consent. Declined readers fall back to `sessionStorage` so preferences still work for the current tab
+- **Granular privacy + TTL** -- `Customize...` opens a settings modal where readers pick per-feature CAN / CANNOT and an automatic purge after Never / 1 day / 1 week / 1 month. Kill-switches cover Google Fonts, PyPI, and the OpenRouter API so the chatbot, update checker, and web fonts can be disabled independently
 - **Update checker** -- opt-in PyPI version check (consent-gated, `Opt+U` / `Alt+U` keybinding). Shows a top banner with links to every newer release, and a rainbow-glowing `⊛` spinner in the header while checking
 - **Retro 404 page** -- Press Start 2P pixelated font for the 404 heading (consent-gated Google Font, falls back to system when declined)
 - **Version warning** -- orange sidebar badge when `release` or `version` is missing from `conf.py`, plus a DevTools console warning so deployers notice before publishing
