@@ -14,6 +14,18 @@
   var CHAT_URL = 'https://openrouter.ai/api/v1/chat/completions';
   var KEY_URL = 'https://openrouter.ai/api/v1/key';
   var ACTIVITY_URL = 'https://openrouter.ai/api/v1/activity';
+  var HOST = 'openrouter.ai';
+
+  /* Gate every OpenRouter call on the per-reader Privacy Settings
+     canFetch(host). When blocked, surface a clear error message so
+     the chatbot UI can explain why there's no response. */
+  function fetchAllowed() {
+    var priv = window.__clarityPrivacy;
+    if (!priv) return true;
+    return priv.canFetch(HOST);
+  }
+
+  var DISABLED_MSG = 'OpenRouter access is disabled in Privacy Settings.';
 
   /* --- Page content extraction --- */
 
@@ -42,6 +54,7 @@
   /* --- Key info --- */
 
   function fetchKeyInfo(apiKey, callback) {
+    if (!fetchAllowed()) { callback(null, null); return; }
     fetch(KEY_URL, {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + apiKey }
@@ -57,6 +70,7 @@
 
   function fetchActivity(mgmtKey, callback) {
     if (!mgmtKey) { callback('no mgmt key'); return; }
+    if (!fetchAllowed()) { callback('disabled'); return; }
     fetch(ACTIVITY_URL, {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + mgmtKey }
@@ -95,6 +109,10 @@
   /* --- Streaming chat completion --- */
 
   function sendMessageStream(userMsg, history, pageText, apiKey, settings, callbacks) {
+    if (!fetchAllowed()) {
+      callbacks.onError(DISABLED_MSG);
+      return;
+    }
     var messages = [{ role: 'system', content: buildSystemPrompt(pageText, settings.systemPrompt) }];
     for (var i = 0; i < history.length; i++) messages.push(history[i]);
     messages.push({ role: 'user', content: userMsg });
@@ -196,6 +214,9 @@
   }
 
   Chatbot.api = {
+    HOST: HOST,
+    DISABLED_MSG: DISABLED_MSG,
+    fetchAllowed: fetchAllowed,
     getPageContent: getPageContent,
     buildSystemPrompt: buildSystemPrompt,
     fetchKeyInfo: fetchKeyInfo,

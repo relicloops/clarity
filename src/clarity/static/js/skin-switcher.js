@@ -123,7 +123,12 @@
 
   function loadSkinFonts(name) {
     unloadSkinFonts();
-    if (!window.__clarityConsent) return;
+    /* Same per-reader kill-switch as the default font stack: if the
+       reader blocked fonts.googleapis in Privacy Settings, skip the
+       load regardless of consent flag. */
+    var priv = window.__clarityPrivacy;
+    if (priv && !priv.canFetch('fonts.googleapis')) return;
+    if (!priv && !window.__clarityConsent) return;
     var query = SKIN_FONTS[name];
     if (!query) return;
 

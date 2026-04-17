@@ -182,7 +182,11 @@
   /* --- Core fetch logic (reused by auto-check and keybinding) --- */
 
   function runCheck(force) {
-    if (!window.__clarityConsent) return;
+    var priv = window.__clarityPrivacy;
+    if (priv && !priv.canFetch('pypi.update-check')) return;
+    /* Legacy fallback: if privacy.js hasn't loaded yet, fall back to
+       the plain consent flag so we don't fire without any gate. */
+    if (!priv && !window.__clarityConsent) return;
 
     if (!force) {
       if (isDismissed()) return;

@@ -32,6 +32,12 @@
     var fontStack = document.body && document.body.getAttribute('data-font-stack');
     if (fontStack === 'system') return;
 
+    /* Per-reader kill-switch via Privacy Settings. If the reader has
+       blocked fonts.googleapis, skip the load and let CSS fall back to
+       the system stack. */
+    var priv = window.__clarityPrivacy;
+    if (priv && !priv.canFetch('fonts.googleapis')) return;
+
     var preconnect1 = document.createElement('link');
     preconnect1.rel = 'preconnect';
     preconnect1.href = 'https://fonts.googleapis.com';
