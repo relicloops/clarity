@@ -1,0 +1,59 @@
+<div id="clarity-privacy-panel"
+     class="clarity-privacy-panel"
+     hidden
+     role="dialog"
+     aria-labelledby="clarity-privacy-title"
+     aria-modal="true">
+  <div class="clarity-privacy-backdrop" data-clarity-privacy-dismiss></div>
+  <div class="clarity-privacy-modal">
+    <div class="clarity-privacy-header">
+      <h2 id="clarity-privacy-title" class="clarity-privacy-title">Privacy Settings</h2>
+      <button id="clarity-privacy-close" type="button"
+              class="clarity-privacy-close"
+              aria-label="Close privacy settings"
+              data-clarity-privacy-dismiss>&#xD7;</button>
+    </div>
+    <p class="clarity-privacy-intro">
+      Choose what Clarity is allowed to remember and for how long. External
+      requests can be disabled entirely -- the chatbot, update checker, and
+      web fonts all fall back gracefully.
+    </p>
+    <div class="clarity-privacy-table-wrap">
+      <table class="clarity-privacy-table">
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col" class="clarity-privacy-col-allow">Allow</th>
+            <th scope="col" class="clarity-privacy-col-ttl">Purge after</th>
+          </tr>
+        </thead>
+        <tbody id="clarity-privacy-rows">
+          <!-- rows rendered by privacy-panel.js on open -->
+        </tbody>
+      </table>
+    </div>
+    <div class="clarity-privacy-footer">
+      <div class="clarity-privacy-presets">
+        <label for="clarity-privacy-preset">Preset</label>
+        <select id="clarity-privacy-preset">
+          <option value="">(choose...)</option>
+          <option value="accept-all">All CAN, purge Never</option>
+          <option value="decline-all">All CANNOT</option>
+          <option value="all-1d">All CAN, purge 1 day</option>
+          <option value="all-1w">All CAN, purge 1 week</option>
+          <option value="all-1m">All CAN, purge 1 month</option>
+        </select>
+      </div>
+      <div id="clarity-privacy-status" class="clarity-privacy-status" aria-live="polite"></div>
+      <div class="clarity-privacy-actions">
+        <button id="clarity-privacy-reset" type="button"
+                class="clarity-privacy-btn-subtle"
+                title="Clear saved Privacy Settings and show the Accept/Decline banner again on the next page load.">Reset privacy</button>
+        <button id="clarity-privacy-cancel" type="button"
+                data-clarity-privacy-dismiss>Cancel</button>
+        <button id="clarity-privacy-save" type="button"
+                class="clarity-privacy-btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

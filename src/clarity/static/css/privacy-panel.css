@@ -1,0 +1,335 @@
+/* ==========================================================================
+   Clarity -- Privacy Settings Modal
+   Standalone modal opened from the consent banner's Customize button,
+   the footer Privacy settings link, and the chatbot settings panel's
+   Privacy shortcut. Token-based so every skin inherits the palette.
+   ========================================================================== */
+
+.clarity-privacy-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.clarity-privacy-panel[hidden] {
+  display: none;
+}
+
+.clarity-privacy-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+[data-theme="light"] .clarity-privacy-backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.clarity-privacy-modal {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  max-height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+[data-theme="light"] .clarity-privacy-modal {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+.clarity-privacy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.clarity-privacy-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.clarity-privacy-close {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.clarity-privacy-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.clarity-privacy-intro {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.clarity-privacy-table-wrap {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0.5rem 1rem;
+}
+
+.clarity-privacy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.clarity-privacy-table thead th {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.clarity-privacy-table .clarity-privacy-col-allow,
+.clarity-privacy-table .clarity-privacy-col-ttl {
+  width: 8rem;
+}
+
+.clarity-privacy-table tbody td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+  color: var(--text-primary);
+}
+
+.clarity-privacy-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.clarity-privacy-row-label {
+  font-weight: 500;
+}
+
+.clarity-privacy-row-note {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.clarity-privacy-external-section td {
+  padding-top: 0.85rem;
+}
+
+.clarity-privacy-external-section:first-of-type td {
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.clarity-privacy-allow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.clarity-privacy-allow input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+.clarity-privacy-allow-label {
+  color: var(--text-secondary);
+  font-variant: small-caps;
+}
+
+.clarity-privacy-allow input:checked + .clarity-privacy-allow-label {
+  color: var(--accent);
+}
+
+.clarity-privacy-ttl {
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.clarity-privacy-ttl:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.clarity-privacy-ttl:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.clarity-privacy-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  flex-shrink: 0;
+}
+
+.clarity-privacy-presets {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.clarity-privacy-presets select {
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.clarity-privacy-status {
+  flex: 1 1 auto;
+  min-height: 1em;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+.clarity-privacy-status.is-error { color: #ff3366; }
+.clarity-privacy-status.is-ok    { color: var(--accent); }
+
+.clarity-privacy-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.clarity-privacy-actions button {
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.clarity-privacy-actions button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.clarity-privacy-btn-primary {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.clarity-privacy-btn-primary:hover {
+  background: var(--bg-card);
+}
+
+.clarity-privacy-btn-subtle {
+  opacity: 0.75;
+}
+
+/* Chatbot Privacy shortcut */
+.chatbot-privacy-shortcut {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  margin-top: 0.3rem;
+  margin-left: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.chatbot-privacy-shortcut:hover {
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
+
+/* Mobile: stack rows vertically below 640 px so the table doesn't
+   overflow. Labels become cards with the allow checkbox and TTL
+   select underneath. */
+@media (max-width: 640px) {
+  .clarity-privacy-panel {
+    padding: 0.5rem;
+  }
+  .clarity-privacy-table,
+  .clarity-privacy-table thead,
+  .clarity-privacy-table tbody,
+  .clarity-privacy-table tr,
+  .clarity-privacy-table td,
+  .clarity-privacy-table th {
+    display: block;
+  }
+  .clarity-privacy-table thead {
+    display: none;
+  }
+  .clarity-privacy-table tbody tr {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .clarity-privacy-table tbody td {
+    padding: 0.25rem 0;
+    border: none;
+  }
+  .clarity-privacy-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

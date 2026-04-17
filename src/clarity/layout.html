@@ -25,6 +25,7 @@
 {% endif %}
 <link rel="stylesheet" href="{{ pathto('_static/css/consent.css', 1) }}">
 <link rel="stylesheet" href="{{ pathto('_static/css/search-results.css', 1) }}">
+<link rel="stylesheet" href="{{ pathto('_static/css/privacy-panel.css', 1) }}">
 <script>
 /* Early skin loader: runs in <head> BEFORE first paint to avoid a
    flash of the default theme when the reader has a skin stored.
@@ -223,9 +224,11 @@
   </div>
 </footer>
 {% include "consent.html" %}
+{% include "privacy-panel.html" %}
 <button class="back-to-top" type="button" aria-label="Back to top" hidden>Top</button>
 <script src="{{ pathto('_static/js/privacy.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/consent.js', 1) }}"></script>
+<script src="{{ pathto('_static/js/privacy-panel.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/clarity.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/theme-toggle.js', 1) }}"></script>
 <script src="{{ pathto('_static/js/search-enhance.js', 1) }}"></script>

@@ -51,6 +51,9 @@
         <button id="chatbot-ingest-btn" type="button" class="chatbot-transfer-btn"
                 data-hint="Ingest: load a previously digested JSON file and restore the conversation. Choose Replace (discard current) or Append.">&#x21E7; Ingest history</button>
       </div>
+      <button id="chatbot-privacy-shortcut" type="button"
+              class="chatbot-privacy-shortcut"
+              data-hint="Privacy: open the granular settings modal. Pick per-feature CAN/CANNOT and when each stored preference should auto-purge.">Privacy settings &#x2026;</button>
       <div class="chatbot-settings-body">
         <label data-hint="OpenRouter model slug (e.g. openai/gpt-oss-120b:free, anthropic/claude-sonnet-4-5, google/gemini-2.5-flash). Full list at openrouter.ai/models. Free-tier models are labelled :free. Paid models consume credit from the key you set below.">Model
           <input type="text" data-setting="model" spellcheck="false" autocomplete="off">

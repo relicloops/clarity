@@ -98,8 +98,9 @@
     var banner = document.getElementById('clarity-consent');
     if (!banner) return;
 
-    var acceptBtn = document.getElementById('consent-accept');
-    var declineBtn = document.getElementById('consent-decline');
+    var acceptBtn    = document.getElementById('consent-accept');
+    var declineBtn   = document.getElementById('consent-decline');
+    var customizeBtn = document.getElementById('consent-customize');
     /* Show banner if no decision yet */
     if (!window.__clarityConsentDecided) {
       banner.hidden = false;
@@ -109,6 +110,9 @@
       setConsent('accepted');
       window.__clarityConsent = true;
       window.__clarityConsentDecided = true;
+      /* Mirror the preset into the granular privacy blob so
+         canStore/canFetch agree with the coarse consent. */
+      if (window.__clarityPrivacy) window.__clarityPrivacy.acceptAll();
       banner.hidden = true;
       loadGoogleFonts();
     });
@@ -117,19 +121,28 @@
       setConsent('declined');
       window.__clarityConsent = false;
       window.__clarityConsentDecided = true;
+      if (window.__clarityPrivacy) window.__clarityPrivacy.declineAll();
       banner.hidden = true;
       purgeNonEssential();
     });
+
+    if (customizeBtn) {
+      customizeBtn.addEventListener('click', function () {
+        /* Don't set clarity-consent yet -- the Privacy modal's Save
+           will write both clarity-privacy and the coarse consent. */
+        banner.hidden = true;
+        window.dispatchEvent(new CustomEvent('clarity:open-privacy'));
+      });
+    }
   }
 
-  /* --- Revoke consent (called from footer link) --- */
+  /* --- Revoke consent (called from footer link) ---
+     The footer "Privacy settings" link now opens the granular modal
+     via a CustomEvent instead of resetting consent. Kept the global
+     alias so any third-party integration still works. */
 
   window.__clarityRevokeConsent = function () {
-    try { localStorage.removeItem(CONSENT_KEY); } catch (_) {}
-    window.__clarityConsent = false;
-    window.__clarityConsentDecided = false;
-    var banner = document.getElementById('clarity-consent');
-    if (banner) banner.hidden = false;
+    window.dispatchEvent(new CustomEvent('clarity:open-privacy'));
   };
 
   /* --- Boot --- */

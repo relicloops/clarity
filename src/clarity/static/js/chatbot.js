@@ -66,6 +66,7 @@
     var ingestCancel = document.getElementById('chatbot-ingest-cancel');
     var ingestStatus = document.getElementById('chatbot-ingest-status');
     var purgeDigest = document.getElementById('chatbot-purge-digest');
+    var privacyShortcut = document.getElementById('chatbot-privacy-shortcut');
 
     /* --- Geometry restore --- */
 
@@ -440,6 +441,16 @@
 
     if (ingestBtn) {
       ingestBtn.addEventListener('click', openIngestModal);
+    }
+
+    /* --- Privacy shortcut ---
+       Dispatches the global clarity:open-privacy event which the
+       privacy-panel.js IIFE listens for. Kept decoupled so the
+       chatbot doesn't import privacy-panel directly. */
+    if (privacyShortcut) {
+      privacyShortcut.addEventListener('click', function () {
+        window.dispatchEvent(new CustomEvent('clarity:open-privacy'));
+      });
     }
     if (ingestCancel) {
       ingestCancel.addEventListener('click', closeIngestModal);
