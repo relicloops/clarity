@@ -1,6 +1,21 @@
 # Changelog
 
 
+## v1.5.1-000 (2026-04-18)
+
+
+### Bug Fixes
+
+- Compare theme version, not consumer's site release (5a75235)
+
+### Documentation
+
+- Fix inline literal with trailing space (cfa7019)
+
+### Miscellaneous
+
+- Tailor issue templates to Clarity (YAML forms) (eb440e3)
+
 ## v1.5.0-000 (2026-04-17)
 
 
