@@ -9,7 +9,7 @@
 {%- endblock %}
 
 {%- block body_tag %}
-<body data-font-stack="{{ theme_font_stack|default('default') }}" data-nav-keys="{{ theme_navigation_with_keys|default('true')|lower }}" data-update-check="{{ theme_update_check|default('false')|lower }}" data-clarity-version="{{ release|default(version)|default('') }}">
+<body data-font-stack="{{ theme_font_stack|default('default') }}" data-nav-keys="{{ theme_navigation_with_keys|default('true')|lower }}" data-update-check="{{ theme_update_check|default('false')|lower }}" data-clarity-version="{{ clarity_theme_version|default('') }}">
 {%- endblock %}
 
 {%- block extrahead %}

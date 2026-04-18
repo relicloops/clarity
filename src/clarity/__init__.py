@@ -17,8 +17,21 @@ def get_html_theme_path() -> str:
     return str(Path(__file__).parent)
 
 
+def _inject_theme_version(app, pagename, templatename, context, doctree):
+    """Expose the *theme's* installed version to Jinja templates.
+
+    Without this, layout.html would fall back to the docs site's own
+    ``release`` / ``version`` from the consumer's ``conf.py`` when
+    emitting ``data-clarity-version``. That value drives update-check.js,
+    which must compare the installed ``sphinx-clarity`` wheel against
+    PyPI -- not the consuming project's own release string.
+    """
+    context["clarity_theme_version"] = __version__
+
+
 def setup(app: Sphinx) -> dict:
     app.add_html_theme("clarity", str(Path(__file__).parent))
+    app.connect("html-page-context", _inject_theme_version)
 
     return {
         "version": __version__,
