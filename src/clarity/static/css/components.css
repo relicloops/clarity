@@ -200,6 +200,13 @@
    Tables
    ========================================================================== */
 
+/* Tables keep their natural content width (no squeezing of long
+   code paths or multi-column prose into cramped cells). When a
+   table exceeds .page-content's width, the page-content container
+   scrolls horizontally -- see the .page-content { overflow-x: auto }
+   rule below. Short tables still fill the article via width: 100%;
+   there's no max-width cap so browsers are free to expand tables
+   past 100% to fit their content. */
 .page-content table {
   width: 100%;
   border-collapse: collapse;
@@ -232,6 +239,14 @@
 
 .page-content table code {
   font-size: 0.8em;
+}
+
+/* --- Content overflow host ------------------------------------------- */
+/* Single scroll container for any wide descendant (tables, pre, long
+   unbroken URLs, images). Keeps main + sidebar sticky behaviour intact
+   because .page-content is BELOW .text-size-controls in the DOM. */
+.page-content {
+  overflow-x: auto;
 }
 
 /* Sphinx-generated class tables */

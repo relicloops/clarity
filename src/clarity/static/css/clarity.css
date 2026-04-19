@@ -38,8 +38,12 @@
   --sidebar-width: 280px;
   --toc-width: 220px;
   --header-height: 56px;
-  --layout-max-width: 1400px;
-  --content-max-width: 800px;
+  --content-max-width: 1256px;
+  /* Content zone = sidebar + article + toc. The TOC aside is the natural
+     right-edge guardrail; keeping layout-max-width locked to the content
+     zone makes header, footer, search, and back-to-top all stop at the
+     same line instead of floating into empty main-gutter space. */
+  --layout-max-width: min(95vw, calc(var(--sidebar-width) + var(--content-max-width) + var(--toc-width)));
 }
 
 /* --- Dark Theme (default) --- */
@@ -147,7 +151,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 18px;
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-height) + 1rem);
 }
@@ -981,7 +985,7 @@ body {
 .back-to-top {
   position: fixed;
   bottom: 6.5rem;
-  right: 2rem;
+  right: max(2rem, calc((100vw + var(--layout-max-width)) / 2 - var(--sidebar-width) - var(--content-max-width) + 2rem));
   z-index: 100;
   width: 40px;
   height: 40px;

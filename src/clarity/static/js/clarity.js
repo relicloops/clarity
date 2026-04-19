@@ -239,6 +239,7 @@
     if (!article) return;
     article.style.setProperty('--content-font-size', (size / 100) + 'rem');
     updateTextSizeBadge(size);
+    scheduleMermaidRerun();
     var store = textSizeStore();
     if (!store) return;
     var priv = window.__clarityPrivacy;
@@ -249,6 +250,117 @@
   function updateTextSizeBadge(size) {
     var badge = document.getElementById('text-size-percent');
     if (badge) badge.textContent = size + '%';
+  }
+
+  /* Re-render every <pre class="mermaid"> so node bounding boxes and
+     arrow endpoints reflow against the new text-size. Diagrams are
+     laid out by mermaid.js at render time based on initial font
+     metrics; on text-size change we restore each pre's original
+     source (captured by mermaid-capture.js into data-src), clear
+     mermaid's data-processed flag, and invoke mermaid.run() to
+     re-layout. Debounced so rapid -/+ clicks coalesce into a single
+     render pass instead of firing per keypress.
+
+     sphinxcontrib-mermaid loads mermaid as an ESM module -- the
+     `mermaid` binding lives inside module scope and is NOT exposed
+     on window. We inject a one-shot ESM script that imports from the
+     same CDN URL (browser dedupes by URL) and stashes the binding on
+     window.__clarityMermaid for cross-script access. The loader
+     resolves both a default export (today) and a namespace object
+     (future-proof if mermaid ever drops the default export) so the
+     handle survives API restructures. */
+  var mermaidRerunTimer = null;
+  var mermaidModuleUrl = null;
+  var mermaidWarned = false;
+
+  function getMermaidModuleUrl() {
+    if (mermaidModuleUrl) return mermaidModuleUrl;
+    var inline = document.querySelectorAll('script:not([src])');
+    for (var i = 0; i < inline.length; i++) {
+      var text = inline[i].textContent || '';
+      var m = text.match(/https:\/\/[^"']+mermaid@[^"']+?mermaid\.esm\.min\.mjs/);
+      if (m) { mermaidModuleUrl = m[0]; return mermaidModuleUrl; }
+    }
+    /* Fallback to a pinned recent version. Same-URL browser cache
+       makes this a no-op network fetch if the inline script used the
+       same URL. */
+    mermaidModuleUrl = 'https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs';
+    return mermaidModuleUrl;
+  }
+
+  function ensureMermaidHandle(cb) {
+    if (window.__clarityMermaid) return cb(window.__clarityMermaid);
+    var existing = document.getElementById('__clarity-mermaid-loader');
+    function onReady() {
+      window.removeEventListener('clarity:mermaid-ready', onReady);
+      cb(window.__clarityMermaid);
+    }
+    window.addEventListener('clarity:mermaid-ready', onReady);
+    if (existing) return;  /* loader already pending */
+    var url = getMermaidModuleUrl();
+    var s = document.createElement('script');
+    s.id = '__clarity-mermaid-loader';
+    s.type = 'module';
+    /* Belt-and-braces: prefer the default export, but fall back to
+       the namespace object if a future mermaid release moves to
+       named-only exports. Either form resolves to something with
+       run() / init() on today's v10-v11 builds. */
+    s.textContent =
+      'import * as ns from "' + url + '";' +
+      'window.__clarityMermaid = (ns && ns.default) || ns;' +
+      'window.dispatchEvent(new CustomEvent("clarity:mermaid-ready"));';
+    document.head.appendChild(s);
+  }
+
+  /* Layered fallback over mermaid's evolving API:
+       1. m.run({nodes:[...]})           v10.6+ targeted
+       2. m.run({querySelector:...})     v10+
+       3. m.run()                         v10+ bare
+       4. m.init(undefined, pres)         v8-v9 deprecated (still
+                                          present as of v11.14)
+     Each step wraps the Promise .catch to swallow async rejections
+     so unhandled errors don't bubble when mermaid's internals throw.
+     If all four fail, one-time console.warn + silent degrade. */
+  function invokeMermaidRun(m, pres) {
+    if (!m) return false;
+    function wrap(p) {
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    }
+    if (typeof m.run === 'function') {
+      try { wrap(m.run({ nodes: Array.prototype.slice.call(pres) })); return true; } catch (_) {}
+      try { wrap(m.run({ querySelector: 'pre.mermaid' })); return true; } catch (_) {}
+      try { wrap(m.run()); return true; } catch (_) {}
+    }
+    if (typeof m.init === 'function') {
+      try { m.init(undefined, pres); return true; } catch (_) {}
+    }
+    return false;
+  }
+
+  function scheduleMermaidRerun() {
+    /* Skip the whole dance when no diagram captured a source (page
+       has no mermaid blocks). */
+    if (!document.querySelector('pre.mermaid[data-src]')) return;
+    if (mermaidRerunTimer) clearTimeout(mermaidRerunTimer);
+    mermaidRerunTimer = setTimeout(rerunMermaid, 120);
+  }
+
+  function rerunMermaid() {
+    mermaidRerunTimer = null;
+    var pres = document.querySelectorAll('pre.mermaid[data-src]');
+    if (!pres.length) return;
+    for (var i = 0; i < pres.length; i++) {
+      pres[i].removeAttribute('data-processed');
+      pres[i].innerHTML = pres[i].dataset.src;
+    }
+    ensureMermaidHandle(function (m) {
+      var ok = invokeMermaidRun(m, pres);
+      if (!ok && !mermaidWarned && window.console && console.warn) {
+        mermaidWarned = true;
+        console.warn('[clarity] mermaid re-run skipped: unknown API shape. ' +
+          'Diagrams stay at initial render size until the reader reloads.');
+      }
+    });
   }
 
   function initTextSize() {

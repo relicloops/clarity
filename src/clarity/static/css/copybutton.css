@@ -1,0 +1,70 @@
+/* ==========================================================================
+   Clarity -- sphinx-copybutton theming
+   sphinx-copybutton ships its own grey/bootstrap-ish defaults. These
+   rules re-tint the button with Clarity's tokens so it blends with
+   every theme + skin and show a hand pointer on hover.
+
+   Loaded after the extension's bundled stylesheet so specificity +
+   load order win; no !important needed for most rules (cursor and
+   background-color keep it because the extension's defaults tend to
+   be stubborn across versions).
+
+   Selectors only match inside sphinx-copybutton's markup, so this
+   file is a no-op when the extension isn't installed.
+   ========================================================================== */
+
+.copybtn {
+  cursor: pointer !important;
+  border: 1px solid var(--border-subtle) !important;
+  background-color: var(--bg-card) !important;
+  color: var(--text-tertiary) !important;
+  border-radius: 4px;
+  padding: 3px 5px;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+  opacity: 0.85;
+}
+
+/* Reveal fully on code-block hover (extension's default opacity 0.4
+   reads as "disabled" on Clarity's palette). */
+div.highlight:hover .copybtn,
+.copybtn:hover,
+.copybtn:focus {
+  opacity: 1;
+}
+
+.copybtn:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background-color: var(--bg-input) !important;
+}
+
+.copybtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Success flash -- extension toggles `.success` briefly on click. */
+.copybtn.success {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Icon stroke follows currentColor so the SVG picks up the button's
+   text tint (default / hover / success). Set ONLY on the root <svg>
+   -- SVG cascades stroke to child <rect>/<path> via CSS inheritance,
+   while decorative bounding paths that declare their own stroke="none"
+   keep that override and stay invisible. fill is deliberately left
+   alone so outline-only tabler-style icons (fill="none") don't get
+   filled in as solid blobs. */
+.copybtn svg {
+  stroke: currentColor;
+}
+
+/* Tooltip ("Copied!" / "Copy") above the button -- extension emits
+   ::after pseudo on the .o-tooltip variants. */
+.copybtn.o-tooltip--left::after,
+.copybtn.o-tooltip--right::after {
+  background-color: var(--bg-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
