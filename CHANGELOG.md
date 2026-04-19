@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v1.5.2-000 (2026-04-19)
+
+
+### Bug Fixes
+
+- Main width, table scroll, font-size, mermaid + copybutton theming (9e18175)
+
 ## v1.5.1-000 (2026-04-18)
 
 
